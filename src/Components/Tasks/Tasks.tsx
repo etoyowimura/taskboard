@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import AddTask from "./AddTask";
-import { Button, Input, Select, Space, message, notification } from "antd";
+import { Button, Input, Select, Space, notification } from "antd";
 import TaskTable from "./TaskTable";
 import { useTeamData } from "../../Hooks/Teams";
 import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useTasks } from "../../Hooks/Tasks";
 import { TTask } from "../../types/Tasks/TTasks";
-import { useCompanyData } from "../../Hooks/Companies";
-import { useCustomerData } from "../../Hooks/Customers";
-import { useUserData } from "../../Hooks/Users";
-import { useServiceData } from "../../Hooks/Services";
 import { admin_id, role, team_id } from "../../App";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
@@ -32,11 +28,6 @@ const Task = () => {
   const [status, setStatus] = useState<any>();
   const [page, setPage] = useState<any>(1);
   const [uploadOpen, setUploadOpen] = useState(false);
-
-  const CompanyData = useCompanyData({});
-  const CustomerData = useCustomerData({});
-  const AdminData = useUserData({});
-  const ServiceData = useServiceData();
 
   let taskSocket: WebSocket;
   interface newData {
@@ -79,7 +70,7 @@ const Task = () => {
 
   useEffect(() => {
     connect();
-  }, []);
+  });
 
   const [api, contextHolder] = notification.useNotification();
   const openNotification = useCallback(
@@ -240,6 +231,7 @@ const Task = () => {
       {open && <AddTask open={open} setOpen={setOpen} />}
       {uploadOpen && (
         <TaskUploadModal
+          refetch={refetch}
           recordTask={recordTask}
           uploadOpen={uploadOpen}
           setUploadOpen={setUploadOpen}
@@ -320,9 +312,8 @@ const Task = () => {
         )}
       </div>
       <TaskTable
-        data={{ characters, CompanyData, CustomerData, ServiceData, AdminData }}
+        data={{ characters }}
         isLoading={isLoading}
-        refetch={refetch}
         showTaskModal={showTaskModal}
       />
       <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">

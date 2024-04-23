@@ -2,18 +2,8 @@ import { Button, Modal, Space, Table, Tooltip } from "antd";
 import "../../App.css";
 import { useEffect, useMemo, useState } from "react";
 import { taskController } from "../../API/LayoutApi/tasks";
-import { TPagination } from "../../types/common/TPagination";
 import { TTask } from "../../types/Tasks/TTasks";
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  UseQueryResult,
-} from "react-query";
-import { TCompany } from "../../types/Company/TCompany";
-import { TService } from "../../types/Service/TService";
-import { TCustomer } from "../../types/Customer/TCustomer";
-import { TUser } from "../../types/User/TUser";
+
 // @ts-ignore
 import zippy from "../../assets/zippyicon.svg";
 // @ts-ignore
@@ -29,27 +19,18 @@ import tagIcon from "../../assets/tagIcon.png";
 // @ts-ignore
 import tgIcon from "../../assets/telegram.png";
 import { role } from "../../App";
-import { render } from "@testing-library/react";
 
 const admin_id = localStorage.getItem("admin_id");
 const TaskTable = ({
   data,
   isLoading,
-  refetch,
   showTaskModal,
 }: {
   data: {
     characters: TTask[] | undefined;
-    CompanyData: UseQueryResult<TCompany[], unknown>;
-    CustomerData: UseQueryResult<TCustomer[], unknown>;
-    ServiceData: UseQueryResult<TService[], unknown>;
-    AdminData: UseQueryResult<TUser[], unknown>;
   };
   showTaskModal: any;
   isLoading: boolean;
-  refetch: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TPagination<TTask[]>, unknown>>;
 }) => {
   const moment = require("moment");
   const statusClick = (record: any) => {

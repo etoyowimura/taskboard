@@ -34,6 +34,13 @@ export type TTasksPostParams = {
   attachment_ids?: number[];
 };
 
+export type TTaskPostFileParams = {
+  files: any[];
+  task_id?: number;
+  shift_update_id?: number;
+  description?: string;
+};
+
 export const taskController = {
   async read(filterObject: TTasksGetParams) {
     const params = { ...filterObject };
@@ -80,10 +87,29 @@ export const taskController = {
     return data;
   },
 
-  async addTaskFile(formData: any) {
-    const { data } = await instance.post("attachment/", formData, {
+  async addTaskFile(formData: TTaskPostFileParams) {
+    const params = { ...formData };
+
+    const form = new FormData();
+    if (formData.task_id) {
+      form.append("task_id", String(formData.task_id));
+    }
+    for (const file of formData.files) {
+      form.append("files", file);
+    }
+    console.log(form);
+
+    // if (Array.isArray(formData.files)) {
+    //   params.files = formData.files;
+    // }
+    // if (!!formData.task_id) params.task_id = formData.task_id;
+    // if (!!formData.shift_update_id)
+    //   params.shift_update_id = formData.shift_update_id;
+    if (!!formData.description) params.description = formData.description;
+
+    const { data } = await instance.post("attachment/", form, {
       headers: {
-        "Content-Type": "multipart/form-data", // Установите правильный Content-Type
+        "Content-Type": "multipart/form-data",
       },
     });
     return data;

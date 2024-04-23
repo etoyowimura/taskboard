@@ -138,10 +138,10 @@ const UpdateEdit = () => {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("shift_update_id", id);
-        taskController.addTaskFile(formData).then((response) => {
-          const n = [response.file];
-          setImgname((prev: any) => [...prev, ...n]);
-        });
+        // taskController.addTaskFile(formData).then((response) => {
+        //   const n = [response.file];
+        //   setImgname((prev: any) => [...prev, ...n]);
+        // });
       }
     }
   }
@@ -384,14 +384,14 @@ const UpdateEdit = () => {
                                       const formData = new FormData();
                                       formData.append("file", file);
                                       formData.append("shift_update_id", id);
-                                      taskController
-                                        .addTaskFile(formData)
-                                        .then(() => {
-                                          onSuccess();
-                                        })
-                                        .catch((error) => {
-                                          onSuccess(error);
-                                        });
+                                      // taskController
+                                      //   .addTaskFile(formData)
+                                      //   .then(() => {
+                                      //     onSuccess();
+                                      //   })
+                                      //   .catch((error) => {
+                                      //     onSuccess(error);
+                                      //   });
                                     }}
                                   >
                                     <p className="ant-upload-drag-icon">

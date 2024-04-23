@@ -8,12 +8,22 @@ import { CloseOutlined } from "@ant-design/icons";
 import { TTask } from "../../types/Tasks/TTasks";
 import { useState } from "react";
 import TextArea from "antd/es/input/TextArea";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "react-query";
+import { TPagination } from "../../types/common/TPagination";
 
 const TaskUploadModal = ({
   uploadOpen,
   recordTask,
   setUploadOpen,
+  refetch,
 }: {
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<TPagination<TTask[]>, unknown>>;
   recordTask: TTask | undefined;
   uploadOpen: boolean;
   setUploadOpen(open: boolean): void;
@@ -21,7 +31,7 @@ const TaskUploadModal = ({
   const handleCancel = () => {
     setUploadOpen(!uploadOpen);
   };
-  const [fileData, setFileData] = useState();
+  const [fileData, setFileData] = useState<any>([]);
   const [text, setText] = useState<any>();
   return (
     <Modal
@@ -43,13 +53,16 @@ const TaskUploadModal = ({
           <Button
             type="primary"
             onClick={() => {
-              const updatedValues: any = {};
-              updatedValues.task_id = recordTask?.id;
-              updatedValues.file = fileData;
-              updatedValues.description = text;
-              taskController.addTaskFile(updatedValues).then(() => {
-                setUploadOpen(!uploadOpen);
-              });
+              taskController
+                .addTaskFile({
+                  task_id: recordTask?.id,
+                  files: fileData,
+                  description: text,
+                })
+                .then(() => {
+                  refetch();
+                  setUploadOpen(!uploadOpen);
+                });
             }}
             icon={<img alt="" src={createIcon} />}
           >
@@ -63,7 +76,7 @@ const TaskUploadModal = ({
           name="file"
           multiple={true}
           customRequest={({ file, onSuccess }: any) => {
-            setFileData(file);
+            setFileData((prev: any) => [...prev, file]);
             if (file) {
               onSuccess();
             }

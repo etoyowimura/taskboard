@@ -65,8 +65,6 @@ const AddTask = ({
       const clipboardItem = clipboardData.items[0];
       if (clipboardItem.kind === "file") {
         const file = clipboardItem.getAsFile();
-        const formData = new FormData();
-        formData.append("file", file);
 
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -76,7 +74,7 @@ const AddTask = ({
         };
         reader.readAsDataURL(file);
         taskController
-          .addTaskFile(formData)
+          .addTaskFile({ files: [file] })
           .then((response) => {
             const fileId = response.id;
             setFileIds((prevFileIds): any => [...prevFileIds, fileId]);
@@ -129,10 +127,10 @@ const AddTask = ({
         onCancel={handleCancel}
         onOk={() => {
           form.validateFields().then(async (values) => {
-            const updatedValues = { ...values };
-            updatedValues.attachment_ids = fileIds;
+            // const updatedValues = { ...values };
+            values.attachment_ids = fileIds;
             form.resetFields();
-            await taskController.addTaskController(updatedValues);
+            await taskController.addTaskController(values);
             setOpen(!open);
           });
         }}
@@ -146,7 +144,7 @@ const AddTask = ({
           <FormAnt.Item
             label="Company"
             name="company_id"
-            rules={[{ required: false, message: "Please input company!" }]}
+            rules={[{ required: true, message: "Please input company!" }]}
           >
             <Select
               showSearch
@@ -185,7 +183,7 @@ const AddTask = ({
               name="customer_id"
               style={{ width: "85%" }}
               rules={[
-                { required: false, message: "Please input service points!" },
+                { required: true, message: "Please input service points!" },
               ]}
             >
               <Select
@@ -286,23 +284,22 @@ const AddTask = ({
                   const formData = new FormData();
                   formData.append("file", file);
                   taskController
-                    .addTaskFile(formData)
+                    .addTaskFile({ task_id: undefined, files: [file] })
                     .then((response) => {
-                      const fileId = response.id;
+                      console.log(response);
+
+                      const fileId = response.data.file_ids[0];
                       setFileIds((prevFileIds): any => [
                         ...prevFileIds,
                         fileId,
                       ]);
                       onSuccess();
-                      const updatedValues = form.getFieldsValue();
-                      updatedValues.attachment_ids = [
-                        ...updatedValues.attachment_ids,
-                        fileId,
-                      ];
-                      form.setFieldsValue(updatedValues);
-                    })
-                    .catch((error) => {
-                      onSuccess(error);
+                      // const updatedValues = form.getFieldsValue();
+                      // updatedValues.attachment_ids = [
+                      //   ...updatedValues.attachment_ids,
+                      //   fileId,
+                      // ];
+                      // form.setFieldsValue(updatedValues);
                     });
                 }}
               >

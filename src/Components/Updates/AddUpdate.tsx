@@ -49,18 +49,18 @@ const AddUpdate = ({
         const file = clipboardItem.getAsFile();
         const formData = new FormData();
         formData.append("file", file);
-        taskController.addTaskFile(formData).then((response) => {
-          const fileId = response.id;
-          const n = [response.file];
-          setImgname((prev: any) => [...prev, ...n]);
-          setFileIds((prevFileIds): any => [...prevFileIds, fileId]);
-          const updatedValues = form.getFieldsValue();
-          updatedValues.attachment_ids = [
-            ...updatedValues.attachment_ids,
-            fileId,
-          ];
-          form.setFieldsValue(updatedValues);
-        });
+        // taskController.addTaskFile(formData).then((response) => {
+        //   const fileId = response.id;
+        //   const n = [response.file];
+        //   setImgname((prev: any) => [...prev, ...n]);
+        //   setFileIds((prevFileIds): any => [...prevFileIds, fileId]);
+        //   const updatedValues = form.getFieldsValue();
+        //   updatedValues.attachment_ids = [
+        //     ...updatedValues.attachment_ids,
+        //     fileId,
+        //   ];
+        //   form.setFieldsValue(updatedValues);
+        // });
       }
     }
   }
@@ -162,22 +162,22 @@ const AddUpdate = ({
               customRequest={({ file, onSuccess }: any) => {
                 const formData = new FormData();
                 formData.append("file", file);
-                taskController
-                  .addTaskFile(formData)
-                  .then((response) => {
-                    const fileId = response.id;
-                    setFileIds((prevFileIds): any => [...prevFileIds, fileId]);
-                    onSuccess();
-                    const updatedValues = form.getFieldsValue();
-                    updatedValues.attachment_ids = [
-                      ...updatedValues.attachment_ids,
-                      fileId,
-                    ];
-                    form.setFieldsValue(updatedValues);
-                  })
-                  .catch((error) => {
-                    onSuccess(error);
-                  });
+                // taskController
+                //   .addTaskFile(formData)
+                //   .then((response) => {
+                //     const fileId = response.id;
+                //     setFileIds((prevFileIds): any => [...prevFileIds, fileId]);
+                //     onSuccess();
+                //     const updatedValues = form.getFieldsValue();
+                //     updatedValues.attachment_ids = [
+                //       ...updatedValues.attachment_ids,
+                //       fileId,
+                //     ];
+                //     form.setFieldsValue(updatedValues);
+                //   })
+                //   .catch((error) => {
+                //     onSuccess(error);
+                //   });
               }}
             >
               <p className="ant-upload-drag-icon">

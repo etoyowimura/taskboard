@@ -56,7 +56,7 @@ import {
 import { TPagination } from "../../types/common/TPagination";
 import { useTeamData } from "../../Hooks/Teams";
 import { TTeam } from "../../types/Team/TTeam";
-import { EditOutlined, UserOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 
 const TaskModal = ({
   modalOpen,
@@ -76,12 +76,20 @@ const TaskModal = ({
   ) => Promise<QueryObserverResult<TPagination<TTask[]>, unknown>>;
 }) => {
   const moment = require("moment-timezone");
+  const [text, setText] = useState<string | undefined>(recordTask?.note);
+  const [pti, setPti] = useState<boolean | undefined>(recordTask?.pti);
+  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const [status, setStatus] = useState(recordTask?.status);
+  const [teamName, setTeamName] = useState(recordTask?.assigned_to?.name);
+  const { data, isLoading } = useTaskHistory(recordTask?.id);
+
   const handleCancel = () => {
     setModalOpen(!modalOpen);
   };
   const showUploadModal = () => {
     setUploadOpen(!uploadOpen);
   };
+
   function getFileType(fileName: any) {
     var fileExtension = fileName.split(".").pop()?.toLowerCase();
 
@@ -102,36 +110,7 @@ const TaskModal = ({
         return <img style={{ marginRight: 12 }} src={docicon} alt="" />;
     }
   }
-  const [text, setText] = useState<string | undefined>(recordTask?.note);
-  const [pti, setPti] = useState<boolean | undefined>(recordTask?.pti);
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
 
-  const { data, isLoading } = useTaskHistory(recordTask?.id);
-  const patchTask = () => {
-    taskController
-      .taskPatch({ note: text, pti: pti }, recordTask?.id)
-      .then(() => {
-        message.success({ content: "Saved!" });
-      });
-  };
-
-  const [status, setStatus] = useState(recordTask?.status);
-
-  const statuspatch = (status: string) => {
-    setStatus(status);
-    taskController.taskPatch({ status: status }, recordTask?.id).then(() => {
-      message.success({ content: "Success", duration: 1 });
-    });
-  };
-  const [teamName, setTeamName] = useState(recordTask?.assigned_to?.name);
-  const teampatch = (item: TTeam) => {
-    setTeamName(item?.name);
-    taskController
-      .taskPatch({ assigned_to_id: item?.id }, recordTask?.id)
-      .then(() => {
-        message.success({ content: "Success", duration: 1 });
-      });
-  };
   const teamData = useTeamData("");
   const teams: MenuProps["items"] = teamData?.data?.map((item) => ({
     key: item?.id,
@@ -155,7 +134,6 @@ const TaskModal = ({
       onClick: () => statuspatch("Done"),
     },
   ];
-
   const getImageSource = (source: string) => {
     switch (source) {
       case "driver":
@@ -165,6 +143,30 @@ const TaskModal = ({
       default:
         return userIcon;
     }
+  };
+
+  const statuspatch = (status: string) => {
+    setStatus(status);
+    taskController.taskPatch({ status: status }, recordTask?.id).then(() => {
+      message.success({ content: "Success", duration: 1 });
+    });
+  };
+
+  const teampatch = (item: TTeam) => {
+    setTeamName(item?.name);
+    taskController
+      .taskPatch({ assigned_to_id: item?.id }, recordTask?.id)
+      .then(() => {
+        message.success({ content: "Success", duration: 1 });
+      });
+  };
+
+  const patchTask = () => {
+    taskController
+      .taskPatch({ note: text, pti: pti }, recordTask?.id)
+      .then(() => {
+        message.success({ content: "Saved!" });
+      });
   };
 
   return (
