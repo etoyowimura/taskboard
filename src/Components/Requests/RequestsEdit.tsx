@@ -5,11 +5,20 @@ import { useCustomerData } from "../../Hooks/Customers";
 import { requestsController } from "../../API/LayoutApi/requests";
 // @ts-ignore
 import plus from "../../assets/add-icon.png";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "react-query";
 const RequestsEdit = ({
   modalOpen,
   setModalOpen,
   requestData,
+  refetch,
 }: {
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<TRequests[], unknown>>;
   modalOpen: any;
   setModalOpen: any;
   requestData: TRequests | undefined;
@@ -25,13 +34,21 @@ const RequestsEdit = ({
     name: customerName,
   });
 
+  const optionClick = (value: number) => {
+    setDriverId(value);
+  };
+
   const assignClick = () => {
     const value = {
       ...requestData,
       status: "Assigned",
       customer_id: driverId,
     };
-    requestsController.requestPatch(value, requestData?.id);
+    requestsController.requestPatch(value, requestData?.id).then(() => {
+      refetch();
+      setModalOpen(false);
+    });
+    // console.log(value);
   };
   return (
     <div>
@@ -127,13 +144,12 @@ const RequestsEdit = ({
                   showSearch
                   style={{ width: 325 }}
                   placeholder="Search Driver"
-                  onSearch={(value: any) => setCustomerName(value)}
-                  onChange={(e: any) => setDriverId(e)}
+                  onSearch={(value) => setCustomerName(value)}
+                  onChange={(value: number) => optionClick(value)}
                   options={customerData?.data?.map((item) => ({
                     label: item?.name,
                     value: item?.id,
                   }))}
-                  value={customerName}
                   filterOption={false}
                   autoClearSearchValue={false}
                   allowClear

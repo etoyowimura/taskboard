@@ -237,7 +237,7 @@ const CompanyEdit = () => {
                           </Col>
                         </Row>
                         <Form.Item>
-                          {role === "Owner" && (
+                          {role !== "Checker" && (
                             <Button
                               onClick={() => ClickDelete()}
                               type="primary"
@@ -247,7 +247,7 @@ const CompanyEdit = () => {
                               Delete
                             </Button>
                           )}
-                          {role === "Owner" && (
+                          {role !== "Checker" && (
                             <Button type="primary" htmlType="submit">
                               Submit
                             </Button>

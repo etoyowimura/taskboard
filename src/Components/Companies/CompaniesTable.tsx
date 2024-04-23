@@ -146,13 +146,13 @@ function CompanyTable({
               return (
                 <Space>
                   <Link to={`${id}`}>
-                    {role === "Owner" && <Button type="primary">Edit</Button>}
-                    {role !== "Owner" && (
+                    {role !== "Checker" && <Button type="primary">Edit</Button>}
+                    {role === "Checker" && (
                       <Button type="primary" icon={<EyeOutlined />}></Button>
                     )}
                   </Link>
 
-                  {role === "Owner" && (
+                  {role !== "Checker" && (
                     <Button
                       type="primary"
                       icon={<SyncOutlined />}

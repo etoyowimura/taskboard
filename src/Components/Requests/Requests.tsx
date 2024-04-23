@@ -35,6 +35,7 @@ const Requests = () => {
     <div>
       {modalOpen && (
         <RequestsEdit
+          refetch={refetch}
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
           requestData={requestData}

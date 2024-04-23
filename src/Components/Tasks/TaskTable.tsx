@@ -26,7 +26,10 @@ import ontime from "../../assets/ontimeicon.svg";
 import tt from "../../assets/tticon.svg";
 // @ts-ignore
 import tagIcon from "../../assets/tagIcon.png";
+// @ts-ignore
+import tgIcon from "../../assets/telegram.png";
 import { role } from "../../App";
+import { render } from "@testing-library/react";
 
 const admin_id = localStorage.getItem("admin_id");
 const TaskTable = ({
@@ -132,9 +135,50 @@ const TaskTable = ({
   const columns = useMemo(() => {
     const columns = [
       {
-        title: <img src={tagIcon} alt="" />,
+        title: "",
+        dataIndex: "no",
+        width: "4%",
+        render: (text: any, record: TTask) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
+            {record.via_telegram && (
+              <Tooltip placement="topLeft" title={"Created via Telegram"}>
+                <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
+              </Tooltip>
+            )}
+          </div>
+        ),
+      },
+      {
+        title: (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
+            <img src={tagIcon} alt="" />
+          </div>
+        ),
         dataIndex: "no",
         width: "5%",
+        render: (text: any, record: TTask) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
+            {text}
+          </div>
+        ),
       },
       {
         title: "Company",
@@ -179,7 +223,7 @@ const TaskTable = ({
         ellipsis: {
           showTitle: false,
         },
-        render: (item: { title: string; id: number }) => (
+        render: (item: { title: string; id: number }, record: TTask) => (
           <Tooltip placement="topLeft" title={item?.title}>
             {item.title}
           </Tooltip>

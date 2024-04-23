@@ -12,6 +12,7 @@ export type TTask = {
   is_active: boolean;
   pti: boolean;
   created_at: string;
+  via_telegram: boolean;
   updated_at: string;
   business: AssignedTo;
   company: Company;

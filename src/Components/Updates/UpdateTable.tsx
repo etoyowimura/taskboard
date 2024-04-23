@@ -112,7 +112,7 @@ const UpdateTable = ({
           {
             title: <img src={tagIcon} alt="" />,
             dataIndex: "no",
-            width: "5%",
+            width: "4%",
           },
           {
             title: "Company",
@@ -164,7 +164,7 @@ const UpdateTable = ({
             ),
           },
           {
-            title: "Complited by",
+            title: "Completed by",
             dataIndex: "executor",
             ellipsis: {
               showTitle: false,
