@@ -9,16 +9,18 @@ export const useCustomerData = ({
   name,
   page,
   is_active,
-  pageSize,
+  page_size,
+  for_driver_request,
 }: TCustomerGetParams) => {
   return useQuery(
-    [`customers/`, name, page, is_active, pageSize],
+    [`customers/`, name, page, is_active, page_size, for_driver_request],
     () =>
       customerController.read({
-        name: name,
-        page: page,
-        is_active: is_active,
-        pageSize: pageSize,
+        name,
+        page,
+        is_active,
+        page_size,
+        for_driver_request,
       }),
     { refetchOnWindowFocus: false }
   );
@@ -27,10 +29,11 @@ export const useCustomerData = ({
 export const useCustomerByComanyData = ({
   name,
   id,
+  for_driver_request,
 }: TCustomerByCompanyGetParams) => {
   return useQuery(
-    [`customers-by-company/${id}`, name],
-    () => customerController.customerByCompany(id, name),
+    [`customers-by-company/${id}`, name, for_driver_request],
+    () => customerController.customerByCompany(id, name, for_driver_request),
     { refetchOnWindowFocus: false }
   );
 };

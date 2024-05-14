@@ -38,7 +38,10 @@ export const serviceController = {
     } catch (error: any) {
       setTimeout(() => {
         message.error({
-          content: error?.response?.data?.title,
+          content:
+            error?.response?.data?.title ||
+            error?.response?.data?.points ||
+            "Something went wrong!",
           key: 2,
           duration: 2,
         });

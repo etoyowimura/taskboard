@@ -2,7 +2,6 @@ import { Input, Modal, Form as FormAnt, Select, Upload } from "antd";
 import { updateController } from "../../API/LayoutApi/update";
 import { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { taskController } from "../../API/LayoutApi/tasks";
 import { useCompanyData } from "../../Hooks/Companies";
 import { useCustomerByComanyData } from "../../Hooks/Customers";
 import {
@@ -29,10 +28,9 @@ const AddUpdate = ({
     refetch();
     setOpen(!open);
   };
-  const [fileIds, setFileIds] = useState([]);
   const [companyName, setCompanyName] = useState<string>("");
   const [customerName, setCustomerName] = useState<string>("");
-  const [companyId, setCompanyId] = useState<string>();
+  const [companyId, setCompanyId] = useState<number>();
 
   const companyData = useCompanyData({ name: companyName });
   const customerData = useCustomerByComanyData({
@@ -40,7 +38,6 @@ const AddUpdate = ({
     name: customerName,
   });
 
-  const [imgname, setImgname] = useState<any>([]);
   function handlePaste(event: any) {
     const clipboardData = event.clipboardData || window.Clipboard;
     if (clipboardData && clipboardData.items.length > 0) {
@@ -76,7 +73,6 @@ const AddUpdate = ({
         onOk={() => {
           form.validateFields().then(async (values) => {
             const updatedValues = { ...values };
-            updatedValues.attachment_ids = fileIds;
             form.resetFields();
             await updateController.addUpdateController(updatedValues);
             setOpen(!open);
@@ -187,7 +183,6 @@ const AddUpdate = ({
                 Click or drag file to this area to upload
               </p>
             </Upload.Dragger>
-            <p>{imgname.join(",\n")}</p>
           </FormAnt.Item>
         </FormAnt>
       </Modal>

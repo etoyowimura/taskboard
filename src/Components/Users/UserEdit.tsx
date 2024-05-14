@@ -26,13 +26,11 @@ const TabPane = Tabs.TabPane;
 type params = {
   readonly id: string;
 };
-type MyObjectType = {
-  [key: string | number]: any;
-};
+
 const UserEdit = () => {
   const { id } = useParams<params>();
 
-  const { data, refetch, status }: MyObjectType = useUserOne(id);
+  const { data, refetch, status } = useUserOne(id);
 
   const onSubmit = async (value: any) => {
     id && (await userController.userPatch(value, id));
@@ -69,80 +67,83 @@ const UserEdit = () => {
           {status === "loading" ? (
             <Spin size="large" spinning={!data} />
           ) : data ? (
-            <Spin size="large" spinning={!data}>
-              <Space
-                direction="vertical"
-                size="middle"
-                style={{ display: "flex" }}
+            <Space
+              direction="vertical"
+              size="middle"
+              style={{ display: "flex" }}
+            >
+              <Tabs
+                defaultActiveKey="1"
+                activeKey={activeTab}
+                onChange={(key) => setActiveTab(key)}
               >
-                <Tabs
-                  defaultActiveKey="1"
-                  activeKey={activeTab}
-                  onChange={(key) => setActiveTab(key)}
+                <TabPane
+                  tab={
+                    <span style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        style={{ marginRight: 10 }}
+                        src={activeTab === "1" ? infoIconActive : infoIcon}
+                        alt=""
+                      />
+                      Information
+                    </span>
+                  }
+                  key="1"
                 >
-                  <TabPane
-                    tab={
-                      <span style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                          style={{ marginRight: 10 }}
-                          src={activeTab === "1" ? infoIconActive : infoIcon}
-                          alt=""
-                        />
-                        Information
-                      </span>
-                    }
-                    key="1"
+                  <Space
+                    direction="vertical"
+                    size="middle"
+                    style={{ display: "flex" }}
                   >
-                    <Space
-                      direction="vertical"
-                      size="middle"
-                      style={{ display: "flex" }}
+                    <Form
+                      name="basic"
+                      layout="vertical"
+                      wrapperCol={{ span: 16 }}
+                      initialValues={{ ...data }}
+                      onFinish={onSubmit}
+                      autoComplete="off"
                     >
-                      <Form
-                        name="basic"
-                        layout="vertical"
-                        wrapperCol={{ span: 16 }}
-                        initialValues={{ ...data }}
-                        onFinish={onSubmit}
-                        autoComplete="off"
-                      >
-                        <Row gutter={[16, 10]}>
-                          <Col span={6}>
-                            <Form.Item
-                              wrapperCol={{ span: "100%" }}
-                              label="First name"
-                              name="first_name"
-                            >
-                              <Input readOnly />
-                            </Form.Item>
-                          </Col>
-                          <Col span={6}>
-                            <Form.Item
-                              wrapperCol={{ span: "100%" }}
-                              label="Last name"
-                              name="last_name"
-                            >
-                              <Input readOnly />
-                            </Form.Item>
-                          </Col>
-                          <Col span={6}>
-                            <Form.Item
-                              wrapperCol={{ span: "100%" }}
-                              label="Username"
-                              name="username"
-                            >
-                              <Input readOnly />
-                            </Form.Item>
-                          </Col>
-                          <Col span={4}>
-                            <Form.Item
-                              wrapperCol={{ span: "100%" }}
-                              label="Team"
-                              name="team_id"
-                            >
-                              <Select options={TeamOption} />
-                            </Form.Item>
-                          </Col>
+                      <Row gutter={[16, 10]}>
+                        <Col span={6}>
+                          <Form.Item
+                            wrapperCol={{ span: "100%" }}
+                            label="First name"
+                            name="first_name"
+                          >
+                            <Input readOnly />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            wrapperCol={{ span: "100%" }}
+                            label="Last name"
+                            name="last_name"
+                          >
+                            <Input readOnly />
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            wrapperCol={{ span: "100%" }}
+                            label="Username"
+                            name="username"
+                          >
+                            <Input readOnly />
+                          </Form.Item>
+                        </Col>
+                        <Col span={4}>
+                          <Form.Item
+                            wrapperCol={{ span: "100%" }}
+                            label="Team"
+                            name="team_id"
+                          >
+                            <Select
+                              options={TeamOption}
+                              defaultValue={data?.team?.name}
+                            />
+                          </Form.Item>
+                        </Col>
+                        {role === "Owner" && (
                           <Col span={4}>
                             <Form.Item
                               wrapperCol={{ span: "100%" }}
@@ -154,31 +155,32 @@ const UserEdit = () => {
                                   label: item?.name,
                                   value: item?.id,
                                 }))}
+                                defaultValue={data?.role?.name}
                               />
                             </Form.Item>
                           </Col>
-                        </Row>
-                        <Form.Item>
-                          {role !== "Checker" && (
-                            <Button
-                              onClick={() => ClickDelete()}
-                              type="primary"
-                              style={{ marginRight: 10 }}
-                              danger
-                            >
-                              Delete
-                            </Button>
-                          )}
-                          <Button type="primary" htmlType="submit">
-                            Submit
+                        )}
+                      </Row>
+                      <Form.Item>
+                        {role !== "Checker" && (
+                          <Button
+                            onClick={() => ClickDelete()}
+                            type="primary"
+                            style={{ marginRight: 10 }}
+                            danger
+                          >
+                            Delete
                           </Button>
-                        </Form.Item>
-                      </Form>
-                    </Space>
-                  </TabPane>
-                </Tabs>
-              </Space>
-            </Spin>
+                        )}
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </Space>
+                </TabPane>
+              </Tabs>
+            </Space>
           ) : (
             <Notfound />
           )}

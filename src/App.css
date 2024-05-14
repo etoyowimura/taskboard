@@ -257,6 +257,14 @@
   justify-content: end;
 }
 
+.mobile-filter {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+
 .search-input-false {
   border: none;
   outline: none;
@@ -561,7 +569,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 24px 24px;
+  margin: 12px 24px 12px;
 }
 .TaskModal-header-dark {
   display: flex;
@@ -641,9 +649,9 @@
   color: rgb(211, 211, 211);
 }
 
-.info-div {
-  margin: 16px 24px;
-}
+/* .info-div {
+  margin: 0 !important;
+} */
 
 .info-body {
   border-radius: 12px;
@@ -764,4 +772,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.call-requests {
+  background: rgba(246, 137, 0, 1);
+  padding: 3px 5px;
+  border-radius: 20px;
+  font-size: 10px;
+  margin-left: 5px;
+  color: #000000;
+}
+
+.call-none {
+  display: none;
+}
+
+.ant-upload-list-text{
+  overflow: scroll;
+  height: 50px;
 }

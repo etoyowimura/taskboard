@@ -1,7 +1,10 @@
 import { Modal, Select, Button } from "antd";
 import { TRequests } from "../../types/Requests/TRequests";
-import { useState } from "react";
-import { useCustomerData } from "../../Hooks/Customers";
+import { useEffect, useState } from "react";
+import {
+  useCustomerByComanyData,
+  useCustomerData,
+} from "../../Hooks/Customers";
 import { requestsController } from "../../API/LayoutApi/requests";
 // @ts-ignore
 import plus from "../../assets/add-icon.png";
@@ -10,6 +13,8 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
+import { useCompanyData } from "../../Hooks/Companies";
+import { TPagination } from "../../types/common/TPagination";
 const RequestsEdit = ({
   modalOpen,
   setModalOpen,
@@ -18,7 +23,7 @@ const RequestsEdit = ({
 }: {
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TRequests[], unknown>>;
+  ) => Promise<QueryObserverResult<TPagination<TRequests[]>, unknown>>;
   modalOpen: any;
   setModalOpen: any;
   requestData: TRequests | undefined;
@@ -28,15 +33,49 @@ const RequestsEdit = ({
     setModalOpen(!modalOpen);
   };
 
+  const [companyName, setCompanyName] = useState<string>();
   const [customerName, setCustomerName] = useState<string>();
   const [driverId, setDriverId] = useState<number>();
+  const companyData = useCompanyData({ name: companyName });
+  const [companyId, setCompanyId] = useState<number>();
+  const [customerOption, setCustomerOption] = useState<any>();
   const customerData = useCustomerData({
     name: customerName,
+    page: 1,
+    page_size: 5,
+    for_driver_request: true,
+  });
+  const customerDataByCompany = useCustomerByComanyData({
+    id: companyId,
+    name: customerName,
+    for_driver_request: true,
   });
 
-  const optionClick = (value: number) => {
-    setDriverId(value);
-  };
+  useEffect(() => {
+    if (companyId && customerDataByCompany) {
+      const newCustomerOption = customerDataByCompany.data?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      }));
+
+      if (
+        JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)
+      ) {
+        setCustomerOption(newCustomerOption);
+      }
+    } else if (!companyId && customerData) {
+      const newCustomerOption = customerData.data?.data.map((item) => ({
+        label: `${item?.name} - ${item.company?.name}`,
+        value: item.id,
+      }));
+
+      if (
+        JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)
+      ) {
+        setCustomerOption(newCustomerOption);
+      }
+    }
+  }, [companyId, customerData, customerDataByCompany, customerOption]);
 
   const assignClick = () => {
     const value = {
@@ -48,15 +87,15 @@ const RequestsEdit = ({
       refetch();
       setModalOpen(false);
     });
-    // console.log(value);
   };
+
   return (
     <div>
       <Modal
         onCancel={handleCancel}
         footer={null}
         open={modalOpen}
-        width={800}
+        width={1000}
         maskClosable={true}
       >
         <div className="info-div">
@@ -100,6 +139,18 @@ const RequestsEdit = ({
                 {requestData?.company_usdot}
               </p>
             </tr>
+            {requestData?.telegram_user_link && (
+              <tr>
+                <p className={!theme ? "sub" : "sub-dark"}>Telegram User</p>
+                <p className={!theme ? "info" : "info-dark"}>
+                  {requestData?.telegram_user_link ? (
+                    <a href={requestData?.telegram_user_link}>Open Chat</a>
+                  ) : (
+                    "This user has no username"
+                  )}
+                </p>
+              </tr>
+            )}
           </div>
 
           {requestData?.status === "Assigned" && (
@@ -138,18 +189,36 @@ const RequestsEdit = ({
             </div>
           )}
           {requestData?.status === "Pending" && (
-            <div className="search-driver">
-              <div className="d-flex">
+            <div
+              className="search-driver"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <div className="d-flex" style={{ width: "100%" }}>
                 <Select
                   showSearch
-                  style={{ width: 325 }}
-                  placeholder="Search Driver"
-                  onSearch={(value) => setCustomerName(value)}
-                  onChange={(value: number) => optionClick(value)}
-                  options={customerData?.data?.map((item) => ({
+                  style={{ marginRight: 15, width: "40%" }}
+                  placeholder="Search Company"
+                  onSearch={(value) => setCompanyName(value)}
+                  onChange={(value: number) => setCompanyId(value)}
+                  options={companyData?.data?.map((item) => ({
                     label: item?.name,
                     value: item?.id,
                   }))}
+                  filterOption={false}
+                  autoClearSearchValue={false}
+                  allowClear
+                />
+                <Select
+                  style={{ width: "50%" }}
+                  showSearch
+                  placeholder="Search Driver"
+                  onSearch={(value) => setCustomerName(value)}
+                  onChange={(value: number) => setDriverId(value)}
+                  options={customerOption}
                   filterOption={false}
                   autoClearSearchValue={false}
                   allowClear
@@ -158,25 +227,35 @@ const RequestsEdit = ({
                   type="primary"
                   onClick={assignClick}
                   disabled={driverId ? false : true}
-                  style={{ marginLeft: 15 }}
+                  style={{ marginLeft: 15, width: "10%" }}
                 >
                   Assign
                 </Button>
               </div>
-              <Button
-                onClick={assignClick}
-                disabled={driverId ? true : false}
+              <div
                 style={{
+                  width: "100%",
                   display: "flex",
                   alignItems: "center",
-                  padding: "6px 15px",
-                  margin: 0,
+                  justifyContent: "flex-end",
                 }}
-                className="btn-add"
               >
-                <img src={plus} alt="" style={{ marginRight: 8 }} />
-                Add new driver
-              </Button>
+                <Button
+                  onClick={assignClick}
+                  disabled={driverId ? true : false}
+                  style={{
+                    padding: "6px 15px",
+                    marginTop: 15,
+                    marginRight: 0,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  className="btn-add"
+                >
+                  <img src={plus} alt="" style={{ marginRight: 8 }} />
+                  New driver
+                </Button>
+              </div>
             </div>
           )}
         </div>

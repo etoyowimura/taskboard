@@ -1,11 +1,13 @@
 import { TCompany } from "../../types/Company/TCompany";
+import { TPagination } from "../../types/common/TPagination";
 import instance from "../api";
 import { message } from "antd";
 
 export type TCompanyGetParams = {
   name?: string;
-  page?: string | number;
+  page?: number;
   is_active?: boolean;
+  page_size?: number;
 };
 export type TCompanyPutParams = {
   name?: string;
@@ -29,7 +31,23 @@ export const companyController = {
     if (!!filterObject.is_active) params.is_active = filterObject.is_active;
     if (!!filterObject.page) params.page = filterObject.page;
 
-    const { data } = await instance.get<TCompany[]>(`companies/`, { params });
+    const { data } = await instance.get<TCompany[]>(`companies/`, {
+      params,
+    });
+
+    return data;
+  },
+  async readPaginated(filterObject: TCompanyGetParams) {
+    const params = { ...filterObject };
+
+    if (!!filterObject.name) params.name = filterObject.name;
+    if (!!filterObject.is_active) params.is_active = filterObject.is_active;
+    if (!!filterObject.page) params.page = filterObject.page;
+    if (!!filterObject.page_size) params.page_size = filterObject.page_size;
+
+    const { data } = await instance.get<TPagination<TCompany[]>>(`companies/`, {
+      params,
+    });
 
     return data;
   },

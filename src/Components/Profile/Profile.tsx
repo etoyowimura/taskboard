@@ -32,7 +32,7 @@ const Profile = () => {
   const [range, setRange] = useState<any>(1);
 
   const onSubmit = async (value: TProfilePutParams) => {
-    await prof.profPatch(value);
+    await prof.profPatch(value)
     refetch();
   };
 

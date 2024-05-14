@@ -1,29 +1,19 @@
 import { Modal, Upload, Button, Space } from "antd";
 import { taskController } from "../../API/LayoutApi/tasks";
-// @ts-ignore
-import uploadfile from "../../assets/uploadfile.png";
-// @ts-ignore
-import createIcon from "../../assets/galkaIcon.png";
 import { CloseOutlined } from "@ant-design/icons";
 import { TTask } from "../../types/Tasks/TTasks";
 import { useState } from "react";
 import TextArea from "antd/es/input/TextArea";
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-} from "react-query";
-import { TPagination } from "../../types/common/TPagination";
+// @ts-ignore
+import uploadfile from "../../assets/uploadfile.png";
+// @ts-ignore
+import createIcon from "../../assets/galkaIcon.png";
 
 const TaskUploadModal = ({
   uploadOpen,
   recordTask,
   setUploadOpen,
-  refetch,
 }: {
-  refetch: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TPagination<TTask[]>, unknown>>;
   recordTask: TTask | undefined;
   uploadOpen: boolean;
   setUploadOpen(open: boolean): void;
@@ -60,7 +50,6 @@ const TaskUploadModal = ({
                   description: text,
                 })
                 .then(() => {
-                  refetch();
                   setUploadOpen(!uploadOpen);
                 });
             }}
@@ -109,7 +98,7 @@ const TaskUploadModal = ({
                 letterSpacing: "-2%",
               }}
             >
-              Maximum file size is 10 MB
+              Maximum file size is 10 MB (.jpeg, .jpg, .pdf, .png files only)
             </span>
           </p>
         </Upload.Dragger>

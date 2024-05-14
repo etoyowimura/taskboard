@@ -13,20 +13,21 @@ export const LoginApi = async ({ username, password }: loginInterface) => {
       data: { username, password },
       headers: { "Content-Type": "application/json" },
     });
-    console.log(data);
-
     const userObject = {
       id: data?.data?.id,
       first_name: data?.data?.first_name,
       last_name: data?.data?.last_name,
       username: data?.data?.username,
-      timezone: data?.data?.timezone,
+      email: data?.data?.email,
       role: data?.data?.role,
-      team_id: data?.data?.team_id,
+      team: data?.data?.team,
+      business: data?.data?.business,
+      timezone: data?.data?.timezone || data?.data?.business?.timezone,
     };
 
     const userJSON = JSON.stringify(userObject);
     localStorage.setItem("user", userJSON);
+    localStorage.setItem("username", data?.data?.username);
     localStorage.setItem("access", data?.data.access);
     localStorage.setItem("refresh", data?.data.refresh);
     localStorage.setItem("admin_id", data?.data.id);

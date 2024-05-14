@@ -11,6 +11,7 @@ import {
   RefetchQueryFilters,
 } from "react-query";
 import { useState } from "react";
+import { TPagination } from "../../types/common/TPagination";
 const CallTable = ({
   data,
   isLoading,
@@ -20,7 +21,7 @@ const CallTable = ({
   isLoading: boolean;
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TCall[], unknown>>;
+  ) => Promise<QueryObserverResult<TPagination<TCall[]>, unknown>>;
 }) => {
   const statusClick = (record: TCall | any) => {
     callController

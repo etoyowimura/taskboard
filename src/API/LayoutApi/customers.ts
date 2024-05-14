@@ -1,16 +1,19 @@
 import { TCustomer } from "../../types/Customer/TCustomer";
+import { TPagination } from "../../types/common/TPagination";
 import instance from "../api";
 import { message } from "antd";
 
 export type TCustomerGetParams = {
   name?: string;
-  pageSize?: string | number;
+  page_size?: string | number;
   page?: string | number;
+  for_driver_request?: boolean;
   is_active?: boolean;
 };
 export type TCustomerByCompanyGetParams = {
   name?: string;
-  id?: string;
+  id?: number;
+  for_driver_request?: boolean;
 };
 export type TCustomerPutParams = {
   name?: string;
@@ -29,9 +32,14 @@ export const customerController = {
     if (!!filterObject.name) params.name = filterObject.name;
     if (!!filterObject.is_active) params.is_active = filterObject.is_active;
     if (!!filterObject.page) params.page = filterObject.page;
-    if (!!filterObject.page) params.pageSize = filterObject.pageSize;
+    if (!!filterObject.page_size) params.page_size = filterObject.page_size;
+    if (!!filterObject.for_driver_request)
+      params.for_driver_request = filterObject.for_driver_request;
 
-    const { data } = await instance.get<TCustomer[]>(`customers/`, { params });
+    const { data } = await instance.get<TPagination<TCustomer[]>>(
+      `customers/`,
+      { params }
+    );
     return data;
   },
 
@@ -42,9 +50,14 @@ export const customerController = {
     }
   },
 
-  async customerByCompany(id: string | undefined, name: string | undefined) {
-    const params = { name };
+  async customerByCompany(
+    id: number | undefined,
+    name: string | undefined,
+    for_driver_request?: boolean
+  ) {
+    const params = { name, for_driver_request };
     if (!!name) params.name = name;
+    if (!!for_driver_request) params.for_driver_request = for_driver_request;
     if (id) {
       const { data } = await instance.get<TCustomer[]>(
         `customers-by-company/${id}/`,

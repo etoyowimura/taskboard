@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCustomerOne } from "../../Hooks/Customers";
+
 import {
   Form,
   Spin,
@@ -13,7 +14,6 @@ import {
 } from "antd";
 import { customerController } from "../../API/LayoutApi/customers";
 import Notfound from "../../Utils/Notfound";
-import { useCompanyOne } from "../../Hooks/Companies";
 import { role } from "../../App";
 import { useState } from "react";
 // @ts-ignore
@@ -30,22 +30,19 @@ type params = {
 const CustomerEdit = () => {
   const { id } = useParams<params>();
   const { data, refetch, status } = useCustomerOne(id);
+  let navigate = useNavigate();
   const onSubmit = async (value: any) => {
     await customerController.customerPatch(value, id);
-    refetch();
-    window.location.replace("/#/customers/");
+    navigate(-1);
   };
-
-  const companyData = useCompanyOne(data?.id);
 
   const ClickDelete = () => {
     const shouldDelete = window.confirm(
       "Are you sure, you want to delete this Driver?"
     );
     if (shouldDelete && id !== undefined) {
-      customerController.deleteCustomerController(id).then((data: any) => {
-        document.location.replace(`/#/customers`);
-      });
+      customerController.deleteCustomerController(id);
+      navigate(-1);
     }
   };
   const [activeTab, setActiveTab] = useState("1");
@@ -94,19 +91,18 @@ const CustomerEdit = () => {
                         autoComplete="off"
                       >
                         <Row gutter={[16, 10]}>
-                          {companyData?.data && (
-                            <Col span={6}>
-                              <Form.Item 
-                                wrapperCol={{ span: "100%" }}
-                                label="Company"
-                              >
-                                <Input
-                                  defaultValue={companyData?.data?.name}
-                                  readOnly
-                                />
-                              </Form.Item>
-                            </Col>
-                          )}
+                          <Col span={6}>
+                            <Form.Item
+                              wrapperCol={{ span: "100%" }}
+                              label="Company"
+                            >
+                              <Input
+                                defaultValue={data?.company?.name}
+                                readOnly
+                              />
+                            </Form.Item>
+                          </Col>
+
                           <Col span={6}>
                             <Form.Item
                               wrapperCol={{ span: "100%" }}

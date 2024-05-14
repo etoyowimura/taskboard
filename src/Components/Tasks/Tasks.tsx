@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddTask from "./AddTask";
-import { Button, Input, Select, Space, notification } from "antd";
+import { Button, Input, Select, Space } from "antd";
 import TaskTable from "./TaskTable";
 import { useTeamData } from "../../Hooks/Teams";
 import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useTasks } from "../../Hooks/Tasks";
 import { TTask } from "../../types/Tasks/TTasks";
-import { admin_id, role, team_id } from "../../App";
+import { isMobile, role, team_id } from "../../App";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 //@ts-ignore
@@ -15,94 +15,38 @@ import refreshicon from "../../assets/refreshIcon.png";
 import IconSearch from "../../assets/searchIcon.png";
 import TaskModal from "./TaskModal";
 import TaskUploadModal from "./TaskUploadModal";
-import { NotificationPlacement } from "antd/es/notification/interface";
-import { TCall } from "../../types/CallRequests/TCall";
+import { TSocket } from "../../types/common/TSocket";
 
 const { Option } = Select;
-const Task = () => {
+const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [characters, setCharacters] = useState<TTask[] | undefined>();
   const [team, setTeam] = useState<any>();
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState<any>();
-  const [page, setPage] = useState<any>(1);
+  const [page, setPage] = useState(1);
   const [uploadOpen, setUploadOpen] = useState(false);
-
-  let taskSocket: WebSocket;
-  interface newData {
-    callback_request: TCall;
-    type: string;
-    task: TTask;
-  }
-
-  const [isLive, setIslive] = useState(true);
-  const [socketData, setSocketData] = useState<newData>();
-  const connect = async () => {
-    try {
-      if (!taskSocket || taskSocket.readyState === WebSocket.CLOSED) {
-        taskSocket = new WebSocket(
-          `ws://10.10.10.45:8080/tasks/?user_id=${admin_id}`
-        );
-        // taskSocket = new WebSocket(
-        //   `wss://api.tteld.co/tasks/?user_id=${admin_id}`
-        // );
-
-        taskSocket.addEventListener("open", (event) => {
-          console.log("open");
-          setIslive(true);
-        });
-        taskSocket.addEventListener("message", (event) => {
-          const newData: newData = JSON.parse(event.data);
-          setSocketData(newData);
-        });
-        taskSocket.addEventListener("error", (errorEvent) => {
-          console.error("WebSocket error:", errorEvent);
-        });
-
-        taskSocket.addEventListener("close", (event) => {
-          setIslive(false);
-          console.log("close");
-        });
-      }
-    } catch (err) {}
-  };
-
-  useEffect(() => {
-    connect();
-  });
-
-  const [api, contextHolder] = notification.useNotification();
-  const openNotification = useCallback(
-    (placement: NotificationPlacement, data: TCall) => {
-      console.log(data);
-
-      api.info({
-        message: `Driver ${data?.driver?.name} from ${data?.company?.name} company has made a call request`,
-        placement,
-      });
-    },
-    [api]
-  );
 
   useEffect(() => {
     if (
       socketData &&
+      socketData.task &&
       ((role !== "Checker" &&
         (!team || team.includes(socketData?.task?.assigned_to?.id))) ||
         role === "Checker") &&
-      (!status || status.includes(socketData.task.status))
+      (!status || status.includes(socketData?.task?.status))
     ) {
-      setCharacters((prev: TTask[] | undefined) => {
+      setCharacters((prev: any) => {
         if (prev && prev?.length >= 15) {
           prev?.pop();
         }
-        if (socketData.type === "task_create") {
+        if (socketData.type === "task_create" && socketData.task) {
           return [socketData.task, ...(prev || [])];
         } else if (socketData.type === "task_update") {
           if (role !== "Checker") {
             const updatedData =
-              prev?.filter((b: TTask) => b.id !== socketData.task.id) || [];
+              prev?.filter((b: TTask) => b.id !== socketData?.task?.id) || [];
             const data: TTask[] = [socketData.task, ...updatedData];
             data.sort((a: TTask, b: TTask) => {
               if (a.status === "New" && b.status === "New") {
@@ -119,28 +63,28 @@ const Task = () => {
             return data;
           } else {
             const data = (prev || []).map((b: TTask) =>
-              b.id === socketData.task.id ? socketData.task : b
+              b.id === socketData.task?.id ? socketData.task : b
             );
             return data;
           }
         } else if (socketData.type === "task_delete") {
           const data = (prev || []).filter(
-            (b: TTask) => b.id !== socketData.task.id
+            (b: TTask) => b.id !== socketData.task?.id
           );
           return data;
         } else if (socketData.type === "task_forward") {
           if (role === "Checker") {
-            if (socketData.task.assigned_to.id === team_id) {
+            if (socketData.task?.assigned_to.id === team_id) {
               return [socketData.task, ...(prev || [])];
             } else {
               const data = (prev || []).filter(
-                (b: TTask) => b.id !== socketData.task.id
+                (b: TTask) => b.id !== socketData.task?.id
               );
               return data;
             }
           } else {
             const updatedData =
-              prev?.filter((b: TTask) => b.id !== socketData.task.id) || [];
+              prev?.filter((b: TTask) => b.id !== socketData.task?.id) || [];
             const data: TTask[] = [socketData.task, ...updatedData];
             data.sort((a: TTask, b: TTask) => {
               if (a.status === "New" && b.status === "New") {
@@ -156,17 +100,11 @@ const Task = () => {
             });
             return data;
           }
-        } else if (socketData.type === "callback_request") {
-          if (socketData?.callback_request) {
-            console.log("run");
-
-            openNotification("bottomRight", socketData?.callback_request);
-          }
         }
         return prev;
       });
     }
-  }, [socketData, openNotification]);
+  }, [socketData]);
 
   const teamData = useTeamData("");
 
@@ -175,12 +113,13 @@ const Task = () => {
       label: item?.name,
       value: item?.id,
     }));
-
+  const page_size = isMobile ? 10 : 15;
   const { data, isLoading, refetch } = useTasks({
     search,
     status,
     team,
     page,
+    page_size,
   });
   useEffect(() => {
     if (data) {
@@ -227,11 +166,9 @@ const Task = () => {
   const theme = localStorage.getItem("theme") === "true" ? true : false;
   return (
     <div>
-      {contextHolder}
       {open && <AddTask open={open} setOpen={setOpen} />}
       {uploadOpen && (
         <TaskUploadModal
-          refetch={refetch}
           recordTask={recordTask}
           uploadOpen={uploadOpen}
           setUploadOpen={setUploadOpen}
@@ -242,46 +179,44 @@ const Task = () => {
           uploadOpen={uploadOpen}
           setUploadOpen={setUploadOpen}
           recordTask={recordTask}
+          setRecordTask={setRecordTask}
           modalOpen={modalOpen}
+          socketData={socketData}
           setModalOpen={setModalOpen}
-          refetch={refetch}
         />
       )}
       <div className="header d-flex">
         <div className="header-title d-flex">
           <p className="title">Tasks</p>
-          {isLive ? (
-            <div className="d-flex" style={{ marginRight: 15 }}>
-              <div className="circle"></div>
-              <p className={!theme ? "live-p" : "live-p-dark"}>online</p>
-            </div>
-          ) : (
-            <div className="d-flex" style={{ marginRight: 15 }}>
-              <div className="circle2"></div>
-              <p className="live-p">offline</p>
-            </div>
-          )}
         </div>
         <div className="d-flex">
           {role !== "Checker" && (
             <button className="btn-add d-flex" onClick={showModal}>
-              <img style={{ marginRight: 8 }} src={addicon} alt="" />
-              Add Task
+              <img
+                style={{ marginRight: isMobile ? "0px" : "8px" }}
+                src={addicon}
+                alt=""
+              />
+              {!isMobile && "Add Task"}
             </button>
           )}
           <button
             className={`btn-refresh-${theme && "dark"} d-flex`}
             onClick={() => {
               refetch();
-              connect();
+              // connect();
             }}
           >
-            <img style={{ marginRight: 8 }} src={refreshicon} alt="" />
-            Refresh
+            <img
+              style={{ marginRight: isMobile ? "-8px" : "8px" }}
+              src={refreshicon}
+              alt=""
+            />
+            {!isMobile && "Refetch"}
           </button>
         </div>
       </div>
-      <div className="filter d-flex">
+      <div className={`filter ${isMobile ? "mobile-filter" : "d-flex"}`}>
         <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
@@ -292,7 +227,12 @@ const Task = () => {
           />
         </div>
         <Select
-          style={{ width: 260, marginLeft: 12 }}
+          style={{
+            width: 260,
+            marginLeft: 12,
+            marginTop: isMobile ? 10 : 0,
+            marginBottom: isMobile ? 10 : 0,
+          }}
           placeholder="status"
           onChange={(value: any) => setStatus(value)}
           mode="multiple"
@@ -322,6 +262,7 @@ const Task = () => {
             type="primary"
             icon={<StepBackwardOutlined />}
             onClick={Previos}
+            disabled={data?.previous ? false : true}
           ></Button>
           <Input
             style={{ width: 50, textAlign: "right" }}
@@ -329,7 +270,7 @@ const Task = () => {
             onChange={(e) => {
               let num = e.target.value;
               if (Number(num) && num !== "0") {
-                setPage(num);
+                setPage(Number(num));
               }
             }}
           />
@@ -337,6 +278,7 @@ const Task = () => {
             type="primary"
             icon={<StepForwardOutlined />}
             onClick={Next}
+            disabled={data?.next ? false : true}
           ></Button>
         </Space>
       </Space>

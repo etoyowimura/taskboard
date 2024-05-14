@@ -10,6 +10,7 @@ import moment from "moment";
 import { TRequests } from "../../types/Requests/TRequests";
 import { useEffect, useState } from "react";
 import { requestsController } from "../../API/LayoutApi/requests";
+import { TPagination } from "../../types/common/TPagination";
 
 const RequestsTable = ({
   data,
@@ -24,7 +25,7 @@ const RequestsTable = ({
   isLoading: boolean;
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TRequests[], unknown>>;
+  ) => Promise<QueryObserverResult<TPagination<TRequests[]>, unknown>>;
 }) => {
   const [isTextSelected, setIsTextSelected] = useState(false);
 
@@ -55,11 +56,18 @@ const RequestsTable = ({
   };
 
   const patchRequest = (record: TRequests) => {
-    requestsController.delete(record?.id).then(() => {
+    requestsController
+      .rejectPatch({ status: "Rejected" }, record?.id)
+      .then(() => {
+        refetch();
+      });
+  };
+
+  const deleteRequest = (record: any) => {
+    requestsController.delete(record.id).then(() => {
       refetch();
     });
   };
-
   return (
     <div>
       <Table
@@ -115,7 +123,12 @@ const RequestsTable = ({
             dataIndex: "action",
             render: (text: string, record: TRequests) => {
               return (
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   {record?.status === "Pending" && (
                     <Space>
                       <Button
@@ -124,6 +137,18 @@ const RequestsTable = ({
                         danger
                       >
                         Reject
+                      </Button>
+                    </Space>
+                  )}
+                  {(record?.status === "Assigned" ||
+                    record?.status === "Rejected") && (
+                    <Space>
+                      <Button
+                        type="primary"
+                        danger
+                        onClick={(e) => deleteRequest(record)}
+                      >
+                        Delete
                       </Button>
                     </Space>
                   )}

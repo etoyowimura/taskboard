@@ -1,3 +1,5 @@
+import { TUser } from "../User/TUser";
+
 type data = {
   id: number;
   name?: string;
@@ -21,7 +23,19 @@ export type TTask = {
   assigned_to: AssignedTo;
   in_charge: InCharge;
   forwarded_from: { id: number; name: string };
-  attachment_set: any[];
+  attachment_set?: TAttachment[];
+};
+
+export type TAttachment = {
+  created_at: string;
+  id: number;
+  description: string;
+  file_name: string;
+  path: string;
+  updated_at: string;
+  uploaded_by: number;
+  uploaded_by_which_driver?: { id: number; name: string } | null;
+  uploaded_by_which_user?: TUser | null;
 };
 
 export interface AssignedTo {

@@ -11,4 +11,5 @@ export type TRequests = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  telegram_user_link: string;
 };

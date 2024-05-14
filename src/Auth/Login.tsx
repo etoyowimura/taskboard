@@ -3,6 +3,7 @@ import { Button, Card, Input, Space } from "antd";
 import { Form, Field } from "react-final-form";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { LoginApi } from "../API/auth/Login";
+import { Link } from "react-router-dom";
 
 const Login: React.FC = () => {
   const validate = (val: any) => {
@@ -106,12 +107,12 @@ const Login: React.FC = () => {
                   >
                     Log In
                   </Button>
-                  {/* <h5>
+                  <h5>
                     <Link to='/auth/reset_password'>Forgot password?</Link>
                     <br />
                     Don't have an account?
                     <Link to='/auth/register'> Create one now</Link>
-                  </h5> */}
+                  </h5>
                 </Space>
               </form>
             </Card>

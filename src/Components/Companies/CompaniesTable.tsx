@@ -117,32 +117,10 @@ function CompanyTable({
             responsive: ["lg"],
           },
           {
-            width: "20%",
+            width: "10%",
             title: "Actions",
             dataIndex: "action",
-            render: ({ id, api }: { id: string; api: string }) => {
-              const enterLoading = (index: number, api: string) => {
-                setLoadings((prevLoadings) => {
-                  const newLoadings = [...prevLoadings];
-                  newLoadings[index] = true;
-                  return newLoadings;
-                });
-                if (api && api !== "") {
-                  companyController.SyncCompany(index);
-                } else {
-                  message.error({
-                    content: "This company doesn't have an api key",
-                    duration: 2,
-                  });
-                }
-                setTimeout(() => {
-                  setLoadings((prevLoadings) => {
-                    const newLoadings = [...prevLoadings];
-                    newLoadings[index] = false;
-                    return newLoadings;
-                  });
-                }, 6000);
-              };
+            render: ({ id }: { id: string }) => {
               return (
                 <Space>
                   <Link to={`${id}`}>
@@ -151,15 +129,6 @@ function CompanyTable({
                       <Button type="primary" icon={<EyeOutlined />}></Button>
                     )}
                   </Link>
-
-                  {role !== "Checker" && (
-                    <Button
-                      type="primary"
-                      icon={<SyncOutlined />}
-                      loading={loadings[Number(id)]}
-                      onClick={() => enterLoading(Number(id), api)}
-                    />
-                  )}
                 </Space>
               );
             },

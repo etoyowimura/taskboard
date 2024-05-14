@@ -42,4 +42,4 @@ export const resetPassEmail = async (value: resetPassType) => {
       message.error({ content: "Something went wrong", duration: 2 });
     }, 1000);
   }
-};
+}

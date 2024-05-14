@@ -6,6 +6,7 @@ import {
   RefetchQueryFilters,
 } from "react-query";
 import { TCompany } from "../../types/Company/TCompany";
+import { TPagination } from "../../types/common/TPagination";
 
 const AddCompany = ({
   open,
@@ -14,7 +15,7 @@ const AddCompany = ({
 }: {
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TCompany[], unknown>>;
+  ) => Promise<QueryObserverResult<TPagination<TCompany[]>, unknown>>;
   open: boolean;
   setOpen(open: boolean): void;
 }) => {

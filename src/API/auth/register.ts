@@ -33,7 +33,6 @@ export const RegisterApi = async (value: registerInterface) => {
     document.location.replace("/");
     return status;
   } catch (error:any) {
-    console.log(error);
     setTimeout(() => {
       message.error({ content: ' ', duration: 2 });
     }, 1000);

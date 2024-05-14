@@ -7,7 +7,6 @@ const ChangePassword = () => {
   const submit = () => {
     form.validateFields().then(async (values) => {
       form.resetFields();
-      console.log(values);
       await prof.changePass(values);
     });
   };

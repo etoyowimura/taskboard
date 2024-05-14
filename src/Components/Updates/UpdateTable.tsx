@@ -94,7 +94,7 @@ const UpdateTable = ({
           company_name: CompanyData?.data?.find(
             (company: any) => company.id === u.company_id
           )?.name,
-          customer_name: CustomerData?.data?.find(
+          customer_name: CustomerData?.data?.data?.find(
             (customer: any) => customer.id === u.customer_id
           )?.name,
           in_charge_name: AdminData?.data?.find(
@@ -191,8 +191,8 @@ const UpdateTable = ({
                   <p className="status-in-progress">Checking</p>
                 )}
                 {status === "New" && <p className="status-new">New</p>}
-                {status === "Setup" && <p className="status-setup">Setup</p>}
-                {status === "Paper" && <p className="status-paper">Paper</p>}
+                {status === "Setup" && <p className="status-new">Setup</p>}
+                {status === "Paper" && <p className="status-new">Paper</p>}
               </span>
             ),
           },

@@ -18,7 +18,7 @@ import tt from "../../assets/tticon.svg";
 import tagIcon from "../../assets/tagIcon.png";
 // @ts-ignore
 import tgIcon from "../../assets/telegram.png";
-import { role } from "../../App";
+import { isMobile, role } from "../../App";
 
 const admin_id = localStorage.getItem("admin_id");
 const TaskTable = ({
@@ -58,6 +58,15 @@ const TaskTable = ({
         },
       });
     }
+  };
+  const ptiPatch = (record: TTask) => {
+    Modal.confirm({
+      title: "Confirmation",
+      content: `Are you sure you want to change PTI?`,
+      onOk: () => {
+        taskController.taskPatch({ pti: !record.pti }, record.id);
+      },
+    });
   };
 
   const [isTextSelected, setIsTextSelected] = useState(false);
@@ -118,7 +127,9 @@ const TaskTable = ({
       {
         title: "",
         dataIndex: "no",
-        width: "4%",
+        width: isMobile ? "1%" : "5%",
+        fixed: isMobile ? "left" : false,
+        key: "1",
         render: (text: any, record: TTask) => (
           <div
             style={{
@@ -148,7 +159,9 @@ const TaskTable = ({
           </div>
         ),
         dataIndex: "no",
-        width: "5%",
+        width: isMobile ? "1%" : "5%",
+        fixed: isMobile ? "left" : false,
+        key: "2",
         render: (text: any, record: TTask) => (
           <div
             style={{
@@ -165,6 +178,7 @@ const TaskTable = ({
         title: "Company",
         dataIndex: "company",
         width: "13%",
+        key: "3",
         responsive: ["xl"],
         ellipsis: {
           showTitle: true,
@@ -187,7 +201,8 @@ const TaskTable = ({
       {
         title: "Driver",
         dataIndex: "customer",
-        width: "13%",
+        width: isMobile ? "5%" : "13%",
+        key: "4",
         ellipsis: {
           showTitle: false,
         },
@@ -200,7 +215,8 @@ const TaskTable = ({
       {
         title: "Service",
         dataIndex: "service",
-        width: "7%",
+        width: isMobile ? "5%" : "7%",
+        key: "5",
         ellipsis: {
           showTitle: false,
         },
@@ -213,7 +229,8 @@ const TaskTable = ({
       {
         title: "Status",
         dataIndex: "status",
-        width: "8%",
+        width: isMobile ? "5%" : "8%",
+        key: "6",
         ellipsis: {
           showTitle: false,
         },
@@ -230,7 +247,8 @@ const TaskTable = ({
       {
         title: "Team",
         dataIndex: "assigned_to",
-        width: "8%",
+        width: isMobile ? "5%" : "8%",
+        key: "7",
         ellipsis: {
           showTitle: false,
         },
@@ -243,7 +261,8 @@ const TaskTable = ({
       {
         title: "Assignee",
         dataIndex: "in_charge",
-        width: "12%",
+        width: isMobile ? "5%" : "12%",
+        key: "8",
         ellipsis: {
           showTitle: false,
         },
@@ -257,13 +276,24 @@ const TaskTable = ({
         title: "PTI",
         dataIndex: "pti",
         width: "6%",
+        key: "8",
         responsive: ["lg"],
-        render: (pti: boolean) => (pti ? "No need" : "Do"),
+        render: (pti: boolean, record: TTask) =>
+          pti ? (
+            <p onClick={(e) => ptiPatch(record)} className="status-Assigned">
+              No need
+            </p>
+          ) : (
+            <p onClick={(e) => ptiPatch(record)} className="status-Rejected">
+              Do
+            </p>
+          ),
       },
       {
         title: "Note",
         dataIndex: "note",
         width: "12%",
+        key: "9",
         responsive: ["lg"],
         ellipsis: {
           showTitle: false,
@@ -278,6 +308,7 @@ const TaskTable = ({
         title: "Created at",
         dataIndex: "created",
         width: "12%",
+        key: "10",
         responsive: ["xxl"],
         ellipsis: {
           showTitle: false,
@@ -291,10 +322,12 @@ const TaskTable = ({
       {
         title: "Actions",
         dataIndex: "action",
-        width: "8%",
+        width: isMobile ? "3%" : "8%",
+        key: "11",
+        fixed: isMobile ? "right" : false,
         render: (text: string, record: TTask) => {
           return (
-            <div>
+            <div style={{ zIndex: 1000 }}>
               {role === "Checker" ? (
                 <Space>
                   {record.status === "New" && (
@@ -370,6 +403,9 @@ const TaskTable = ({
         pagination={false}
         loading={isLoading}
         rowClassName={rowClassName}
+        scroll={
+          isMobile ? { x: "calc(800px + 40%)" } : { x: "calc(0px + 100%)" }
+        }
         bordered
       />
     </div>

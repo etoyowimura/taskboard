@@ -1,29 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import { Layout, Menu, ConfigProvider, Dropdown } from "antd";
+import { Layout, Menu, ConfigProvider, Dropdown, notification } from "antd";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { allMenu, mainItems, superItems } from "./Utils/sidebar";
+import { mainItems, superItems } from "./Utils/sidebar";
 import Login from "./Auth/Login";
 import Notfound from "./Utils/Notfound";
 import { LogoutApi } from "./API/auth/Logout";
 import { Link } from "react-router-dom";
+import { MenuProps } from "antd";
 // @ts-ignore
 import themeBtn from "./assets/theme-btn.svg";
 // @ts-ignore
 import avatar from "./assets/avatar-img.svg";
+// @ts-ignore
+import taskIcon from "./assets/tasknavicon.png";
+// @ts-ignore
+import companyIcon from "./assets/companynavicon.png";
+// @ts-ignore
+import serviceIcon from "./assets/servicenavicon.png";
+// @ts-ignore
+import teamIcon from "./assets/teamnavicon.png";
+// @ts-ignore
+import statisticIcon from "./assets/statnavicon.png";
+// @ts-ignore
+import updateIcon from "./assets/updatenavicon.png";
+// @ts-ignore
+import userIcon from "./assets/usernavicon.png";
+// @ts-ignore
+import driverIcon from "./assets/customersIcon.png";
+// @ts-ignore
+import requestIcon from "./assets/requestIcon.png";
+// @ts-ignore
+import callIcon from "./assets/callIcon.png";
 import Register from "./Auth/Register";
 import Activate from "./Auth/Activate";
 import Invite from "./Auth/Invite";
 import ResetPassword from "./Auth/ResetPassword";
 import ResetByEmail from "./Auth/ResetByEmail";
-
+import { NotificationPlacement } from "antd/es/notification/interface";
+import { TCall } from "./types/CallRequests/TCall";
+import Task from "./Components/Tasks/Tasks";
+import Requests from "./Components/Requests/Requests";
+import { callController } from "./API/LayoutApi/callrequests";
+import Call from "./Components/CallRequests/Call";
+import { dark, light } from "./Utils/styles";
 const { Header, Sider, Content } = Layout;
 const userJSON: any = localStorage.getItem("user");
 const userObject = JSON.parse(userJSON);
 export const timeZone = userObject?.timezone;
 export const role = userObject?.role;
 export const admin_id = localStorage.getItem("admin_id");
-export const team_id = userObject?.team_id;
+export const team_id = userObject?.team?.id;
+export const isMobile = window.innerWidth <= 768;
+const username = localStorage.getItem("username");
 
 const App: React.FC = () => {
   const isAuthenticated = localStorage.getItem("access") as string;
@@ -34,6 +63,126 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<any>(
     localStorage.getItem("theme") === "true" ? true : false
   );
+  const [calls, setCalls] = useState(0);
+  const [data, setData] = useState<any>();
+  useEffect(() => {
+    if (admin_id) {
+      callController
+        .read({ status: "Awaiting", page: 1, page_size: 100 })
+        .then((data: any) => {
+          setData(data);
+        });
+    }
+  }, [admin_id]);
+
+  useEffect(() => {
+    if (data) {
+      setCalls(data.data?.length);
+    }
+  }, [data]);
+  type MenuItem = Required<MenuProps>["items"][number];
+
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
+  ): MenuItem {
+    return {
+      key,
+      icon,
+      children,
+      label,
+    } as MenuItem;
+  }
+  const allMenu: MenuItem[] = [
+    getItem(<Link to="/">Tasks</Link>, "/", <img alt="" src={taskIcon} />),
+    getItem(
+      <Link to="companies/">Companies</Link>,
+      "companies/",
+      <img alt="" src={companyIcon} />
+    ),
+    getItem(
+      <Link to="customers/">Drivers</Link>,
+      "customers/",
+      <img alt="" src={driverIcon} />
+    ),
+    getItem(
+      <Link to="services/">Services</Link>,
+      "services/",
+      <img alt="" src={serviceIcon} />
+    ),
+  ];
+
+  if (role === "Tech Support") {
+    allMenu.push(
+      getItem(
+        <Link to="users/">Users</Link>,
+        "users/",
+        <img alt="" src={userIcon} />
+      ),
+      getItem(
+        <Link to="teams/">Teams</Link>,
+        "teams/",
+        <img alt="" src={teamIcon} />
+      ),
+      getItem(
+        <Link to="updates/">Updates</Link>,
+        "updates/",
+        <img alt="" src={updateIcon} />
+      ),
+      getItem(
+        <Link to="requests/">Driver Requests</Link>,
+        "requests/",
+        <img alt="" src={requestIcon} />
+      ),
+      getItem(
+        <Link to="call/">Call Requests</Link>,
+        "call/",
+        <img alt="" src={callIcon} />
+      )
+    );
+  }
+
+  if (role === "Owner") {
+    allMenu.push(
+      getItem(
+        <Link to="users/">Users</Link>,
+        "users/",
+        <img alt="" src={userIcon} />
+      ),
+      getItem(
+        <Link to="teams/">Teams</Link>,
+        "teams/",
+        <img alt="" src={teamIcon} />
+      ),
+      getItem(
+        <Link to="stats/">Statistics</Link>,
+        "stats/",
+        <img alt="" src={statisticIcon} />
+      ),
+      getItem(
+        <Link to="updates/">Updates</Link>,
+        "updates/",
+        <img alt="" src={updateIcon} />
+      ),
+      getItem(
+        <Link to="requests/">Driver Requests</Link>,
+        "requests/",
+        <img alt="" src={requestIcon} />
+      ),
+      getItem(
+        <Link to="calls/">
+          Call Requests{" "}
+          <span className={`${calls !== 0 ? "call-requests" : "call-none"}`}>
+            {calls}
+          </span>
+        </Link>,
+        "calls/",
+        <img alt="" src={callIcon} />
+      )
+    );
+  }
 
   useEffect(() => {
     localStorage.setItem("theme", theme);
@@ -46,172 +195,7 @@ const App: React.FC = () => {
   const clickLogout = () => {
     LogoutApi();
   };
-  const dark = {
-    components: {
-      Table: {
-        colorBgContainer: "#202020",
-        colorText: "#BBBBBB",
-        headerColor: "#BBBBBB",
-        borderColor: "#3A3A3A",
-        headerSplitColor: "#3A3A3A",
-        rowHoverBg: "#333333",
-        colorBorder: "#3A3A3A",
-      },
-      Layout: {
-        bodyBg: "#181818",
-      },
-      Input: {
-        colorBgContainer: "#2A2A2A",
-        colorBgContainerDisabled: "#2A2A2A",
-        colorText: "#BBBBBB",
-        colorTextPlaceholder: "#BBBBBB",
-        colorBorder: "#3A3A3A",
-        colorFillSecondary: "rgba(0, 0, 0, 0.02)",
-        activeBorderColor: "#3A3A3A",
-        activeShadow: "#3A3A3A",
-        hoverBorderColor: "#3A3A3A",
-        // colorIcon: "#BBBBBB",
-        // colorIconHover: "#BBBBBB",
-      },
-      Select: {
-        colorBgContainer: "#2A2A2A",
-        colorText: "#BBBBBB",
-        colorTextPlaceholder: "#BBBBBB",
-        colorBorder: "rgba(150, 150, 150, 0.493)",
-        colorPrimaryHover: "rgba(249, 158, 44, 1)",
-        colorIconHover: "#BBB",
-        optionSelectedBg: "#2A2A2A",
-        colorBgElevated: "#333",
-        controlOutline: "none",
-        optionActiveBg: "#333333",
-        colorTextQuaternary: "#3A3A3A",
-      },
-      Button: {
-        colorBorderSecondary: "rgba(249, 158, 44, 1)",
-        colorPrimary: "rgba(249, 158, 44, 1)",
-        colorPrimaryHover: "#BBBBBB",
-        colorIcon: "rgba(249, 158, 44, 1)",
-        colorIconHover: "rgba(249, 158, 44, 1)",
-        primaryShadow: "none",
-        dangerShadow: "none",
-        colorTextDisabled: "#AAAAAA",
-        borderColorDisabled: "#3A3A3A",
-      },
-      //   Form: {
-      //     labelColor: "#BBBBBB",
-      //   },
-      Tabs: {
-        itemColor: "#BBBBBB",
-        itemHoverColor: "#FFFFFF",
-        itemSelectedColor: "rgba(249, 158, 44, 1)",
-        colorPrimaryActive: "rgba(249, 158, 44, 1)",
-        inkBarColor: "rgba(249, 158, 44, 1)",
-      },
-      //   Upload: {
-      //     colorText: "#FFFFFF",
-      //     colorInfoBgHover: "#1E1E1E",
-      //   },
-      //   Pagination: {
-      //     colorText: "#BBBBBB",
-      //     colorPrimary: "#FFFFFF",
-      //     colorBgContainer: "#1A1A1A",
-      //     colorBorderSecondary: "#3A3A3A",
-      //   },
-      Modal: {
-        contentBg: "#3A3A3A",
-        headerBg: "#3A3A3A",
-        titleColor: "#FFFFFF",
-        colorText: "#BBBBBB",
-        colorBgTextActive: "#BBBBBB",
-        colorBgTextHover: "#BBBBBB",
-      },
-      Menu: {
-        darkItemSelectedBg: "#3A3A3A",
-        colorBgContainer: "#fff",
-      },
-      Switch: {
-        colorPrimary: "#565656",
-        colorPrimaryHover: "#737373",
-      },
-      Radio: {
-        colorText: "#737373",
-        colorBorder: "#3A3A3A",
-        colorPrimaryActive: "#BBBBBB",
-        buttonCheckedBg: "rgba(249, 158, 44, 1)",
-        colorPrimaryHover: "#737373",
-        colorPrimary: "#565656",
-      },
-      Dropdown: {
-        colorBgContainer: "#3A3A3A",
-        colorText: "#BBBBBB",
-        colorPrimaryHover: "#565656",
-        colorPrimary: "#333333",
-      },
-      DatePicker: {
-        colorBgContainer: "#3A3A3A",
-        colorBgElevated: "#3A3A3A",
-        colorText: "#BBBBBB",
-        colorTextPlaceholder: "#BBBBBB",
-        colorIcon: "#fff",
-        colorIconHover: "#fff",
-        colorPrimary: "rgba(249, 158, 44, 1)",
-        hoverBorderColor: "#BBBBBB",
-      },
-      Empty: {
-        colorText: "rgba(249, 158, 44, 1)",
-        colorTextDisabled: "rgba(249, 158, 44, 1)",
-      },
-    },
-    token: {
-      fontFamily: "Inter, sans-serif",
-      colorText: "#bbb",
-      borderRadius: 8,
-    },
-  };
-  const light = {
-    components: {
-      Table: {
-        rowHoverBg: "#bae0ff",
-        headerBg: "none",
-        colorText: "rgba(24, 26, 41, 1)",
-        fontWeightStrong: 500,
-        colorTextHeading: "rgba(161, 162, 171, 1)",
-      },
-      Select: {
-        colorTextPlaceholder: "rgba(155, 157, 170, 1)",
-        colorPrimary: "rgba(249, 158, 44, 1)",
-        colorPrimaryHover: "rgba(249, 158, 44, 1)",
-      },
-      Tabs: {
-        inkBarColor: "rgba(249, 158, 44, 1)",
-        itemSelectedColor: "rgba(24, 26, 41, 1)",
-        itemHoverColor: "rgba(24, 26, 41, 1)",
-      },
-      Input: {
-        hoverBorderColor: "rgba(249, 158, 44, 1)",
-        activeBorderColor: "rgba(249, 158, 44, 1)",
-        colorTextPlaceholder: "rgba(155, 157, 170, 1)",
-      },
-      Upload: {
-        colorPrimaryHover: "rgba(249, 158, 44, 1)",
-      },
-      Button: {
-        colorPrimary: "rgba(249, 158, 44, 1)",
-        colorPrimaryHover: "rgba(249, 158, 44, 1)",
-      },
-      Textarea: {
-        colorBorder: "0px 1px 3px 0px rgba(20, 22, 41, 0.1)",
-      },
-      Menu: {
-        darkItemSelectedBg: "rgba(255, 255, 255, 0.08)",
-      },
-    },
-    token: {
-      fontFamily: "Inter, sans-serif",
-      color: "#262626",
-      borderRadius: 8,
-    },
-  };
+
   const rep = () => {
     document.location.replace("/");
   };
@@ -225,6 +209,63 @@ const App: React.FC = () => {
       </Menu.Item>
     </Menu>
   );
+  let taskSocket: WebSocket;
+  const [isLive, setIslive] = useState(true);
+  const [socketData, setSocketData] = useState<any>();
+  const connect = async () => {
+    try {
+      if (
+        (!taskSocket || taskSocket.readyState === WebSocket.CLOSED) &&
+        admin_id
+      ) {
+        // taskSocket = new WebSocket(
+        //   `ws://10.10.10.12:8080/global/?user_id=${admin_id}`
+        // );
+        taskSocket = new WebSocket(
+          `wss://api.tteld.co/global/?user_id=${admin_id}`
+        );
+
+        taskSocket.addEventListener("open", (event) => {
+          setIslive(true);
+        });
+        taskSocket.addEventListener("message", (event) => {
+          const newData: any = JSON.parse(event.data);
+          setSocketData(newData);
+        });
+        taskSocket.addEventListener("error", (errorEvent) => {
+          console.error("WebSocket error:", errorEvent);
+        });
+        taskSocket.addEventListener("close", (event) => {
+          setIslive(false);
+        });
+      }
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    connect();
+  }, []);
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = useCallback(
+    (placement: NotificationPlacement, data: TCall) => {
+      api.info({
+        message: `Driver ${data?.driver?.name} from ${data?.company?.name} company has made a call request`,
+        placement,
+      });
+    },
+    [api]
+  );
+  useEffect(() => {
+    if (socketData?.type === "callback_request") {
+      let status = socketData?.callback_request.status;
+      if (status === "Awaiting") {
+        openNotification("bottomRight", socketData?.callback_request);
+        setCalls((prev: any) => prev + 1);
+      } else if (status === "Resolved" && calls !== 0) {
+        setCalls((prev: any) => prev - 1);
+      }
+    }
+  }, [socketData, openNotification]);
 
   return (
     <ConfigProvider theme={theme === true ? dark : light}>
@@ -253,91 +294,134 @@ const App: React.FC = () => {
         )}
         {authorized ? (
           <Layout>
-            <Sider
-              theme={"dark"}
-              collapsible
-              collapsed={collapsed}
-              onCollapse={(value) => setCollapsed(value)}
-              style={{
-                height: "100vh",
-                background: theme === true ? "#202020" : "rgba(20, 22, 41, 1)",
-              }}
-            >
-              <p
-                onClick={rep}
-                style={{ cursor: "pointer" }}
-                className={collapsed ? "logo-collapsed" : "logo"}
-              >
-                TT ELD
-              </p>
-              <Menu
+            {contextHolder}
+            {isMobile ? (
+              <div className=""></div>
+            ) : (
+              <Sider
                 theme={"dark"}
-                mode="inline"
-                defaultSelectedKeys={[location.pathname]}
-                items={allMenu}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
                 style={{
+                  height: "100vh",
                   background:
                     theme === true ? "#202020" : "rgba(20, 22, 41, 1)",
-                  color: "rgba(255, 255, 255, 0.6)",
-                }}
-              ></Menu>
-            </Sider>
-            <Layout className="site-layout">
-              <Header
-                className="site-layout-background"
-                style={{
-                  padding: 0,
-                  background:
-                    theme === true ? "#202020" : "rgba(215, 216, 224, 1)",
-                  display: "flex",
-                  justifyContent: "end",
-                  alignItems: "center",
                 }}
               >
-                <div
+                <p
+                  onClick={rep}
+                  style={{ cursor: "pointer" }}
+                  className={collapsed ? "logo-collapsed" : "logo"}
+                >
+                  TT ELD
+                </p>
+                <Menu
+                  theme={"dark"}
+                  mode="inline"
+                  defaultSelectedKeys={[location.pathname]}
+                  items={allMenu}
                   style={{
-                    float: "right",
-                    marginRight: "35px",
+                    background:
+                      theme === true ? "#202020" : "rgba(20, 22, 41, 1)",
+                    color: "rgba(255, 255, 255, 0.6)",
+                  }}
+                ></Menu>
+              </Sider>
+            )}
+            <Layout className="site-layout">
+              {isMobile ? (
+                <Header style={{ padding: 0 }}>
+                  <div className="demo-logo" />
+                  <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={["2"]}
+                    items={allMenu}
+                    style={{
+                      background:
+                        theme === true ? "#202020" : "rgba(20, 22, 41, 1)",
+                      color: "rgba(255, 255, 255, 0.6)",
+                    }}
+                  />
+                </Header>
+              ) : (
+                <Header
+                  className="site-layout-background"
+                  style={{
+                    padding: 0,
+                    background:
+                      theme === true ? "#202020" : "rgba(215, 216, 224, 1)",
                     display: "flex",
+                    justifyContent: "end",
                     alignItems: "center",
-                    alignSelf: "center",
-                    minWidth: 150,
-                    maxWidth: 500,
-                    justifyContent: "space-between",
                   }}
                 >
-                  <button
-                    className="theme-btn"
-                    onClick={(e) => setTheme(!theme)}
+                  <div
+                    style={{
+                      float: "right",
+                      marginRight: "35px",
+                      display: "flex",
+                      alignItems: "center",
+                      alignSelf: "center",
+                      minWidth: 150,
+                      maxWidth: 500,
+                      justifyContent: "space-between",
+                    }}
                   >
-                    <img src={themeBtn} alt="" />
-                  </button>
-                  <Dropdown overlay={menu} trigger={["click"]}>
-                    <div
-                      style={{ cursor: "pointer" }}
-                      onClick={(e) => e.preventDefault()}
+                    <button
+                      className="theme-btn"
+                      onClick={(e) => setTheme(!theme)}
                     >
-                      <div className="profile-dropdown">
-                        <div className="profile-dropdown-ava">
-                          <img src={avatar} alt="" />
-                        </div>
-                        <div
-                          className="d-flex profile-dropdown-text"
-                          style={{ flexDirection: "column" }}
-                        >
-                          <p
-                            className={
-                              !theme ? "business-name" : "business-name-dark"
-                            }
-                          >
-                            {userObject?.username}
-                          </p>
+                      <img src={themeBtn} alt="" />
+                    </button>
+                    <Dropdown overlay={menu} trigger={["click"]}>
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <div className="profile-dropdown">
+                          <div className="profile-dropdown-ava">
+                            <img src={avatar} alt="" />
+                          </div>
+                          <div className="d-flex profile-dropdown-text">
+                            <p
+                              className={
+                                !theme ? "business-name" : "business-name-dark"
+                              }
+                            >
+                              {username}
+                              {isLive ? (
+                                <div
+                                  className="d-flex"
+                                  style={{ marginRight: 15 }}
+                                >
+                                  <div className="circle"></div>
+                                  <p
+                                    className={
+                                      !theme ? "live-p" : "live-p-dark"
+                                    }
+                                  >
+                                    online
+                                  </p>
+                                </div>
+                              ) : (
+                                <div
+                                  className="d-flex"
+                                  style={{ marginRight: 15 }}
+                                >
+                                  <div className="circle2"></div>
+                                  <p className="live-p">offline</p>
+                                </div>
+                              )}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Dropdown>
-                </div>
-              </Header>
+                    </Dropdown>
+                  </div>
+                </Header>
+              )}
               <Content
                 id="element"
                 style={{
@@ -349,6 +433,11 @@ const App: React.FC = () => {
                 }}
               >
                 <Routes>
+                  <Route
+                    key={"task"}
+                    path="/"
+                    element={<Task socketData={socketData} />}
+                  />
                   {mainItems &&
                     mainItems.map((u) => (
                       <Route key={u.key} path={u.path} element={u.component} />
@@ -357,6 +446,20 @@ const App: React.FC = () => {
                     superItems.map((u) => (
                       <Route key={u.key} path={u.path} element={u.component} />
                     ))}
+                  {superItems && (
+                    <Route
+                      key={"requests"}
+                      path="/requests/"
+                      element={<Requests socketData={socketData} />}
+                    />
+                  )}
+                  {superItems && (
+                    <Route
+                      key={"calls"}
+                      path="/calls/"
+                      element={<Call socketData={socketData} />}
+                    />
+                  )}
                   <Route path="*" element={<Notfound />} />
                 </Routes>
               </Content>

@@ -21,8 +21,6 @@ const UserTable = ({
   ) => Promise<QueryObserverResult<TUser[], unknown>>;
 }) => {
   const navigate = useNavigate();
-  const TeamData = useTeamData("");
-
   const Row = (record: TUser) => {
     let isTextSelected = false;
     document.addEventListener("selectionchange", () => {
@@ -49,13 +47,8 @@ const UserTable = ({
         onRow={(record) => Row(record)}
         dataSource={data?.map((u, i) => ({
           no: i + 1,
-          team: TeamData?.data?.map((team: any) => {
-            if (team.id === u?.team_id) {
-              return team?.name;
-            } else {
-              return null;
-            }
-          }),
+          team_name: u?.team?.name,
+          role_name: u?.role?.name,
           action: { id: u.id },
           ...u,
         }))}
@@ -72,7 +65,11 @@ const UserTable = ({
           },
           {
             title: "Team",
-            dataIndex: "team",
+            dataIndex: "team_name",
+          },
+          {
+            title: "Role",
+            dataIndex: "role_name",
           },
           {
             title: "Is Active",

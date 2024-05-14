@@ -16,8 +16,6 @@ const Invite = () => {
       role_id: role_id,
       business_id: business_id,
     }).then((status) => {
-      console.log(status);
-
       if (status === 200) {
         document.location.replace("/");
       }

@@ -21,8 +21,9 @@ import { DashboardOutlined } from "@ant-design/icons";
 import Notfound from "../../Utils/Notfound";
 import Table from "antd/es/table";
 import AddDriver from "./AddDriver";
+import { role } from "../../App";
+import { useTeamData } from "../../Hooks/Teams";
 import { useCustomerByComanyData } from "../../Hooks/Customers";
-
 // @ts-ignore
 import zippy from "../../assets/zippyicon.svg";
 // @ts-ignore
@@ -39,9 +40,6 @@ import tagIcon from "../../assets/tagIcon.png";
 import infoIcon from "../../assets/infoIcon.png";
 // @ts-ignore
 import infoIconActive from "../../assets/infoIconActive.png";
-import { role } from "../../App";
-import { useTeamData } from "../../Hooks/Teams";
-import { validateLocaleAndSetLanguage } from "typescript";
 const TabPane = Tabs.TabPane;
 type params = {
   readonly id: any;
@@ -79,7 +77,6 @@ const CompanyEdit = () => {
   };
   const [value, setValue] = useState(1);
   const onChange = (e: RadioChangeEvent) => {
-    console.log("radio checked", e.target.value);
     setValue(e.target.value);
   };
   const [activeTab, setActiveTab] = useState("1");

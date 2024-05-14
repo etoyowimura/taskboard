@@ -27,17 +27,17 @@ export const registryVerify = async (value: activateInterface) => {
       timezone: data?.data.timezone,
       role: data?.data.role,
     };
+    console.log(data);
+    
 
     const userJSON = JSON.stringify(userObject);
     localStorage.setItem("user", userJSON);
-    localStorage.setItem("access_token", data?.data.access_token);
-    localStorage.setItem("refresh_token", data?.data.refresh_token);
+    localStorage.setItem("access", data?.data.access);
+    localStorage.setItem("refresh", data?.data.refresh);
     document.location.replace("/");
 
     return status;
   } catch (error) {
-    console.log(error);
-
     setTimeout(() => {
       message.error({ content: "Something went wrong", duration: 2 });
     }, 1000);

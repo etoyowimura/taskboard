@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddUpdate from "./AddUpdate";
-import { Button, Select } from "antd";
+import { Select } from "antd";
 import UpdateTable from "./UpdateTable";
 import { useUpdateData } from "../../Hooks/Update";
 //@ts-ignore

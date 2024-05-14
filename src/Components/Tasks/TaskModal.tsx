@@ -11,6 +11,13 @@ import {
 import TabPane from "antd/es/tabs/TabPane";
 import { timeZone } from "../../App";
 import { useTaskHistory } from "../../Hooks/Tasks";
+import TextArea from "antd/es/input/TextArea";
+import { useEffect, useState } from "react";
+import { taskController } from "../../API/LayoutApi/tasks";
+import { useTeamData } from "../../Hooks/Teams";
+import { TTeam } from "../../types/Team/TTeam";
+import { EditOutlined, CaretRightOutlined } from "@ant-design/icons";
+import { TSocket } from "../../types/common/TSocket";
 // @ts-ignore
 import closeIcon from "../../assets/closeIcon.png";
 // @ts-ignore
@@ -45,40 +52,28 @@ import forwardIcon from "../../assets/forward.png";
 import driverIcon from "../../assets/drivericon.png";
 // @ts-ignore
 import userIcon from "../../assets/userIcon.png";
-import TextArea from "antd/es/input/TextArea";
-import { useState } from "react";
-import { taskController } from "../../API/LayoutApi/tasks";
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-} from "react-query";
-import { TPagination } from "../../types/common/TPagination";
-import { useTeamData } from "../../Hooks/Teams";
-import { TTeam } from "../../types/Team/TTeam";
-import { EditOutlined } from "@ant-design/icons";
 
 const TaskModal = ({
   modalOpen,
   setModalOpen,
   recordTask,
+  setRecordTask,
   uploadOpen,
   setUploadOpen,
-  refetch,
+  socketData,
 }: {
   recordTask: TTask | undefined;
-  modalOpen: any;
+  setRecordTask: React.Dispatch<React.SetStateAction<TTask | undefined>>;
+  modalOpen: boolean;
   setModalOpen: any;
-  uploadOpen: any;
+  uploadOpen: boolean;
   setUploadOpen: any;
-  refetch: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TPagination<TTask[]>, unknown>>;
+  socketData: TSocket | undefined;
 }) => {
   const moment = require("moment-timezone");
+  const theme = localStorage.getItem("theme") === "true" ? true : false;
   const [text, setText] = useState<string | undefined>(recordTask?.note);
   const [pti, setPti] = useState<boolean | undefined>(recordTask?.pti);
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
   const [status, setStatus] = useState(recordTask?.status);
   const [teamName, setTeamName] = useState(recordTask?.assigned_to?.name);
   const { data, isLoading } = useTaskHistory(recordTask?.id);
@@ -112,9 +107,41 @@ const TaskModal = ({
   }
 
   const teamData = useTeamData("");
-  const teams: MenuProps["items"] = teamData?.data?.map((item) => ({
+  // const teamData = useCustomerData({name: "", page: 1, page_size: 100});
+  const teams: MenuProps["items"] = teamData?.data?.map((item, index) => ({
     key: item?.id,
-    label: <p>{item?.name}</p>,
+    label: (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            background: `rgb(${index * (255 / teamData?.data.length)}, ${
+              255 - index * (255 / teamData?.data.length)
+            }, 0)`,
+            padding: 5,
+            borderRadius: 5,
+            marginRight: 10,
+          }}
+        ></div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <p>{item?.name}</p>
+          <p style={{ marginLeft: 30 }}>{item?.task_count_percentage}%</p>
+        </div>
+      </div>
+    ),
     onClick: () => teampatch(item),
   }));
   const items: MenuProps["items"] = [
@@ -157,7 +184,11 @@ const TaskModal = ({
     taskController
       .taskPatch({ assigned_to_id: item?.id }, recordTask?.id)
       .then(() => {
-        message.success({ content: "Success", duration: 1 });
+        message.success({
+          content: "Task forwarded successfully",
+          duration: 1,
+        });
+        setModalOpen(false);
       });
   };
 
@@ -167,7 +198,23 @@ const TaskModal = ({
       .then(() => {
         message.success({ content: "Saved!" });
       });
+    setModalOpen(!modalOpen);
   };
+
+  const nextStatus = (status : string) => {
+    console.log();
+  }
+
+  useEffect(() => {
+    if (socketData && socketData.task) {
+      if (
+        socketData.type === "task_update" &&
+        socketData.task.id === recordTask?.id
+      ) {
+        setRecordTask(socketData.task);
+      }
+    }
+  }, [socketData]);
 
   return (
     <Modal
@@ -195,6 +242,9 @@ const TaskModal = ({
               {status}
               <EditOutlined style={{ marginLeft: 4 }} />
             </button>
+            {/* <button onClick={e > nextStatus(status)}>
+              <CaretRightOutlined />
+            </button> */}
           </Dropdown>
         </div>
         <div className="mdoal-actions">
@@ -231,14 +281,13 @@ const TaskModal = ({
         </div>
       </div>
       <div className="TaskModal-content">
-        <Tabs>
+        <Tabs style={{ marginLeft: 24 }}>
           <TabPane
             tab={
               <span
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  marginLeft: 24,
                 }}
               >
                 <img style={{ marginRight: 10 }} src={infoIcon} alt="" />
@@ -365,12 +414,61 @@ const TaskModal = ({
               dataSource={recordTask?.attachment_set?.map((u, i) => ({
                 no: i + 1,
                 ...u,
-                created: moment(u?.updated_at)
-                  .tz(timeZone)
-                  .format("DD.MM.YYYY HH:mm"),
+                created: moment(u?.created_at)
+                  ?.tz(timeZone)
+                  ?.format("DD.MM.YYYY HH:mm"),
                 action: { ...u },
+                by: u,
               }))}
               columns={[
+                {
+                  title: "User/Driver",
+                  dataIndex: "by",
+                  width: "25%",
+                  key: 1,
+                  ellipsis: {
+                    showTitle: false,
+                  },
+                  render: (text: any) => (
+                    <Tooltip
+                      placement="topLeft"
+                      title={
+                        text?.uploaded_by_which_driver?.username ||
+                        text?.uploaded_by_which_user?.username
+                      }
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {text?.uploaded_by_which_user ? (
+                          <>
+                            <img
+                              src={getImageSource("user")}
+                              alt=""
+                              style={{ width: 15, height: 15, marginRight: 10 }}
+                            />
+                            <p>
+                              {text?.uploaded_by_which_user?.username
+                                ? text?.uploaded_by_which_user?.username
+                                : ""}
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <img
+                              src={getImageSource("driver")}
+                              alt=""
+                              style={{ width: 20, height: 15, marginRight: 10 }}
+                            />
+                            <p>
+                              {text?.uploaded_by_which_driver?.name
+                                ? text?.uploaded_by_which_driver?.name
+                                : ""}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </Tooltip>
+                  ),
+                },
                 {
                   title: "Name/Description",
                   dataIndex: "file_name",
@@ -466,9 +564,8 @@ const TaskModal = ({
                   ? { user: u?.user?.username }
                   : { driver: u?.driver?.name },
                 created: moment(u?.timestamp)
-                  .tz(timeZone)
-                  .format("DD.MM.YYYY HH:mm"),
-                // action: { ...u. },
+                  ?.tz(timeZone)
+                  ?.format("DD.MM.YYYY HH:mm"),
               }))}
               columns={[
                 {
@@ -480,7 +577,10 @@ const TaskModal = ({
                     showTitle: false,
                   },
                   render: (text: any, record: any) => (
-                    <Tooltip placement="topLeft" title={text}>
+                    <Tooltip
+                      placement="topLeft"
+                      title={text?.user || text?.driver}
+                    >
                       <div style={{ display: "flex", alignItems: "center" }}>
                         {text?.user ? (
                           <>
@@ -490,7 +590,7 @@ const TaskModal = ({
                               style={{ width: 15, height: 15, marginRight: 10 }}
                             />
                             <p>
-                              {typeof text.user === "string" ? text.user : ""}
+                              {typeof text?.user === "string" ? text?.user : ""}
                             </p>
                           </>
                         ) : (

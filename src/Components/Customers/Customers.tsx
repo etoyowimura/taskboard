@@ -1,24 +1,40 @@
 import { useRef, useState } from "react";
 import AddCustomer from "./AddCustomer";
 import CustomerTable from "./CustomersTable";
+import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useCustomerData } from "../../Hooks/Customers";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
+import { Button, Input, Space } from "antd";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
-
+  const [page, setPage] = useState(1)
   const showModal = () => {
     setOpen(true);
   };
 
   const [search, setSearch] = useState("");
-  const { isLoading, data, refetch } = useCustomerData({
+  const { data, isLoading, refetch } = useCustomerData({
     name: search,
     is_active: undefined,
+    page_size: 10,
+    page: page
   });
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +69,33 @@ const Customer = () => {
           />
         </div>
       </div>
-      <CustomerTable data={data} isLoading={isLoading} />
+      <CustomerTable data={data?.data} isLoading={isLoading} />
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
+          <Button
+            type="primary"
+            icon={<StepBackwardOutlined />}
+            onClick={Previos}
+            disabled={!data?.previous}
+          ></Button>
+          <Input
+            style={{ width: 50, textAlign: "right" }}
+            value={page}
+            onChange={(e) => {
+              let num = e.target.value;
+              if (Number(num) && num !== "0") {
+                setPage(Number(num));
+              }
+            }}
+          />
+          <Button
+            type="primary"
+            icon={<StepForwardOutlined />}
+            onClick={Next}
+            disabled={!data?.next}
+          ></Button>
+        </Space>
+      </Space>
     </div>
   );
 };

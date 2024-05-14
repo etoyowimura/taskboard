@@ -71,7 +71,7 @@ const Register: React.FC = () => {
           }}
         >
           <h1>Sign up</h1>
-          {emailDom && (
+          {/* { && ( */}
             <Card
               bodyStyle={{ background: "rgb(250, 250, 250)" }}
               title={emailDom}
@@ -120,7 +120,7 @@ const Register: React.FC = () => {
                   </Col>
                 </Row>
 
-                {/* <Form.Item
+                <Form.Item
                 name="email"
                 rules={[
                   {
@@ -147,7 +147,7 @@ const Register: React.FC = () => {
                     placeholder="E-mail"
                   />
                 )}
-              </Form.Item> */}
+              </Form.Item>
 
                 <Form.Item
                   name="username"
@@ -262,7 +262,7 @@ const Register: React.FC = () => {
                 </Form.Item>
               </Space>
             </Card>
-          )}
+          {/* )} */}
         </Space>
       </Form>
       <Success open={open} setOpen={setOpen} email={email} />

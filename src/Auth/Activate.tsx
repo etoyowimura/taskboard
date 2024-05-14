@@ -1,6 +1,6 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { registryVerify } from "../API/auth/activate";
-import { message } from "antd";
+
 
 const Activate = () => {
   const location = useLocation();
@@ -15,7 +15,7 @@ const Activate = () => {
     })
   }
 
-  return <div></div>;
+  return <div><h1>OOOOOOO Bratim qandoysiz?!</h1></div>;
 };
 
 export default Activate;

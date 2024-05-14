@@ -44,7 +44,7 @@ export const userController = {
   },
 
   async userOne(Id: string | number | undefined) {
-    const { data }: { data: any } = await instance(`users/admin/${Id}/`);
+    const { data } = await instance.get<TUser>(`users/admin/${Id}/`);
     return data;
   },
 

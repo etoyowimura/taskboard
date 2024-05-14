@@ -67,6 +67,11 @@ export const prof = {
         `users/my-profile/`,
         { ...params }
       );
+      message.success({ content: "Changes saved" });
+      if (params.username) {
+        localStorage.setItem("username", params.username);
+      }
+      window.location.reload()
       return data;
     } catch (error: any) {
       setTimeout(() => {

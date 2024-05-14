@@ -1,11 +1,74 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import CallTable from "./CallTable";
+import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useCallData } from "../../Hooks/CallRequests";
-import { Radio, RadioChangeEvent } from "antd";
+import { Button, Input, Radio, RadioChangeEvent, Space } from "antd";
+import { TCall } from "../../types/CallRequests/TCall";
+import { TSocket } from "../../types/common/TSocket";
 
-const Call = () => {
+const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
   const [status, setStatus] = useState("Awaiting");
-  const { data, isLoading, refetch } = useCallData({ status: status });
+  const [page, setPage] = useState(1);
+  const [tableData, setTableData] = useState<TCall[]>();
+  const { data, isLoading, refetch } = useCallData({
+    status: status,
+    page: page,
+    page_size: 10,
+  });
+
+  useEffect(() => {
+    setTableData(data?.data);
+  }, [data]);
+  useEffect(() => {
+    let dataStatus = socketData?.callback_request?.status;
+    if (socketData?.type === "callback_request") {
+      if (status === "Awaiting") {
+        setTableData((prev) => {
+          if (prev && prev.length >= 15) {
+            prev.pop();
+          }
+          if (dataStatus === "Resolved") {
+            const data = (prev || []).filter(
+              (b: TCall) => b?.id !== socketData?.callback_request?.id
+            );
+            return data;
+          }
+          if (dataStatus === "Awaiting") {
+            return [socketData?.callback_request, ...(prev || [])] as TCall[];
+          }
+          return prev;
+        });
+      } else if (status === "Resolved") {
+        setTableData((prev) => {
+          if (prev && prev.length >= 15) {
+            prev.pop();
+          }
+          if (dataStatus === "Awaiting") {
+            const data = (prev || []).filter(
+              (b: TCall) => b?.id !== socketData?.callback_request?.id
+            );
+            return data;
+          }
+          if (dataStatus === "Resolved") {
+            return [socketData?.callback_request, ...(prev || [])] as TCall[];
+          }
+          return prev;
+        });
+      }
+    }
+  }, [socketData]);
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
 
   return (
     <div>
@@ -25,7 +88,33 @@ const Call = () => {
           </Radio.Group>
         </div>
       </div>
-      <CallTable data={data} isLoading={isLoading} refetch={refetch} />
+      <CallTable data={tableData} isLoading={isLoading} refetch={refetch} />
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
+          <Button
+            type="primary"
+            icon={<StepBackwardOutlined />}
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+          ></Button>
+          <Input
+            style={{ width: 50, textAlign: "right" }}
+            value={page}
+            onChange={(e) => {
+              let num = e.target.value;
+              if (Number(num) && num !== "0") {
+                setPage(Number(num));
+              }
+            }}
+          />
+          <Button
+            type="primary"
+            icon={<StepForwardOutlined />}
+            onClick={Next}
+            disabled={data?.next ? false : true}
+          ></Button>
+        </Space>
+      </Space>
     </div>
   );
 };

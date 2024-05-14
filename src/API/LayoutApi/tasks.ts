@@ -1,12 +1,15 @@
+import { message } from "antd";
 import { TTask, TTaskHistory } from "../../types/Tasks/TTasks";
 import { TPagination } from "../../types/common/TPagination";
 import instance from "../api";
+import { isMobile } from "../../App";
 
 export type TTasksGetParams = {
   search?: string;
   status?: string;
   team?: string;
-  page?: string;
+  page?: number;
+  page_size: number;
 };
 
 export type TTasksPutParams = {
@@ -45,8 +48,9 @@ export const taskController = {
   async read(filterObject: TTasksGetParams) {
     const params = { ...filterObject };
 
-    if (!!filterObject.page && filterObject.page !== "0")
+    if (!!filterObject.page && filterObject.page !== 0)
       params.page = filterObject.page;
+    params.page_size = isMobile ? 10 : 15;
     if (!!filterObject.search) params.search = filterObject.search;
     if (Array.isArray(filterObject.status)) {
       params.status = filterObject.status.join(",");
@@ -66,7 +70,7 @@ export const taskController = {
     return data;
   },
 
-  async taskOne(Id: number) {
+  async taskOne(Id: number | undefined) {
     const { data } = await instance.get<TTask>(`task/${Id}/`);
     return data;
   },
@@ -97,7 +101,6 @@ export const taskController = {
     for (const file of formData.files) {
       form.append("files", file);
     }
-    console.log(form);
 
     // if (Array.isArray(formData.files)) {
     //   params.files = formData.files;
@@ -106,13 +109,17 @@ export const taskController = {
     // if (!!formData.shift_update_id)
     //   params.shift_update_id = formData.shift_update_id;
     if (!!formData.description) params.description = formData.description;
-
-    const { data } = await instance.post("attachment/", form, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return data;
+    try {
+      const { data } = await instance.post("attachment/", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      message.success({ content: "Success!" });
+      return data;
+    } catch (err) {
+      message.error({ content: `${err}` });
+    }
   },
 
   async deleteTaskController(id: number) {
