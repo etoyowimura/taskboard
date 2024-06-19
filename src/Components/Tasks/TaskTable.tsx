@@ -25,12 +25,16 @@ const TaskTable = ({
   data,
   isLoading,
   showTaskModal,
+  showErrorModal,
+  setErrorModal,
 }: {
   data: {
     characters: TTask[] | undefined;
   };
   showTaskModal: any;
+  showErrorModal: any;
   isLoading: boolean;
+  setErrorModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const moment = require("moment");
   const statusClick = (record: any) => {
@@ -42,7 +46,13 @@ const TaskTable = ({
           const value = {
             status: "Checking",
           };
-          taskController.taskPatch(value, record.id);
+          taskController
+            .taskPatch(value, record?.id)
+            .then((response: { data: TTask; status: number }) => {
+              if (response?.status == 403) {
+                showErrorModal(response);
+              }
+            });
         },
       });
     }
@@ -54,7 +64,9 @@ const TaskTable = ({
           const value = {
             status: "Done",
           };
-          taskController.taskPatch(value, record.id);
+          taskController.taskPatch(value, record.id).then(() => {
+            setErrorModal(false);
+          });
         },
       });
     }
@@ -138,7 +150,7 @@ const TaskTable = ({
               justifyContent: "space-around",
             }}
           >
-            {record.via_telegram && (
+            {record?.via_telegram && (
               <Tooltip placement="topLeft" title={"Created via Telegram"}>
                 <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
               </Tooltip>
@@ -162,7 +174,7 @@ const TaskTable = ({
         width: isMobile ? "1%" : "5%",
         fixed: isMobile ? "left" : false,
         key: "2",
-        render: (text: any, record: TTask) => (
+        render: (text?: any, record?: TTask) => (
           <div
             style={{
               display: "flex",
@@ -220,9 +232,9 @@ const TaskTable = ({
         ellipsis: {
           showTitle: false,
         },
-        render: (item: { title: string; id: number }, record: TTask) => (
+        render: (item?: { title?: string; id: number }, record?: TTask) => (
           <Tooltip placement="topLeft" title={item?.title}>
-            {item.title}
+            {item?.title}
           </Tooltip>
         ),
       },
@@ -234,7 +246,7 @@ const TaskTable = ({
         ellipsis: {
           showTitle: false,
         },
-        render: (status: string) => (
+        render: (status?: string) => (
           <span>
             {status === "Done" && <p className="status-done">Done</p>}
             {status === "Checking" && (

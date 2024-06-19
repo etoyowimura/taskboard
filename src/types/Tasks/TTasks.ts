@@ -1,12 +1,5 @@
 import { TUser } from "../User/TUser";
 
-type data = {
-  id: number;
-  name?: string;
-  title?: string;
-  username?: string;
-};
-
 export type TTask = {
   id: number;
   note: string;

@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { taskController } from "../../API/LayoutApi/tasks";
 import { useTeamData } from "../../Hooks/Teams";
 import { TTeam } from "../../types/Team/TTeam";
-import { EditOutlined, CaretRightOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { TSocket } from "../../types/common/TSocket";
 // @ts-ignore
 import closeIcon from "../../assets/closeIcon.png";
@@ -201,9 +201,9 @@ const TaskModal = ({
     setModalOpen(!modalOpen);
   };
 
-  const nextStatus = (status : string) => {
-    console.log();
-  }
+  // const nextStatus = (status : string) => {
+  //   console.log();
+  // }
 
   useEffect(() => {
     if (socketData && socketData.task) {
@@ -243,7 +243,7 @@ const TaskModal = ({
               <EditOutlined style={{ marginLeft: 4 }} />
             </button>
             {/* <button onClick={e > nextStatus(status)}>
-              <CaretRightOutlined />
+              <CaretRightOutlined /> 
             </button> */}
           </Dropdown>
         </div>

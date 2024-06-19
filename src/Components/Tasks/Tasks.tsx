@@ -16,9 +16,18 @@ import IconSearch from "../../assets/searchIcon.png";
 import TaskModal from "./TaskModal";
 import TaskUploadModal from "./TaskUploadModal";
 import { TSocket } from "../../types/common/TSocket";
+import ErrorUncompletedTasksModal from "./ErrorUncompletedTasksModal";
 
 const { Option } = Select;
-const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
+const Task = ({
+  socketData,
+  connect,
+  isLive,
+}: {
+  socketData: TSocket | undefined;
+  connect: () => Promise<void>;
+  isLive: boolean;
+}) => {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [characters, setCharacters] = useState<TTask[] | undefined>();
@@ -27,6 +36,8 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
   const [status, setStatus] = useState<any>();
   const [page, setPage] = useState(1);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [uncomletedData, setUncomletedData] = useState<TTask[]>();
 
   useEffect(() => {
     if (
@@ -34,8 +45,8 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
       socketData.task &&
       ((role !== "Checker" &&
         (!team || team.includes(socketData?.task?.assigned_to?.id))) ||
-        role === "Checker") &&
-      (!status || status.includes(socketData?.task?.status))
+        role === "Checker")
+      // &&(!status || status.includes(socketData?.task?.status))
     ) {
       setCharacters((prev: any) => {
         if (prev && prev?.length >= 15) {
@@ -139,6 +150,11 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
     setRecordTask(e);
     setModalOpen(true);
   };
+  const showErrorModal = (e: { data: TTask[]; status: number }) => {
+    setUncomletedData(e?.data);
+
+    setErrorModal(true);
+  };
 
   const Next = () => {
     const a = Number(page) + 1;
@@ -164,6 +180,7 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
     }, 1000);
   };
   const theme = localStorage.getItem("theme") === "true" ? true : false;
+
   return (
     <div>
       {open && <AddTask open={open} setOpen={setOpen} />}
@@ -185,6 +202,13 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
           setModalOpen={setModalOpen}
         />
       )}
+      {errorModal && (
+        <ErrorUncompletedTasksModal
+          errorModal={errorModal}
+          setErrorModal={setErrorModal}
+          uncomletedData={uncomletedData}
+        />
+      )}
       <div className="header d-flex">
         <div className="header-title d-flex">
           <p className="title">Tasks</p>
@@ -204,7 +228,9 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
             className={`btn-refresh-${theme && "dark"} d-flex`}
             onClick={() => {
               refetch();
-              // connect();
+              if (!isLive) {
+                connect();
+              }
             }}
           >
             <img
@@ -255,6 +281,8 @@ const Task = ({ socketData }: { socketData: TSocket | undefined }) => {
         data={{ characters }}
         isLoading={isLoading}
         showTaskModal={showTaskModal}
+        showErrorModal={showErrorModal}
+        setErrorModal={setErrorModal}
       />
       <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>

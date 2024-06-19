@@ -43,6 +43,9 @@ export type TTaskPostFileParams = {
   shift_update_id?: number;
   description?: string;
 };
+interface TMessageResponse {
+  message: string;
+}
 
 export const taskController = {
   async read(filterObject: TTasksGetParams) {
@@ -76,12 +79,22 @@ export const taskController = {
   },
 
   async taskPatch(obj: TTasksPutParams, task_id: number | undefined) {
-    const { data } = await instance
-      .put<TTask>(`task/${task_id}/`, obj)
-      .then((u) => {
-        return u;
-      });
-    return data;
+    try {
+      const response = await instance.put<TTask | TMessageResponse>(
+        `task/${task_id}/`,
+        obj
+      );
+      if (response.status === 202) {
+        const data = response.data as TMessageResponse;
+        message.success({ content: data.message });
+      }
+      return { data: response?.data as TTask, status: response?.status };
+    } catch (error: any) {
+      return {
+        data: error?.response?.data.data,
+        status: error?.response.status,
+      };
+    }
   },
 
   async addTaskController(obj: TTasksPostParams) {

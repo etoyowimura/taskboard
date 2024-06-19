@@ -11,6 +11,7 @@ import {
   Col,
   Input,
   Button,
+  Select,
 } from "antd";
 import { customerController } from "../../API/LayoutApi/customers";
 import Notfound from "../../Utils/Notfound";
@@ -20,6 +21,17 @@ import { useState } from "react";
 import infoIcon from "../../assets/infoIcon.png";
 // @ts-ignore
 import infoIconActive from "../../assets/infoIconActive.png";
+// @ts-ignore
+import zippy from "../../assets/zippyicon.svg";
+// @ts-ignore
+import evo from "../../assets/evoicon.png";
+// @ts-ignore
+import zeelog from "../../assets/zeelogicon.svg";
+// @ts-ignore
+import ontime from "../../assets/ontimeicon.svg";
+// @ts-ignore
+import tt from "../../assets/tticon.svg";
+import { useCompanyData } from "../../Hooks/Companies";
 
 const TabPane = Tabs.TabPane;
 
@@ -29,11 +41,12 @@ type params = {
 
 const CustomerEdit = () => {
   const { id } = useParams<params>();
-  const { data, refetch, status } = useCustomerOne(id);
+  const { data, status } = useCustomerOne(id);
   let navigate = useNavigate();
   const onSubmit = async (value: any) => {
+    value.company_id = companyVal;
     await customerController.customerPatch(value, id);
-    navigate(-1);
+    window.location.replace("/#/customers/");
   };
 
   const ClickDelete = () => {
@@ -46,6 +59,28 @@ const CustomerEdit = () => {
     }
   };
   const [activeTab, setActiveTab] = useState("1");
+
+  const getImageSource = (source: string) => {
+    switch (source) {
+      case "Zippy":
+        return zippy;
+      case "EVO":
+        return evo;
+      case "Ontime":
+        return ontime;
+      case "Zeelog":
+        return zeelog;
+      case "TT":
+        return tt;
+      default:
+        return tt;
+    }
+  };
+
+  const [companyName, setCompanyName] = useState<string>("");
+  const [companyVal, setCompanyVal] = useState<any>();
+  const { data: companyData } = useCompanyData({ name: companyName });
+
   return (
     <div>
       <Spin size="large" spinning={!data}>
@@ -96,9 +131,35 @@ const CustomerEdit = () => {
                               wrapperCol={{ span: "100%" }}
                               label="Company"
                             >
-                              <Input
+                              <Select
                                 defaultValue={data?.company?.name}
-                                readOnly
+                                onSearch={(value: any) => setCompanyName(value)}
+                                onChange={(e: any) => {
+                                  setCompanyVal(e);
+                                }}
+                                options={companyData?.map((item) => ({
+                                  label: (
+                                    <div>
+                                      {item?.source && (
+                                        <img
+                                          style={{
+                                            width: 15,
+                                            height: 20,
+                                            paddingTop: 7,
+                                          }}
+                                          src={getImageSource(item?.source)}
+                                          alt=""
+                                        />
+                                      )}{" "}
+                                      {item?.name}
+                                    </div>
+                                  ),
+                                  value: item?.id,
+                                }))}
+                                filterOption={false}
+                                autoClearSearchValue={false}
+                                allowClear
+                                // value={companyName}
                               />
                             </Form.Item>
                           </Col>

@@ -22,24 +22,23 @@ export const RegisterApi = async (value: registerInterface) => {
       last_name: data?.data.last_name,
       username: data?.data.username,
       id: data?.data.id,
-      timezone: data?.data.timezone, 
+      timezone: data?.data.timezone,
       role: data?.data.role,
     };
-
+    message.success({
+      content: "Email sent successfully!",
+      duration: 3,
+    });
     const userJSON = JSON.stringify(userObject);
     localStorage.setItem("user", userJSON);
     localStorage.setItem("access_token", data?.data.access_token);
     localStorage.setItem("refresh_token", data?.data.refresh_token);
     document.location.replace("/");
     return status;
-  } catch (error:any) {
-    setTimeout(() => {
-      message.error({ content: ' ', duration: 2 });
-    }, 1000);
-  } 
+  } catch (e) {}
 };
 
 export const validateUsername = async (value: any) => {
-  const {status} = await instance.get(`users/check/${value}/`);
-  return status
+  const { status } = await instance.get(`users/check/${value}/`);
+  return status;
 };

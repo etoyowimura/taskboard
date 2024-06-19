@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const instance = axios.create({
-//   baseURL: "http://10.10.10.12:8080/api/v1/",
+//   baseURL: "http://10.10.10.19:8080/api/v1/",
 // });
 const instance = axios.create({
   baseURL: "https://api.tteld.co/api/v1/",

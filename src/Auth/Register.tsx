@@ -38,12 +38,10 @@ const Register: React.FC = () => {
           }
         });
       } else if (status === 200) {
-        setTimeout(() => {
-          message.error({
-            content: "This username already exists!",
-            duration: 2,
-          });
-        }, 1000);
+        message.error({
+          content: "This username already exists!",
+          duration: 2,
+        });
       }
     });
   };
@@ -72,55 +70,55 @@ const Register: React.FC = () => {
         >
           <h1>Sign up</h1>
           {/* { && ( */}
-            <Card
-              bodyStyle={{ background: "rgb(250, 250, 250)" }}
-              title={emailDom}
-              className="login-form-card "
-              style={{ width: 600, textAlign: "left" }}
+          <Card
+            bodyStyle={{ background: "rgb(250, 250, 250)" }}
+            title={emailDom}
+            className="login-form-card "
+            style={{ width: 600, textAlign: "left" }}
+          >
+            <Space
+              direction="vertical"
+              size="middle"
+              style={{ display: "flex", gap: "20px", margin: "auto" }}
             >
-              <Space
-                direction="vertical"
-                size="middle"
-                style={{ display: "flex", gap: "20px", margin: "auto" }}
-              >
-                <Row gutter={24}>
-                  <Col span={12}>
-                    <Form.Item
-                      name="first_name"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your first name!",
-                          whitespace: true,
-                        },
-                      ]}
-                    >
-                      <Input
-                        // prefix={<UserOutlined className="site-form-item-icon" />}
-                        placeholder="First name"
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item
-                      name="last_name"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your last name!",
-                          whitespace: true,
-                        },
-                      ]}
-                    >
-                      <Input
-                        // prefix={<UserOutlined className="site-form-item-icon" />}
-                        placeholder="Last name"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
+              <Row gutter={24}>
+                <Col span={12}>
+                  <Form.Item
+                    name="first_name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your first name!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input
+                      // prefix={<UserOutlined className="site-form-item-icon" />}
+                      placeholder="First name"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="last_name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your last name!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input
+                      // prefix={<UserOutlined className="site-form-item-icon" />}
+                      placeholder="Last name"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
 
-                <Form.Item
+              <Form.Item
                 name="email"
                 rules={[
                   {
@@ -149,119 +147,119 @@ const Register: React.FC = () => {
                 )}
               </Form.Item>
 
-                <Form.Item
-                  name="username"
-                  tooltip="What do you want others to call you?"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your username!",
-                      whitespace: true,
-                    },
-                  ]}
-                >
-                  <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    placeholder="Username"
-                  />
-                </Form.Item>
+              <Form.Item
+                name="username"
+                tooltip="What do you want others to call you?"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your username!",
+                    whitespace: true,
+                  },
+                ]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Username"
+                />
+              </Form.Item>
 
-                <Form.Item
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your password!",
+              <Form.Item
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!",
+                  },
+                  {
+                    min: 8,
+                    message:
+                      "Your password must contain at least 8 characters.",
+                  },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || /[^0-9]+/.test(value)) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("Your password can’t be entirely numeric.")
+                      );
                     },
-                    {
-                      min: 8,
-                      message:
-                        "Your password must contain at least 8 characters.",
+                  }),
+                  () => ({
+                    validator(_, value) {
+                      // Список общеупотребимых паролей (пример)
+                      const commonPasswords = common;
+                      if (!value || !commonPasswords.includes(value)) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "Your password can’t be a commonly used password."
+                        )
+                      );
                     },
-                    () => ({
-                      validator(_, value) {
-                        if (!value || /[^0-9]+/.test(value)) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error("Your password can’t be entirely numeric.")
-                        );
-                      },
-                    }),
-                    () => ({
-                      validator(_, value) {
-                        // Список общеупотребимых паролей (пример)
-                        const commonPasswords = common;
-                        if (!value || !commonPasswords.includes(value)) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error(
-                            "Your password can’t be a commonly used password."
-                          )
-                        );
-                      },
-                    }),
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        const personalInfo = getFieldValue("username");
-                        if (!value || !value.includes(personalInfo)) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error(
-                            "Your password can’t be too similar to your other personal information."
-                          )
-                        );
-                      },
-                    }),
-                  ]}
-                  hasFeedback
-                >
-                  <Input.Password
-                    prefix={<LockOutlined className="site-form-item-icon" />}
-                    type="password"
-                    placeholder="Password"
-                  />
-                </Form.Item>
+                  }),
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      const personalInfo = getFieldValue("username");
+                      if (!value || !value.includes(personalInfo)) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "Your password can’t be too similar to your other personal information."
+                        )
+                      );
+                    },
+                  }),
+                ]}
+                hasFeedback
+              >
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Password"
+                />
+              </Form.Item>
 
-                <Form.Item
-                  name="password_confirm"
-                  dependencies={["password"]}
-                  hasFeedback
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please confirm your password!",
+              <Form.Item
+                name="password_confirm"
+                dependencies={["password"]}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Please confirm your password!",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "The new password that you entered do not match!"
+                        )
+                      );
                     },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (!value || getFieldValue("password") === value) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error(
-                            "The new password that you entered do not match!"
-                          )
-                        );
-                      },
-                    }),
-                  ]}
-                >
-                  <Input.Password
-                    prefix={<LockOutlined className="site-form-item-icon" />}
-                    type="password"
-                    placeholder="Re-enter Password"
-                  />
-                </Form.Item>
+                  }),
+                ]}
+              >
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Re-enter Password"
+                />
+              </Form.Item>
 
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" loading={loading}>
-                    Confirm
-                  </Button>
-                </Form.Item>
-              </Space>
-            </Card>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Confirm
+                </Button>
+              </Form.Item>
+            </Space>
+          </Card>
           {/* )} */}
         </Space>
       </Form>

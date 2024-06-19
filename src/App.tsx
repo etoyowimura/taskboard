@@ -73,7 +73,7 @@ const App: React.FC = () => {
           setData(data);
         });
     }
-  }, [admin_id]);
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -137,8 +137,8 @@ const App: React.FC = () => {
         <img alt="" src={requestIcon} />
       ),
       getItem(
-        <Link to="call/">Call Requests</Link>,
-        "call/",
+        <Link to="calls/">Call Requests</Link>,
+        "calls/",
         <img alt="" src={callIcon} />
       )
     );
@@ -209,8 +209,52 @@ const App: React.FC = () => {
       </Menu.Item>
     </Menu>
   );
+
+  // const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+  // const reconnectingMessageKey = "reconnectingMessage";
+  // const reconnectingMessageContent = "Reconnecting...";
+
+  // useEffect(() => {
+  //   let reconnectingTimeout: NodeJS.Timeout | null = null;
+
+  //   const handleOnlineStatus = () => {
+  //     setIsOnline(true);
+  //     message.success({ content: "Reconnected!" });
+  //     if (isOnline === false) {
+  //       message.destroy(reconnectingMessageKey);
+  //     }
+  //     if (reconnectingTimeout) {
+  //       clearTimeout(reconnectingTimeout);
+  //     }
+  //   };
+
+  //   const handleOfflineStatus = () => {
+  //     setIsOnline(false);
+  //     if (isOnline !== false) {
+  //       message.loading({
+  //         content: reconnectingMessageContent,
+  //         key: reconnectingMessageKey,
+  //         duration: 0,
+  //       });
+  //       reconnectingTimeout = setTimeout(() => {
+  //         message.destroy(reconnectingMessageKey);
+  //       }, 30 * 60 * 1000); // 30 minutes
+  //     }
+  //   };
+
+  //   window.addEventListener("online", handleOnlineStatus);
+  //   window.addEventListener("offline", handleOfflineStatus);
+
+  //   return () => {
+  //     window.removeEventListener("online", handleOnlineStatus);
+  //     window.removeEventListener("offline", handleOfflineStatus);
+  //     if (reconnectingTimeout) {
+  //       clearTimeout(reconnectingTimeout);
+  //     }
+  //   };
+  // }, [isOnline]);
   let taskSocket: WebSocket;
-  const [isLive, setIslive] = useState(true);
+  const [isLive, setIslive] = useState(false);
   const [socketData, setSocketData] = useState<any>();
   const connect = async () => {
     try {
@@ -219,7 +263,7 @@ const App: React.FC = () => {
         admin_id
       ) {
         // taskSocket = new WebSocket(
-        //   `ws://10.10.10.12:8080/global/?user_id=${admin_id}`
+        //   `ws://10.10.10.19:8080/global/?user_id=${admin_id}`
         // );
         taskSocket = new WebSocket(
           `wss://api.tteld.co/global/?user_id=${admin_id}`
@@ -236,6 +280,7 @@ const App: React.FC = () => {
           console.error("WebSocket error:", errorEvent);
         });
         taskSocket.addEventListener("close", (event) => {
+          console.log("WebSocket: clocse");
           setIslive(false);
         });
       }
@@ -245,6 +290,15 @@ const App: React.FC = () => {
   useEffect(() => {
     connect();
   }, []);
+
+  // function checkConnection() {
+  //   if (!isLive) {
+  //     connect();
+  //   }
+  // }
+
+  // setInterval(checkConnection, 5000);
+
   const [api, contextHolder] = notification.useNotification();
   const openNotification = useCallback(
     (placement: NotificationPlacement, data: TCall) => {
@@ -436,7 +490,13 @@ const App: React.FC = () => {
                   <Route
                     key={"task"}
                     path="/"
-                    element={<Task socketData={socketData} />}
+                    element={
+                      <Task
+                        socketData={socketData}
+                        connect={connect}
+                        isLive={isLive}
+                      />
+                    }
                   />
                   {mainItems &&
                     mainItems.map((u) => (
