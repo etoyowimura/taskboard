@@ -22,7 +22,7 @@ const Team = () => {
           onClick={showModal}
         >
           <img src={addicon} style={{ marginRight: 8 }} alt="" />
-          Add
+          Add Team
         </button>
       </div>
       <TeamTable data={data} isLoading={isLoading} refetch={refetch} />

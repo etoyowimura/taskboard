@@ -9,7 +9,7 @@ import {
   message,
 } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
-import { timeZone } from "../../App";
+import { role, timeZone } from "../../App";
 import { useTaskHistory } from "../../Hooks/Tasks";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
@@ -234,6 +234,7 @@ const TaskModal = ({
             menu={{ items }}
             placement="bottom"
             arrow={{ pointAtCenter: true }}
+            disabled={role === "Checker" && status === "Done"}
           >
             <button
               style={{ marginLeft: 12, display: "flex", alignItems: "center" }}

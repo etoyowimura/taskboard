@@ -20,7 +20,7 @@ const Service = () => {
         {role !== "Checker" && (
           <button onClick={showModal} className="btn-add d-flex">
             <img src={addicon} style={{ marginRight: 8 }} alt="" />
-            Add
+            Add Service
           </button>
         )}
       </div>

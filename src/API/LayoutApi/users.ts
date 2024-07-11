@@ -12,7 +12,7 @@ export type TUsersPutParams = {
   first_name?: string;
   last_name?: string;
   username?: string;
-  team_id?: number;
+  team_id?: number | null;
 };
 
 export type TUsersPostParams = {
@@ -48,7 +48,7 @@ export const userController = {
     return data;
   },
 
-  async userPatch(obj: TUsersPutParams, id: string) {
+  async userPatch(obj: TUsersPutParams, id: string | number) {
     const { data } = await instance
       .put<TUser>(`users/admin/${id}/`, obj)
       .then((u) => {

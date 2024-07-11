@@ -31,9 +31,19 @@ const UserEdit = () => {
   const { id } = useParams<params>();
 
   const { data, refetch, status } = useUserOne(id);
-
+  const roleData = useRoleData();
+  const techSupport = roleData.data?.find(
+    (item) => item.name === "Tech Support"
+  );
   const onSubmit = async (value: any) => {
-    id && (await userController.userPatch(value, id));
+    if (value.role_id === techSupport?.id) {
+      value.team_id = null;
+
+      id && (await userController.userPatch(value, id));
+    } else {
+      id && (await userController.userPatch(value, id));
+    }
+
     refetch();
     document.location.replace("/#/users/");
   };
@@ -47,7 +57,6 @@ const UserEdit = () => {
   if (TeamOption) {
     TeamOption.unshift(noTeamOption);
   }
-  const roleData = useRoleData();
 
   const ClickDelete = () => {
     const shouldDelete = window.confirm(

@@ -19,10 +19,11 @@ export const resetPass = async (value: resetType) => {
       headers: { "Content-Type": "application/json" },
     });
     return data;
-  } catch (error) {
+  } catch (error: any) {
     setTimeout(() => {
-      message.error({ content: "Something went wrong", duration: 2 });
+      message.error({ content: error?.response?.data?.message, duration: 2 });
     }, 1000);
+    return false;
   }
 };
 export const resetPassEmail = async (value: resetPassType) => {
@@ -35,11 +36,11 @@ export const resetPassEmail = async (value: resetPassType) => {
     const succesMessage = data?.message;
     message.success({ content: succesMessage, duration: 2 });
     setTimeout(() => {
-      document.location.replace('/auth/login')
+      document.location.replace("/auth/login");
     }, 2000);
   } catch (error) {
     setTimeout(() => {
       message.error({ content: "Something went wrong", duration: 2 });
     }, 1000);
   }
-}
+};

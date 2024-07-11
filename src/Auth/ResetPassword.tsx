@@ -22,8 +22,10 @@ const ResetPassword: React.FC = () => {
   const onSubmit = async (values: any) => {
     setEmail(values.login);
     await sleep(300);
-    await resetPass({ login: values.login }).then(() => {
-      setOpen(true);
+    await resetPass({ login: values.login }).then((e) => {
+      if (e) {
+        setOpen(true);
+      }
     });
   };
 
@@ -46,7 +48,7 @@ const ResetPassword: React.FC = () => {
           >
             <Card
               bodyStyle={{ background: "rgb(250, 250, 250)" }}
-              title="Login"
+              title="Reset password"
               className="login-form-card "
               style={{ width: 400 }}
             >

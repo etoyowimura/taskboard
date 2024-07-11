@@ -791,3 +791,7 @@
   overflow: scroll;
   height: 50px;
 }
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Используйте нужный вам цвет фона */
+}

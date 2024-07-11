@@ -93,21 +93,6 @@ const CallTable = ({
             dataIndex: "note",
             width: "15%",
           },
-          // {
-          //   title: "Status",
-          //   dataIndex: "status",
-          //   width: "8%",
-          //   render: (status: string) => (
-          //     <span>
-          //       {status === "Awaiting" && (
-          //         <p className="status-new">Awaiting</p>
-          //       )}
-          //       {status === "Resolved" && (
-          //         <p className="status-done">Resolved</p>
-          //       )}
-          //     </span>
-          //   ),
-          // },
           {
             title: "Requested at",
             dataIndex: "time",
@@ -134,7 +119,7 @@ const CallTable = ({
                   </Button>
                   <Modal
                     title="Add note"
-                    visible={modalVisible}
+                    open={modalVisible}
                     onOk={handleOk}
                     onCancel={handleCancel}
                   >
