@@ -24,6 +24,7 @@ import AddDriver from "./AddDriver";
 import { role } from "../../App";
 import { useTeamData } from "../../Hooks/Teams";
 import { useCustomerByComanyData } from "../../Hooks/Customers";
+import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 // @ts-ignore
 import zippy from "../../assets/zippyicon.svg";
 // @ts-ignore
@@ -44,14 +45,13 @@ const TabPane = Tabs.TabPane;
 type params = {
   readonly id: any;
 };
-type MyObjectType = {
-  [key: string | number]: any;
-};
+
 const CompanyEdit = () => {
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const { id } = useParams<params>();
-  const customerData = useCustomerByComanyData({ id: id });
-  const { data, refetch, status }: MyObjectType = useCompanyOne(id);
+  const customerData = useCustomerByComanyData({ page, page_size: 10 }, id);
+  const { data, refetch, status } = useCompanyOne(id);
 
   const showModal = () => {
     setOpen(true);
@@ -81,7 +81,7 @@ const CompanyEdit = () => {
   };
   const [activeTab, setActiveTab] = useState("1");
 
-  const TeamData = useTeamData("");
+  const TeamData = useTeamData({});
   const noTeamOption = { label: " - - - - - -", value: "" };
   const TeamOption: { label: string; value: any }[] | undefined =
     TeamData?.data?.map((item) => ({
@@ -92,7 +92,19 @@ const CompanyEdit = () => {
     TeamOption.unshift(noTeamOption);
   }
 
-  const [team, setTeam] = useState();
+  const [team, setTeam] = useState<string | undefined>();
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
 
   return (
     <div>
@@ -165,7 +177,7 @@ const CompanyEdit = () => {
                               <Select
                                 options={TeamOption}
                                 defaultValue={data?.team?.name}
-                                onChange={(e) => setTeam(e)}
+                                onChange={(e: string) => setTeam(e)}
                               />
                             </Form.Item>
                           </Col>
@@ -286,7 +298,7 @@ const CompanyEdit = () => {
                           },
                         };
                       }}
-                      dataSource={customerData?.data?.map((u, i) => ({
+                      dataSource={customerData.data?.data?.map((u, i) => ({
                         ...u,
                         no: i + 1,
                         key: u?.id,
@@ -327,7 +339,40 @@ const CompanyEdit = () => {
                           },
                         },
                       ]}
+                      pagination={false}
                     />
+                    <Space
+                      style={{ width: "100%", marginTop: 10 }}
+                      direction="vertical"
+                    >
+                      <Space
+                        style={{ width: "100%", justifyContent: "flex-end" }}
+                        wrap
+                      >
+                        <Button
+                          type="primary"
+                          icon={<StepBackwardOutlined />}
+                          onClick={Previos}
+                          disabled={customerData.data?.previous ? false : true}
+                        ></Button>
+                        <Input
+                          style={{ width: 50, textAlign: "right" }}
+                          value={page}
+                          onChange={(e) => {
+                            let num = e.target.value;
+                            if (Number(num) && num !== "0") {
+                              setPage(Number(num));
+                            }
+                          }}
+                        />
+                        <Button
+                          type="primary"
+                          icon={<StepForwardOutlined />}
+                          onClick={Next}
+                          disabled={customerData.data?.next ? false : true}
+                        ></Button>
+                      </Space>
+                    </Space>
                     {open && (
                       <AddDriver id={id} open={open} setOpen={setOpen} />
                     )}

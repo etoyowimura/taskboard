@@ -10,6 +10,7 @@ export type TCustomerGetParams = {
   for_driver_request?: boolean;
   is_active?: boolean;
 };
+
 export type TCustomerByCompanyGetParams = {
   name?: string;
   id?: number;
@@ -50,21 +51,20 @@ export const customerController = {
     }
   },
 
-  async customerByCompany(
-    id: number | undefined,
-    name: string | undefined,
-    for_driver_request?: boolean
-  ) {
-    const params = { name, for_driver_request };
-    if (!!name) params.name = name;
-    if (!!for_driver_request) params.for_driver_request = for_driver_request;
-    if (id) {
-      const { data } = await instance.get<TCustomer[]>(
-        `customers-by-company/${id}/`,
-        { params }
-      );
-      return data;
-    }
+  async customerByCompany(filterObject: TCustomerGetParams, id?: number) {
+    const params = { ...filterObject };
+
+    if (!!filterObject.name) params.name = filterObject.name;
+    if (!!filterObject.for_driver_request)
+      params.for_driver_request = filterObject.for_driver_request;
+    if (!!filterObject.page) params.page = filterObject.page;
+    if (!!filterObject.page_size) params.page_size = filterObject.page_size;
+
+    const { data } = await instance.get<TPagination<TCustomer[]>>(
+      `customers-by-company/${id}/`,
+      { params }
+    );
+    return data;
   },
 
   async customerPatch(obj: TCustomerPutParams, id: string) {

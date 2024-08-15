@@ -106,7 +106,7 @@ const TaskModal = ({
     }
   }
 
-  const teamData = useTeamData("");
+  const teamData = useTeamData({});
   // const teamData = useCustomerData({name: "", page: 1, page_size: 100});
   const teams: MenuProps["items"] = teamData?.data?.map((item, index) => ({
     key: item?.id,
@@ -174,30 +174,20 @@ const TaskModal = ({
 
   const statuspatch = (status: string) => {
     setStatus(status);
-    taskController.taskPatch({ status: status }, recordTask?.id).then(() => {
-      message.success({ content: "Success", duration: 1 });
-    });
+    taskController.taskPatch({ status: status }, recordTask?.id);
   };
 
   const teampatch = (item: TTeam) => {
     setTeamName(item?.name);
     taskController
-      .taskPatch({ assigned_to_id: item?.id }, recordTask?.id)
+      .taskPatchPatch({ assigned_to_id: item?.id }, recordTask?.id)
       .then(() => {
-        message.success({
-          content: "Task forwarded successfully",
-          duration: 1,
-        });
         setModalOpen(false);
       });
   };
 
   const patchTask = () => {
-    taskController
-      .taskPatch({ note: text, pti: pti }, recordTask?.id)
-      .then(() => {
-        message.success({ content: "Saved!" });
-      });
+    taskController.taskPatch({ note: text, pti: pti }, recordTask?.id);
     setModalOpen(!modalOpen);
   };
 

@@ -1,10 +1,14 @@
 import { useQuery } from "react-query";
-import { teamController } from "../../API/LayoutApi/teams";
+import { TTeamGetParams, teamController } from "../../API/LayoutApi/teams";
 
-export const useTeamData = (name: string) => {
-  return useQuery([`teams/?name=${name}/`], () => teamController.read(name), {
-    refetchOnWindowFocus: false,
-  });
+export const useTeamData = ({ name, company_id }: TTeamGetParams) => {
+  return useQuery(
+    [`teams`, name, company_id],
+    () => teamController.read({ name, company_id }),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 };
 
 export const useTeamOne = (teamId: number | string | undefined): any => {

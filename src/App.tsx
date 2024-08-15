@@ -263,7 +263,7 @@ const App: React.FC = () => {
         admin_id
       ) {
         // taskSocket = new WebSocket(
-        //   `ws://10.10.10.19:8080/global/?user_id=${admin_id}`
+        //   `ws://10.10.10.64:8080/global/?user_id=${admin_id}`
         // );
         taskSocket = new WebSocket(
           `wss://api.tteld.co/global/?user_id=${admin_id}`

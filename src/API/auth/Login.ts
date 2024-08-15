@@ -32,11 +32,13 @@ export const LoginApi = async ({ username, password }: loginInterface) => {
     localStorage.setItem("refresh", data?.data.refresh);
     localStorage.setItem("admin_id", data?.data.id);
     document.location.replace("/");
-  } catch (err) {
+  } catch (err: any) {
     setTimeout(() => {
       message.error({
-        content: "Username or password incorrect!",
-        duration: 2,
+        content: err?.response?.data
+          ? err?.response?.data?.message
+          : "Username or password incorrect!!!",
+        duration: 8,
       });
     }, 1000);
   }

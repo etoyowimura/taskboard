@@ -11,7 +11,7 @@ import { Button, Input, Space } from "antd";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
   const showModal = () => {
     setOpen(true);
   };
@@ -21,7 +21,7 @@ const Customer = () => {
     name: search,
     is_active: undefined,
     page_size: 10,
-    page: page
+    page: page,
   });
 
   const Next = () => {
@@ -50,7 +50,7 @@ const Customer = () => {
   const theme = localStorage.getItem("theme") === "true" ? true : false;
   return (
     <div>
-      {open && <AddCustomer open={open} setOpen={setOpen} refetch={refetch} />}
+      {open && <AddCustomer open={open} setOpen={setOpen} />}
       <div className="header d-flex">
         <p className="title">Drivers</p>
         <button className="btn-add d-flex" onClick={showModal}>

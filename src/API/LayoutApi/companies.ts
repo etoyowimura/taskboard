@@ -52,7 +52,7 @@ export const companyController = {
     return data;
   },
 
-  async companyOne(Id: number | undefined) {
+  async companyOne(Id: number | string | undefined) {
     if (Id) {
       const { data } = await instance.get<TCompany>(`company/${Id}/`);
       return data;

@@ -2,6 +2,11 @@ import { TTeam } from "../../types/Team/TTeam";
 import instance from "../api";
 import { message } from "antd";
 
+export type TTeamGetParams = {
+  name?: string;
+  company_id?: string | number;
+};
+
 export type TTeamPutParams = {
   name?: string;
   is_active?: boolean;
@@ -13,8 +18,15 @@ export type TTeamPostParams = {
 };
 
 export const teamController = {
-  async read(name: string) {
-    const { data } = await instance.get<TTeam[]>(`teams/?name=${name}`);
+  async read(obj: TTeamGetParams) {
+    const params = { ...obj };
+
+    if (!!obj.company_id) params.company_id = obj.company_id;
+    if (!!obj.name) params.name = obj.name;
+
+    const { data } = await instance.get<TTeam[]>(`teams/`, {
+      params,
+    });
     return data;
   },
 

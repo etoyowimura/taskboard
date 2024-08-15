@@ -47,7 +47,7 @@ const UserEdit = () => {
     refetch();
     document.location.replace("/#/users/");
   };
-  const TeamData = useTeamData("");
+  const TeamData = useTeamData({});
   const noTeamOption = { label: " - - - - - -", value: "" };
   const TeamOption: { label: string; value: any }[] | undefined =
     TeamData?.data?.map((item) => ({

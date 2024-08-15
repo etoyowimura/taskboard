@@ -25,11 +25,14 @@ const AssignedEdit = ({ recordData, editOpen, setEditOpen }: any) => {
   const [customerName, setCustomerName] = useState<string>();
 
   const companyData = useCompanyData({ name: companyName });
-  const customerData = useCustomerByComanyData({
-    id: companyId,
-    name: customerName,
-  });
-
+  const customerData = useCustomerByComanyData(
+    {
+      name: customerName,
+      page: 1,
+      page_size: 5,
+    },
+    companyId
+  );
 
   const getImageSource = (source: string) => {
     switch (source) {
@@ -107,7 +110,7 @@ const AssignedEdit = ({ recordData, editOpen, setEditOpen }: any) => {
                 showSearch
                 placeholder="Search Driver"
                 onSearch={(value: any) => setCustomerName(value)}
-                options={customerData?.data?.map((item) => ({
+                options={customerData?.data?.data?.map((item) => ({
                   label: item?.name,
                   value: item?.id,
                 }))}

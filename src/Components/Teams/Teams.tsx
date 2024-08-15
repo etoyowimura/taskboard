@@ -6,7 +6,7 @@ import addicon from "../../assets/addiconpng.png";
 import AddTeam from "./AddTeam";
 
 const Team = () => {
-  const { data, isLoading, refetch } = useTeamData("");
+  const { data, isLoading, refetch } = useTeamData({});
   const [open, setOpen] = useState(false);
   const showModal = () => {
     setOpen(true);

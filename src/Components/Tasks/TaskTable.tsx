@@ -234,7 +234,11 @@ const TaskTable = ({
         },
         render: (item?: { title?: string; id: number }, record?: TTask) => (
           <Tooltip placement="topLeft" title={item?.title}>
-            {item?.title}
+            {item?.title === "Break" || item?.title === "PTI" ? (
+              <p className="status-Rejected">{item?.title}</p>
+            ) : (
+              <p style={{ textAlign: "center" }}>{item?.title}</p>
+            )}
           </Tooltip>
         ),
       },

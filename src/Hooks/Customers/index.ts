@@ -1,6 +1,5 @@
 import { useQuery } from "react-query";
 import {
-  TCustomerByCompanyGetParams,
   TCustomerGetParams,
   customerController,
 } from "../../API/LayoutApi/customers";
@@ -26,14 +25,13 @@ export const useCustomerData = ({
   );
 };
 
-export const useCustomerByComanyData = ({
-  name,
-  id,
-  for_driver_request,
-}: TCustomerByCompanyGetParams) => {
+export const useCustomerByComanyData = (
+  obj: TCustomerGetParams,
+  id?: number
+) => {
   return useQuery(
-    [`customers-by-company/${id}`, name, for_driver_request],
-    () => customerController.customerByCompany(id, name, for_driver_request),
+    [`customers-by-company/${id}`, obj],
+    () => customerController.customerByCompany(obj, id),
     { refetchOnWindowFocus: false }
   );
 };

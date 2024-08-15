@@ -117,7 +117,7 @@ const Task = ({
     }
   }, [socketData]);
 
-  const teamData = useTeamData("");
+  const teamData = useTeamData({});
 
   const teamOptions: { label: string; value: any }[] | undefined =
     teamData?.data?.map((item) => ({

@@ -33,10 +33,14 @@ const AddUpdate = ({
   const [companyId, setCompanyId] = useState<number>();
 
   const companyData = useCompanyData({ name: companyName });
-  const customerData = useCustomerByComanyData({
-    id: companyId,
-    name: customerName,
-  });
+  const customerData = useCustomerByComanyData(
+    {
+      name: customerName,
+      page: 1,
+      page_size: 10,
+    },
+    companyId
+  );
 
   function handlePaste(event: any) {
     const clipboardData = event.clipboardData || window.Clipboard;
@@ -117,7 +121,7 @@ const AddUpdate = ({
               showSearch
               placeholder="Search Driver"
               onSearch={(value: any) => setCustomerName(value)}
-              options={customerData?.data?.map((item) => ({
+              options={customerData?.data?.data?.map((item) => ({
                 label: item?.name,
                 value: item?.id,
               }))}

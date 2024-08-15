@@ -30,7 +30,7 @@ const Stat = () => {
   const [startDate, setStartDate] = useState(start_date);
   const [endDate, setEndDate] = useState(end_date);
 
-  const teamData = useTeamData("");
+  const teamData = useTeamData({});
   const teamOptions: { label: string; value: any }[] | undefined =
     teamData?.data?.map((item) => ({
       label: item?.name,

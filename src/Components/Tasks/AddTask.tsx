@@ -11,11 +11,10 @@ import {
   Col,
 } from "antd";
 import { taskController } from "../../API/LayoutApi/tasks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServiceData } from "../../Hooks/Services";
 import { UploadOutlined } from "@ant-design/icons";
 import { useTeamData } from "../../Hooks/Teams";
-import { useCompanyData } from "../../Hooks/Companies";
 import { useCustomerByComanyData } from "../../Hooks/Customers";
 // @ts-ignore
 import zippy from "../../assets/zippyicon.svg";
@@ -33,6 +32,10 @@ import AddCustomer from "../Customers/AddCustomer";
 import AddDriver from "../Companies/AddDriver";
 import TextArea from "antd/es/input/TextArea";
 import { isMobile } from "../../App";
+import { companyController } from "../../API/LayoutApi/companies";
+import { TCompany } from "../../types/Company/TCompany";
+import { customerController } from "../../API/LayoutApi/customers";
+import { TCustomer } from "../../types/Customer/TCustomer";
 
 const { Option } = Select;
 const AddTask = ({
@@ -48,19 +51,87 @@ const AddTask = ({
     setOpen(!open);
   };
   const [fileIds, setFileIds] = useState([]);
-  const [companyName, setCompanyName] = useState<string>();
+  const [searchCompanyName, setSearchCompanyName] = useState<string>("");
   const [customerName, setCustomerName] = useState<string>();
   const [companyId, setCompanyId] = useState<number>();
-  const ServiceData = useServiceData();
-
-  const TeamData = useTeamData("");
-  const companyData = useCompanyData({ name: companyName });
-  const customerData = useCustomerByComanyData({
-    id: companyId,
-    name: customerName,
-  });
-
   const [driverOpen, setDriverOpen] = useState(false);
+  const [openDrive, setOpenDrive] = useState(false);
+  const [companyData, setCompanyData] = useState<TCompany[]>();
+  const [customerData, setCustomerData] = useState<TCustomer[]>();
+  const ServiceData = useServiceData();
+  const TeamData = useTeamData({});
+
+  // company and driver search
+  useEffect(() => {
+    companyController
+      .readPaginated({ name: searchCompanyName, page: 1, page_size: 3 })
+      .then((data) => {
+        setCompanyData(data.data);
+      });
+  }, [searchCompanyName]);
+  // const customerData = useCustomerByComanyData(
+  //   { name: customerName, page: 1, page_size: 5 },
+  //   companyId
+  // );
+  // console.log(customerData.data);
+
+  // team select
+  useEffect(() => {
+    if (companyId) {
+      const selectedCompany = companyData?.find(
+        (item) => item.id === companyId
+      );
+      form.setFieldsValue({
+        assigned_to_id: selectedCompany?.team?.id || undefined,
+      });
+      customerController
+        .customerByCompany(
+          {
+            name: customerName,
+            page: 1,
+            page_size: 5,
+          },
+          companyId
+        )
+        .then((data) => {
+          setCustomerData(data.data);
+        });
+    }
+  }, [companyId]);
+
+  // service select
+  const serviceOptions = ServiceData?.data?.map((item) => ({
+    label: item?.title,
+    value: item?.id,
+  }));
+  const sortByLabel = (a: any, b: any) => {
+    if (a.label === "Shift") return -1;
+    if (b.label === "Shift") return 1;
+    return 0;
+  };
+
+  const noteOptions = [
+    { label: "No", value: "" },
+    { label: "Empty", value: "Empty" },
+    { label: "Bobtail", value: "Bobtail" },
+  ];
+  const [note, setNote] = useState("");
+  const onChange = ({ target: { value } }: RadioChangeEvent) => {
+    setNote(value);
+  };
+  const noteOptions2 = [
+    { label: "No", value: "" },
+    { label: "+1 soat", value: "+1 soat" },
+    { label: "+3 soat", value: "+3 soat" },
+  ];
+  const [note2, setNote2] = useState("");
+  const onChange2 = ({ target: { value } }: RadioChangeEvent) => {
+    setNote2(value);
+  };
+  const [text, setText] = useState("");
+  const changeText = (e: any) => {
+    setText(e.target.value);
+  };
 
   function handlePaste(event: any) {
     const clipboardData = event.clipboardData || window.Clipboard;
@@ -103,50 +174,9 @@ const AddTask = ({
         return tt;
     }
   };
-  const [openDrive, setOpenDrive] = useState(false);
-
-  const serviceOptions = ServiceData?.data?.map((item) => ({
-    label: item?.title,
-    value: item?.id,
-  }));
-  const sortByLabel = (a: any, b: any) => {
-    if (a.label === "Shift") return -1;
-    if (b.label === "Shift") return 1;
-    return 0;
-  };
-
-  const noteOptions = [
-    { label: "No", value: "" },
-    { label: "Empty", value: "Empty" },
-    { label: "Bobtail", value: "Bobtail" },
-  ];
-  const [note, setNote] = useState("");
-  const onChange = ({ target: { value } }: RadioChangeEvent) => {
-    setNote(value);
-  };
-  const noteOptions2 = [
-    { label: "No", value: "" },
-    { label: "+1 soat", value: "+1 soat" },
-    { label: "+3 soat", value: "+3 soat" },
-  ];
-  const [note2, setNote2] = useState("");
-  const onChange2 = ({ target: { value } }: RadioChangeEvent) => {
-    setNote2(value);
-  };
-  const [text, setText] = useState("");
-  const changeText = (e: any) => {
-    setText(e.target.value);
-  };
-
   return (
     <div onPaste={(event) => handlePaste(event)}>
-      {openDrive && (
-        <AddCustomer
-          refetch={customerData.refetch}
-          open={openDrive}
-          setOpen={setOpenDrive}
-        />
-      )}
+      {openDrive && <AddCustomer open={openDrive} setOpen={setOpenDrive} />}
       <AddDriver id={companyId} open={driverOpen} setOpen={setDriverOpen} />
       <Modal
         open={open}
@@ -184,8 +214,8 @@ const AddTask = ({
                 <Select
                   showSearch
                   placeholder="Search Company"
-                  onSearch={(value: any) => setCompanyName(value)}
-                  options={companyData?.data?.map((item) => ({
+                  onSearch={(value: any) => setSearchCompanyName(value)}
+                  options={companyData?.map((item) => ({
                     label: (
                       <div>
                         {item?.source && (
@@ -200,7 +230,7 @@ const AddTask = ({
                     ),
                     value: item?.id,
                   }))}
-                  value={companyName}
+                  value={searchCompanyName}
                   filterOption={false}
                   autoClearSearchValue={false}
                   allowClear
@@ -229,7 +259,7 @@ const AddTask = ({
                     showSearch
                     placeholder="Search Driver"
                     onSearch={(value: any) => setCustomerName(value)}
-                    options={customerData?.data?.map((item) => ({
+                    options={customerData?.map((item) => ({
                       label: item?.name,
                       value: item?.id,
                     }))}
@@ -248,6 +278,7 @@ const AddTask = ({
                     justifyContent: "space-between",
                     marginTop: isMobile ? 5 : 0,
                   }}
+                  disabled={!companyId}
                 >
                   {isMobile && <img src={addicon} alt="" />}
                   {!isMobile && "Add"}
@@ -277,10 +308,14 @@ const AddTask = ({
                 ]}
               >
                 <Select
+                  placeholder="Teams"
                   options={TeamData?.data?.map((item) => ({
                     label: item?.name,
                     value: item?.id,
                   }))}
+                  onChange={(value) =>
+                    form.setFieldsValue({ assigned_to_id: value })
+                  }
                 />
               </FormAnt.Item>
             </Col>

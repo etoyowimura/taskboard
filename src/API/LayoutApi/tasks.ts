@@ -96,6 +96,24 @@ export const taskController = {
       };
     }
   },
+  async taskPatchPatch(obj: TTasksPutParams, task_id: number | undefined) {
+    try {
+      const response = await instance.patch<TTask | TMessageResponse>(
+        `task/${task_id}/`,
+        obj
+      );
+      if (response.status === 202) {
+        const data = response.data as TMessageResponse;
+        message.success({ content: data.message });
+      }
+      return { data: response?.data as TTask, status: response?.status };
+    } catch (error: any) {
+      return {
+        data: error?.response?.data.data,
+        status: error?.response.status,
+      };
+    }
+  },
 
   async addTaskController(obj: TTasksPostParams) {
     const { data } = await instance.post<TTask>("task/", obj).then((u) => {

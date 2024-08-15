@@ -28,7 +28,7 @@ export const useCompanyPaginated = ({
   );
 };
 
-export const useCompanyOne = (id: number | undefined) => {
+export const useCompanyOne = (id: number | string | undefined) => {
   return useQuery(
     [`company/${id}/`, id],
     () => companyController.companyOne(id),

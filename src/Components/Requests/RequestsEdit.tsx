@@ -45,18 +45,22 @@ const RequestsEdit = ({
     page_size: 5,
     for_driver_request: true,
   });
-  const customerDataByCompany = useCustomerByComanyData({
-    id: companyId,
-    name: customerName,
-    for_driver_request: true,
-  });
+  const customerDataByCompany = useCustomerByComanyData(
+    {
+      name: customerName,
+      for_driver_request: true,
+    },
+    companyId
+  );
 
   useEffect(() => {
     if (companyId && customerDataByCompany) {
-      const newCustomerOption = customerDataByCompany.data?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      }));
+      const newCustomerOption = customerDataByCompany.data?.data?.map(
+        (item) => ({
+          label: item.name,
+          value: item.id,
+        })
+      );
 
       if (
         JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)

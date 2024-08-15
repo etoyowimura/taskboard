@@ -16,10 +16,9 @@ import tt from "../../assets/tticon.svg";
 const AddCustomer = ({
   open,
   setOpen,
-  refetch,
 }: {
   open: boolean;
-  refetch: any;
+
   setOpen(open: boolean): void;
 }) => {
   const [form] = FormAnt.useForm();
@@ -66,7 +65,6 @@ const AddCustomer = ({
                   setOpen(!open);
                 }
               });
-            refetch();
           });
         }}
       >
