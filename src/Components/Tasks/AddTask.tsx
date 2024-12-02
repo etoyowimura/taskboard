@@ -97,7 +97,7 @@ const AddTask = ({
           setCustomerData(data.data);
         });
     }
-  }, [companyId]);
+  }, [companyId, customerName]);
 
   // service select
   const serviceOptions = ServiceData?.data?.map((item) => ({

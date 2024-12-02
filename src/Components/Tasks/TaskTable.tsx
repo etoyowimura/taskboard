@@ -46,13 +46,11 @@ const TaskTable = ({
           const value = {
             status: "Checking",
           };
-          taskController
-            .taskPatch(value, record?.id)
-            .then((response: { data: TTask; status: number }) => {
-              if (response?.status == 403) {
-                showErrorModal(response);
-              }
-            });
+          taskController.taskPatch(value, record?.id).then((response: any) => {
+            if (response?.status == 403) {
+              showErrorModal(response);
+            }
+          });
         },
       });
     }
@@ -228,6 +226,7 @@ const TaskTable = ({
         title: "Service",
         dataIndex: "service",
         width: isMobile ? "5%" : "7%",
+        align: "center",
         key: "5",
         ellipsis: {
           showTitle: false,
@@ -246,6 +245,7 @@ const TaskTable = ({
         title: "Status",
         dataIndex: "status",
         width: isMobile ? "5%" : "8%",
+        align: "center",
         key: "6",
         ellipsis: {
           showTitle: false,
@@ -400,20 +400,27 @@ const TaskTable = ({
     return columns;
   }, [role]);
 
+  const dataSource = data?.characters?.map((u, i) => {
+    const createdMoment = moment(u?.created_at, "YYYY-MM-DD HH:mm:ss");
+    const isToday = createdMoment.isSame(moment(), "day");
+
+    return {
+      ...u,
+      no: i + 1,
+      created: isToday
+        ? `Today at ${createdMoment.format("HH:mm")}`
+        : createdMoment.format("DD.MM.YYYY HH:mm"),
+      key: u?.id,
+    };
+  });
+
   return (
     <div>
       <Table
         onRow={(record: any) => ({
           onClick: (event) => handleRowClick(record, event),
         })}
-        dataSource={data?.characters?.map((u, i) => ({
-          ...u,
-          no: i + 1,
-          created: moment(u?.created_at, "YYYY-MM-DD HH:mm:ss").format(
-            "DD.MM.YYYY HH:mm"
-          ),
-          key: u?.id,
-        }))}
+        dataSource={dataSource}
         size="small"
         columns={columns as any}
         pagination={false}
