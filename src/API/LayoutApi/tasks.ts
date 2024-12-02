@@ -116,10 +116,19 @@ export const taskController = {
   },
 
   async addTaskController(obj: TTasksPostParams) {
-    const { data } = await instance.post<TTask>("task/", obj).then((u) => {
-      return u;
-    });
-    return data;
+    try {
+      const { data, status } = await instance.post<TTask | TMessageResponse>(
+        "task/",
+        obj
+      );
+      if (status === 201) {
+        const datas = data as TMessageResponse;
+        message.success({ content: datas.message });
+      }
+      return data;
+    } catch (error) {
+      message.error({ content: "something went wrong" });
+    }
   },
 
   async addTaskFile(formData: TTaskPostFileParams) {
