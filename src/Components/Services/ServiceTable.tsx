@@ -72,6 +72,11 @@ const ServiceTable = ({
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
+        pagination={{
+          pageSize: 10,
+          size: "default",
+        }}
+        bordered
       />
     </div>
   );

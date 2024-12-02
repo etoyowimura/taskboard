@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddUpdate from "./AddUpdate";
-import { Select } from "antd";
+import { Select, Typography } from "antd";
 import UpdateTable from "./UpdateTable";
 import { useUpdateData } from "../../Hooks/Update";
 //@ts-ignore
@@ -27,14 +27,14 @@ const Update = () => {
     <div>
       {open && <AddUpdate refetch={refetch} open={open} setOpen={setOpen} />}
       <div className="header d-flex" style={{ marginBottom: 16 }}>
-        <p className="title">Updates</p>
+        <Typography className="title">Updates</Typography>
         <div className="d-flex">
           <button className="btn-add d-flex" onClick={showModal}>
             <img style={{ marginRight: 8 }} src={addicon} alt="" />
             Add
           </button>
           <button
-            className={`btn-refresh-${theme && "dark"} d-flex`}
+            className={`btn-refresh-${false && "dark"} d-flex`}
             onClick={() => {
               refetch();
             }}

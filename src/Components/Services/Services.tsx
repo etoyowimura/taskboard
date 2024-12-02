@@ -5,6 +5,7 @@ import ServiceTable from "./ServiceTable";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 import { role } from "../../App";
+import { Typography } from "antd";
 
 const Service = () => {
   const { data, isLoading, refetch } = useServiceData();
@@ -12,11 +13,12 @@ const Service = () => {
   const showModal = () => {
     setOpen(true);
   };
+
   return (
     <div>
       {open && <AddService refetch={refetch} open={open} setOpen={setOpen} />}
-      <div className="header d-flex">
-        <p className="title">Services</p>
+      <div className="header d-flex" style={{ marginBottom: "10px" }}>
+        <Typography className="title">Services</Typography>
         {role !== "Checker" && (
           <button onClick={showModal} className="btn-add d-flex">
             <img src={addicon} style={{ marginRight: 8 }} alt="" />

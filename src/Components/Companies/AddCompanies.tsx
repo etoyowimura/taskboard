@@ -57,7 +57,7 @@ const AddCompany = ({
       >
         <FormAnt
           form={form}
-          layout="horizontal"
+          layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
         >
@@ -80,7 +80,7 @@ const AddCompany = ({
               }))}
             />
           </FormAnt.Item>
-          <FormAnt.Item
+          {/* <FormAnt.Item
             label="Is Active"
             name="is_active"
             rules={[
@@ -88,7 +88,7 @@ const AddCompany = ({
             ]}
           >
             <Switch defaultChecked={true} />
-          </FormAnt.Item>
+          </FormAnt.Item> */}
           <FormAnt.Item
             label="USDOT"
             name="usdot"
@@ -108,6 +108,13 @@ const AddCompany = ({
             <Input />
           </FormAnt.Item>
         </FormAnt>
+        <FormAnt.Item
+          label="Is Active"
+          name="is_active"
+          rules={[{ required: false, message: "Please input company status!" }]}
+        >
+          <Switch defaultChecked={true} />
+        </FormAnt.Item>
       </Modal>
     </div>
   );

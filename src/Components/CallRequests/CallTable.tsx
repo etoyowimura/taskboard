@@ -81,27 +81,27 @@ const CallTable = ({
           {
             title: "Company",
             dataIndex: "company",
-            width: "20%",
+            // width: "20%",
           },
           {
             title: "Driver",
             dataIndex: "driver",
-            width: "20%",
+            // width: "20%",
           },
           {
             title: "Note",
             dataIndex: "note",
-            width: "15%",
+            // width: "15%",
           },
           {
             title: "Requested at",
             dataIndex: "time",
-            width: "15%",
+            // width: "15%",
           },
           {
             title: "Actions",
             dataIndex: "action",
-            width: "100px",
+            // width: "100px",
             render: (text, record) => {
               return (
                 <div>
@@ -133,6 +133,9 @@ const CallTable = ({
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
+        scroll={{ x: "768px" }}
+        pagination={{ pageSize: 10, size: "default" }}
+        bordered
       />
     </div>
   );

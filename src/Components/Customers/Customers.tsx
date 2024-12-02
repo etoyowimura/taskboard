@@ -6,8 +6,11 @@ import { useCustomerData } from "../../Hooks/Customers";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 // @ts-ignore
+import leftPagination from "../../assets/pagination-left.png";
+import rightPagination from "../../assets/right-pagination.png";
 import IconSearch from "../../assets/searchIcon.png";
-import { Button, Input, Space } from "antd";
+
+import { Button, Input, Space, Typography } from "antd";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
@@ -48,11 +51,12 @@ const Customer = () => {
     }, 1000);
   };
   const theme = localStorage.getItem("theme") === "true" ? true : false;
+
   return (
     <div>
       {open && <AddCustomer open={open} setOpen={setOpen} />}
       <div className="header d-flex">
-        <p className="title">Drivers</p>
+        <Typography className="title">Drivers</Typography>
         <button className="btn-add d-flex" onClick={showModal}>
           <img src={addicon} style={{ marginRight: 8 }} alt="" />
           Add Driver
@@ -70,16 +74,13 @@ const Customer = () => {
         </div>
       </div>
       <CustomerTable data={data?.data} isLoading={isLoading} />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button
-            type="primary"
-            icon={<StepBackwardOutlined />}
-            onClick={Previos}
-            disabled={!data?.previous}
-          ></Button>
+          <Button onClick={Previos} disabled={!data?.previous}>
+            <img src={leftPagination} />
+          </Button>
           <Input
-            style={{ width: 50, textAlign: "right" }}
+            style={{ width: 30, textAlign: "center" }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -88,14 +89,11 @@ const Customer = () => {
               }
             }}
           />
-          <Button
-            type="primary"
-            icon={<StepForwardOutlined />}
-            onClick={Next}
-            disabled={!data?.next}
-          ></Button>
+          <Button onClick={Next} disabled={!data?.next}>
+            <img src={rightPagination} />
+          </Button>
         </Space>
-      </Space>
+      </Space> */}
     </div>
   );
 };

@@ -548,6 +548,7 @@ const TaskModal = ({
               style={{ margin: "0 24px" }}
               loading={isLoading}
               size="small"
+              pagination={false}
               dataSource={data?.map((u, i) => ({
                 no: i + 1,
                 ...u,

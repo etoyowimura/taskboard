@@ -1,4 +1,16 @@
 import { useState } from "react";
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
 import { TProfilePutParams, prof } from "../../API/LayoutApi/profile";
 import {
   Button,
@@ -32,7 +44,7 @@ const Profile = () => {
   const [range, setRange] = useState<any>(1);
 
   const onSubmit = async (value: TProfilePutParams) => {
-    await prof.profPatch(value)
+    await prof.profPatch(value);
     refetch();
   };
 
@@ -62,6 +74,20 @@ const Profile = () => {
     start_date: startDate,
     end_date: endDate,
   });
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-EN", {
+      day: "2-digit",
+      month: "short",
+    }).format(date);
+  };
+
+  const chartData = lineData?.daily_stats.map((stat: any) => ({
+    date: formatDate(stat.date),
+    tasks: stat.number_of_tasks,
+  }));
+
   return (
     <div>
       <Spin size="large" spinning={!data}>
@@ -84,40 +110,40 @@ const Profile = () => {
                       onFinish={onSubmit}
                     >
                       <Row gutter={[16, 10]}>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={8} lg={6}>
                           <Form.Item
                             wrapperCol={{ span: "100%" }}
                             label="First name"
                             name="first_name"
                           >
-                            <Input />
+                            <Input placeholder="Enter first name" />
                           </Form.Item>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={8} lg={6}>
                           <Form.Item
                             wrapperCol={{ span: "100%" }}
                             label="Last name"
                             name="last_name"
                           >
-                            <Input />
+                            <Input placeholder="Enter last name" />
                           </Form.Item>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={8} lg={6}>
                           <Form.Item
                             wrapperCol={{ span: "100%" }}
                             label="Username"
                             name="username"
                           >
-                            <Input />
+                            <Input placeholder="Enter username" />
                           </Form.Item>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={8} lg={6}>
                           <Form.Item
                             wrapperCol={{ span: "100%" }}
                             label="E-mail"
                             name="email"
                           >
-                            <Input />
+                            <Input placeholder="Enter email" />
                           </Form.Item>
                         </Col>
                       </Row>
@@ -138,7 +164,7 @@ const Profile = () => {
                     >
                       <Row gutter={[16, 10]}>
                         {data && data.team !== "" && (
-                          <Col span={6}>
+                          <Col>
                             <Form.Item
                               wrapperCol={{ span: "100%" }}
                               label="Team"
@@ -161,40 +187,111 @@ const Profile = () => {
                     >
                       <RangePicker onCalendarChange={datePick} />
                     </div>
+
                     <div
                       style={{
                         display: "flex",
-                        width: "100%",
-                        height: "70vh",
+                        alignItems: "start",
+                        justifyContent: "space-between",
+                        gap: 15,
+                        marginTop: 35,
                       }}
                     >
                       <div
                         style={{
-                          marginBottom: 50,
-                          marginTop: 20,
-                          marginLeft: 30,
-                          width: "80%",
+                          width: 156,
+                          height: 330,
                           display: "flex",
-                          justifyContent: "space-between",
+                          flexDirection: "column",
+                          gap: 15,
                         }}
                       >
-                        <p className="card_stat">
-                          Average:{" "}
+                        <div
+                          className="card_stat"
+                          style={{ backgroundColor: "#F99E2C" }}
+                        >
+                          <p>Total</p>
+                          <span>{lineData?.total_for_period} </span>
+                          <p>
+                            {role === "Owner" || role === "Tech Support"
+                              ? "Tasks"
+                              : "Points"}
+                          </p>
+                        </div>
+                        <div
+                          className="card_stat"
+                          style={{ backgroundColor: "#409CFF" }}
+                        >
+                          <p>Average</p>
                           <span>{lineData?.avg_stats_for_period} </span>
-                          {role === "Owner" ? "tasks" : "pts"}/day
-                        </p>
-                        <p className="card_stat">
-                          Total: <span>{lineData?.total_for_period} </span>
-                          {role === "Owner" ? "tasks" : "pts"}
-                        </p>
-                        <p className="card_stat">
-                          Contribution: <span>{lineData?.contribution}</span>%
-                        </p>
+                          <p>
+                            {role === "Owner" || role === "Tech Support"
+                              ? "Tasks a day"
+                              : "Points a day"}{" "}
+                          </p>
+                        </div>
+                      </div>
+
+                      <ResponsiveContainer
+                        width="100%"
+                        height={370}
+                        style={{ textTransform: "capitalize" }}
+                      >
+                        <LineChart data={chartData}>
+                          <CartesianGrid vertical={false} stroke="#D7D8E080" />
+                          <XAxis
+                            dataKey="date"
+                            style={{
+                              color: "#9B9DAA",
+                              fontSize: 10,
+                              lineHeight: "12.4px",
+                              fontWeight: 400,
+                            }}
+                          />
+                          <YAxis
+                            style={{
+                              color: "#9B9DAA",
+                              fontSize: 10,
+                              fontWeight: 400,
+                            }}
+                          />
+                          <Tooltip />
+                          <Legend />
+                          <Line
+                            dataKey="tasks"
+                            stroke="#F99E2C"
+                            activeDot={{ r: 7 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                      <div
+                        style={{
+                          width: 156,
+                          height: 330,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 15,
+                        }}
+                      >
+                        <div
+                          className="card_stat"
+                          style={{ backgroundColor: "#9B51E0" }}
+                        >
+                          <p>Contribution</p>
+                          <span>{lineData?.contribution}%</span>
+                          <p>
+                            {" "}
+                            {role === "Owner" || role === "Tech Support"
+                              ? "to Business"
+                              : `to ${data?.team}`}{" "}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </Space>
               </TabPane>
+
               <TabPane tab={<span>History</span>} key="2">
                 <Select
                   style={{ width: "20%", marginBottom: 10 }}
@@ -255,6 +352,7 @@ const Profile = () => {
                       key: "timestamp",
                     },
                   ]}
+                  scroll={{ x: "768px" }}
                 />
               </TabPane>
               <TabPane tab={<span>Change Password</span>} key="3">

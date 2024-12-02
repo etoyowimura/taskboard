@@ -75,7 +75,7 @@ export const superItems: TItems[] = [
   },
   {
     path: "/stats/",
-    component: <Stat />,
+    component: <Stat />, 
     key: "/stats/",
   },
   {

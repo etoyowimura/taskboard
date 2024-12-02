@@ -108,10 +108,10 @@ const Login: React.FC = () => {
                     Log In
                   </Button>
                   <h5>
-                    <Link to='/auth/reset_password'>Forgot password?</Link>
+                    <Link to="/auth/reset_password">Forgot password?</Link>
                     <br />
                     Don't have an account?
-                    <Link to='/auth/register'> Create one now</Link>
+                    <Link to="/auth/register"> Create one now</Link>
                   </h5>
                 </Space>
               </form>

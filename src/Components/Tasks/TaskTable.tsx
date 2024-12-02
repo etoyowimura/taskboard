@@ -136,28 +136,28 @@ const TaskTable = ({
 
   const columns = useMemo(() => {
     const columns = [
-      {
-        title: "",
-        dataIndex: "no",
-        width: isMobile ? "1%" : "5%",
-        fixed: isMobile ? "left" : false,
-        key: "1",
-        render: (text: any, record: TTask) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-around",
-            }}
-          >
-            {record?.via_telegram && (
-              <Tooltip placement="topLeft" title={"Created via Telegram"}>
-                <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
-              </Tooltip>
-            )}
-          </div>
-        ),
-      },
+      // {
+      //   title: "",
+      //   dataIndex: "no",
+      //   width: isMobile ? "1%" : "3.5%",
+      //   fixed: isMobile ? "left" : false,
+      //   key: "1",
+      //   render: (text: any, record: TTask) => (
+      //     <div
+      //       style={{
+      //         display: "flex",
+      //         alignItems: "center",
+      //         justifyContent: "space-around",
+      //       }}
+      //     >
+      //       {record?.via_telegram && (
+      //         <Tooltip placement="topLeft" title={"Created via Telegram"}>
+      //           <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
+      //         </Tooltip>
+      //       )}
+      //     </div>
+      //   ),
+      // },
       {
         title: (
           <div
@@ -171,7 +171,7 @@ const TaskTable = ({
           </div>
         ),
         dataIndex: "no",
-        width: isMobile ? "1%" : "5%",
+        width: isMobile ? "1%" : "3.5%",
         fixed: isMobile ? "left" : false,
         key: "2",
         render: (text?: any, record?: TTask) => (
@@ -263,7 +263,7 @@ const TaskTable = ({
       {
         title: "Team",
         dataIndex: "assigned_to",
-        width: isMobile ? "5%" : "8%",
+        width: isMobile ? "3%" : "7%",
         key: "7",
         ellipsis: {
           showTitle: false,
@@ -277,7 +277,7 @@ const TaskTable = ({
       {
         title: "Assignee",
         dataIndex: "in_charge",
-        width: isMobile ? "5%" : "12%",
+        width: isMobile ? "4%" : "9%",
         key: "8",
         ellipsis: {
           showTitle: false,
@@ -291,7 +291,7 @@ const TaskTable = ({
       {
         title: "PTI",
         dataIndex: "pti",
-        width: "6%",
+        width: "8%",
         key: "8",
         responsive: ["lg"],
         render: (pti: boolean, record: TTask) =>
@@ -308,7 +308,7 @@ const TaskTable = ({
       {
         title: "Note",
         dataIndex: "note",
-        width: "12%",
+        width: "10%",
         key: "9",
         responsive: ["lg"],
         ellipsis: {
@@ -338,7 +338,7 @@ const TaskTable = ({
       {
         title: "Actions",
         dataIndex: "action",
-        width: isMobile ? "3%" : "8%",
+        width: isMobile ? "3%" : "10%",
         key: "11",
         fixed: isMobile ? "right" : false,
         render: (text: string, record: TTask) => {
@@ -414,15 +414,16 @@ const TaskTable = ({
           ),
           key: u?.id,
         }))}
-        size="small"
         columns={columns as any}
-        pagination={false}
+        size="small"
         loading={isLoading}
         rowClassName={rowClassName}
-        scroll={
-          isMobile ? { x: "calc(800px + 40%)" } : { x: "calc(0px + 100%)" }
-        }
+        scroll={{ x: "768px" }}
         bordered
+        pagination={{
+          pageSize: 10,
+          size: "default",
+        }}
       />
     </div>
   );

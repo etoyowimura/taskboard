@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRequestsData } from "../../Hooks/Requests";
 import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
-import { Button, Input, Radio, RadioChangeEvent, Space } from "antd";
+import {
+  Button,
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Space,
+  Typography,
+} from "antd";
 import { TRequests } from "../../types/Requests/TRequests";
 import { TSocket } from "../../types/common/TSocket";
 import RequestsEdit from "./RequestsEdit";
@@ -79,9 +86,9 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
         />
       )}
       <div className="header d-flex">
-        <p className="title">Requests</p>
+        <Typography className="title">Requests</Typography>
       </div>
-      <div className="filter d-flex">
+      <div className="filter d-flex requests-filter ">
         <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
@@ -95,7 +102,7 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
           onChange={(e: RadioChangeEvent) => setStatus(e.target.value)}
           size="middle"
           value={status}
-          style={{ marginLeft: 20 }}
+          className="request-radio-group"
         >
           <Radio.Button value={"Pending"}>Pending</Radio.Button>
           <Radio.Button value={"Assigned"}>Assigned</Radio.Button>
@@ -109,16 +116,14 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
         setOpenModal={setModalOpen}
         setRequestData={setRequestData}
       />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+
+      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button
-            type="primary"
-            icon={<StepBackwardOutlined />}
-            onClick={Previos}
-            disabled={data?.previous ? false : true}
-          ></Button>
+          <Button onClick={Previos} disabled={data?.previous ? false : true}>
+            <img src={leftPagination} />
+          </Button>
           <Input
-            style={{ width: 50, textAlign: "right" }}
+            style={{ width: 30, textAlign: "center" }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -127,14 +132,11 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
               }
             }}
           />
-          <Button
-            type="primary"
-            icon={<StepForwardOutlined />}
-            onClick={Next}
-            disabled={data?.next ? false : true}
-          ></Button>
+          <Button onClick={Next} disabled={data?.next ? false : true}>
+            <img src={rightPagination} />
+          </Button>
         </Space>
-      </Space>
+      </Space> */}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { Input, Modal, Form as FormAnt, Select, Upload } from "antd";
 import { updateController } from "../../API/LayoutApi/update";
 import { useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
+import fileUpload from "../../assets/upload-file.png";
 import { useCompanyData } from "../../Hooks/Companies";
 import { useCustomerByComanyData } from "../../Hooks/Customers";
 import {
@@ -10,6 +10,7 @@ import {
   RefetchQueryFilters,
 } from "react-query";
 import { TUpdate } from "../../types/Update/TUpdate";
+import TextArea from "antd/es/input/TextArea";
 const { Option } = Select;
 const AddUpdate = ({
   refetch,
@@ -86,7 +87,7 @@ const AddUpdate = ({
       >
         <FormAnt
           form={form}
-          layout="horizontal"
+          layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
         >
@@ -110,52 +111,70 @@ const AddUpdate = ({
               onChange={(value: any) => setCompanyId(value)}
             />
           </FormAnt.Item>
-          <FormAnt.Item
-            label="Driver"
-            name="customer_id"
-            rules={[
-              { required: false, message: "Please input service points!" },
-            ]}
+
+          <div
+            style={{
+              display: "flex",
+              gap: 5,
+              width: "100%",
+              justifyContent: "space-between",
+            }}
           >
-            <Select
-              showSearch
-              placeholder="Search Driver"
-              onSearch={(value: any) => setCustomerName(value)}
-              options={customerData?.data?.data?.map((item) => ({
-                label: item?.name,
-                value: item?.id,
-              }))}
-              value={customerName}
-              filterOption={false}
-              autoClearSearchValue={false}
-              allowClear
-            />
-          </FormAnt.Item>
+            <FormAnt.Item
+              style={{ width: "50%" }}
+              label="Driver"
+              name="customer_id"
+              rules={[
+                { required: false, message: "Please input service points!" },
+              ]}
+            >
+              <Select
+                showSearch
+                placeholder="Search Driver"
+                onSearch={(value: any) => setCustomerName(value)}
+                options={customerData?.data?.data?.map((item) => ({
+                  label: item?.name,
+                  value: item?.id,
+                }))}
+                value={customerName}
+                filterOption={false}
+                autoClearSearchValue={false}
+                allowClear
+              />
+            </FormAnt.Item>
+
+            <FormAnt.Item
+              style={{ width: "50%" }}
+              label="Status"
+              name="status"
+              rules={[
+                { required: false, message: "Please input service points!" },
+              ]}
+            >
+              <Select defaultValue="New">
+                <Option value="New">New</Option>
+                <Option value="In Progress">In Progress</Option>
+                <Option value="Done">Done</Option>
+                <Option value="Paper">Paper</Option>
+                <Option value="Setup">Setup</Option>
+              </Select>
+            </FormAnt.Item>
+          </div>
           <FormAnt.Item
             label="Note"
             name="note"
             rules={[{ required: true, message: "Make note!" }]}
           >
-            <Input />
-          </FormAnt.Item>
-          <FormAnt.Item
-            label="Status"
-            name="status"
-            rules={[
-              { required: false, message: "Please input service points!" },
-            ]}
-          >
-            <Select defaultValue="New" style={{ width: 120 }}>
-              <Option value="New">New</Option>
-              <Option value="In Progress">In Progress</Option>
-              <Option value="Done">Done</Option>
-              <Option value="Paper">Paper</Option>
-              <Option value="Setup">Setup</Option>
-            </Select>
+            {/* <Input /> */}
+            <TextArea
+              placeholder="Enter notes here"
+              autoSize={{ minRows: 3, maxRows: 5 }}
+              style={{ padding: "7px 11px" }}
+            />
           </FormAnt.Item>
         </FormAnt>
         <FormAnt>
-          <FormAnt.Item label="File" name="attachment">
+          <FormAnt.Item name="attachment">
             <Upload.Dragger
               name="file"
               multiple={true}
@@ -181,10 +200,18 @@ const AddUpdate = ({
               }}
             >
               <p className="ant-upload-drag-icon">
-                <UploadOutlined style={{ color: "#36cfc9" }} />
+                <img src={fileUpload} alt="upload" />
               </p>
-              <p className="ant-upload-text" style={{ color: "#36cfc9" }}>
-                Click or drag file to this area to upload
+              <p
+                className="ant-upload-text"
+                style={{ color: "#9b9daa", fontSize: 14 }}
+              >
+                Drag and drop files or{" "}
+                <span style={{ color: "#f99e2c" }}>Click to select</span>
+                <br />
+                <span style={{ fontSize: 13, color: "#9b9daa" }}>
+                  Maximum file size is 10 MB
+                </span>
               </p>
             </Upload.Dragger>
           </FormAnt.Item>

@@ -51,11 +51,13 @@ const StatTable = ({
           },
         ]}
         pagination={{
-          pageSize: 14,
+          pageSize: 10,
+          size: "default",
         }}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
+        bordered
       />
     </div>
   );

@@ -1,4 +1,3 @@
-
 import { Button, Result } from "antd";
 import { Link } from "react-router-dom";
 const Notfound = () => {

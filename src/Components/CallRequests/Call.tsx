@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import CallTable from "./CallTable";
-import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useCallData } from "../../Hooks/CallRequests";
-import { Button, Input, Radio, RadioChangeEvent, Space } from "antd";
+import {
+  Button,
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Space,
+  Typography,
+} from "antd";
 import { TCall } from "../../types/CallRequests/TCall";
 import { TSocket } from "../../types/common/TSocket";
 
@@ -15,6 +21,8 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
     page: page,
     page_size: 10,
   });
+
+  const theme = localStorage.getItem("theme") === "true" ? true : false;
 
   useEffect(() => {
     setTableData(data?.data);
@@ -74,7 +82,7 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
     <div>
       <div>
         <div className="header d-flex">
-          <p className="title">Call Requests</p>
+          <Typography className="title">Call Requests</Typography>
         </div>
         <div className="filter d-flex">
           <Radio.Group
@@ -89,16 +97,14 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
         </div>
       </div>
       <CallTable data={tableData} isLoading={isLoading} refetch={refetch} />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+
+      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button
-            type="primary"
-            icon={<StepBackwardOutlined />}
-            onClick={Previos}
-            disabled={data?.previous ? false : true}
-          ></Button>
+          <Button onClick={Previos} disabled={data?.previous ? false : true}>
+            <img src={leftPagination} />
+          </Button>
           <Input
-            style={{ width: 50, textAlign: "right" }}
+            style={{ width: 30, textAlign: "center" }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -107,14 +113,11 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
               }
             }}
           />
-          <Button
-            type="primary"
-            icon={<StepForwardOutlined />}
-            onClick={Next}
-            disabled={data?.next ? false : true}
-          ></Button>
+          <Button onClick={Next} disabled={data?.next ? false : true}>
+            <img src={rightPagination} />
+          </Button>
         </Space>
-      </Space>
+      </Space> */}
     </div>
   );
 };

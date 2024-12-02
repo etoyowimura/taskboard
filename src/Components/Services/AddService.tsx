@@ -1,7 +1,7 @@
 import { Input, Modal, Form as FormAnt } from "antd";
 import { serviceController } from "../../API/LayoutApi/services";
 
-const AddService = ({  
+const AddService = ({
   open,
   setOpen,
   refetch,
@@ -40,16 +40,14 @@ const AddService = ({
       >
         <FormAnt
           form={form}
-          layout="horizontal"
+          layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
         >
           <FormAnt.Item
             label="Title"
             name="title"
-            rules={[
-              { required: true, message: "Please input service title!" },
-            ]}
+            rules={[{ required: true, message: "Please input service title!" }]}
           >
             <Input />
           </FormAnt.Item>

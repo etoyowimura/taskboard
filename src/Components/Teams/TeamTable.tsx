@@ -56,6 +56,8 @@ const TeamTable = ({
           dataIndex: "created",
         },
       ]}
+      pagination={{ pageSize: 10, size: "default" }}
+      bordered
     />
   );
 };

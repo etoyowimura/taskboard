@@ -292,6 +292,9 @@ const UpdateTable = ({
         }
         loading={isLoading}
         size="small"
+        scroll={{ x: "768px" }}
+        pagination={{ pageSize: 10, size: "default" }}
+        bordered
       />
     </div>
   );

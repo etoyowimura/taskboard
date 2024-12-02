@@ -11,7 +11,14 @@ import { TStatTeam } from "../../types/Statistic/TStat";
 import StatTable from "./StatisticTable";
 import StatTeamTable from "./StatisticTeamTable";
 import dayjs from "dayjs";
-import { Button, DatePicker, DatePickerProps, Select, Tabs } from "antd";
+import {
+  Button,
+  DatePicker,
+  DatePickerProps,
+  Select,
+  Tabs,
+  Typography,
+} from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
@@ -113,15 +120,18 @@ const Stat = () => {
   const theme = localStorage.getItem("theme") === "true" ? true : false;
   return (
     <div>
-      <div className="header d-flex" style={{ marginBottom: 16 }}>
-        <p className="title">Statistics</p>
-        <div className="">
+      <div
+        className="header d-flex  statistics-header "
+        style={{ marginBottom: 16 }}
+      >
+        <Typography className="title">Statistics</Typography>
+        <div>
           <DatePicker
             onChange={onChangeDate}
             picker="month"
             format={"MMMM"}
             defaultValue={now}
-            style={{ marginRight: 10, width: 120 }}
+            style={{ marginRight: 10, width: 120, marginBottom: 10 }}
           />
           <RangePicker style={{ width: 260 }} onCalendarChange={datePick} />
         </div>
@@ -156,7 +166,11 @@ const Stat = () => {
             isLoading={isLoading}
             refetch={refetch}
           />
-          <Button type="primary" onClick={(e) => handleSave("team")}>
+          <Button
+            type="primary"
+            onClick={(e) => handleSave("team")}
+            style={{ marginTop: 10 }}
+          >
             Save as file
           </Button>
         </TabPane>

@@ -160,6 +160,9 @@ const RequestsTable = ({
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
+        scroll={{ x: "768px" }}
+        pagination={{ pageSize: 10, size: "default" }}
+        bordered
       />
     </div>
   );

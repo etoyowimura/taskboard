@@ -24,7 +24,9 @@ const AddUser = ({
     setOpen(!open);
   };
   const roleData = useRoleData();
-  const filteredRoleData = roleData?.data?.filter(role => role.name !== 'Owner');
+  const filteredRoleData = roleData?.data?.filter(
+    (role) => role.name !== "Owner"
+  );
 
   return (
     <div>
@@ -49,7 +51,7 @@ const AddUser = ({
       >
         <FormAnt
           form={form}
-          layout="horizontal"
+          layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
         >
@@ -72,7 +74,7 @@ const AddUser = ({
             rules={[{ required: true }]}
           >
             <Select
-              options={filteredRoleData?.map(role => ({
+              options={filteredRoleData?.map((role) => ({
                 label: role.name,
                 value: role.id,
               }))}

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import AddTask from "./AddTask";
-import { Button, Input, Select, Space } from "antd";
+import { Button, Input, Select, Space, Typography } from "antd";
 import TaskTable from "./TaskTable";
 import { useTeamData } from "../../Hooks/Teams";
-import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useTasks } from "../../Hooks/Tasks";
 import { TTask } from "../../types/Tasks/TTasks";
 import { isMobile, role, team_id } from "../../App";
@@ -211,7 +210,11 @@ const Task = ({
       )}
       <div className="header d-flex">
         <div className="header-title d-flex">
-          <p className="title">Tasks</p>
+          {/* <p className="title " style={{ color: theme ? "#fff" : "#000" }}>
+            Tasks
+          </p> */}
+
+          <Typography className="title">Tasks</Typography>
         </div>
         <div className="d-flex">
           {role !== "Checker" && (
@@ -225,7 +228,7 @@ const Task = ({
             </button>
           )}
           <button
-            className={`btn-refresh-${theme && "dark"} d-flex`}
+            className={`btn-refresh-${false && "dark"} d-flex`}
             onClick={() => {
               refetch();
               if (!isLive) {
@@ -259,7 +262,7 @@ const Task = ({
             marginTop: isMobile ? 10 : 0,
             marginBottom: isMobile ? 10 : 0,
           }}
-          placeholder="status"
+          placeholder="Status"
           onChange={(value: any) => setStatus(value)}
           mode="multiple"
         >
@@ -271,7 +274,7 @@ const Task = ({
           <Select
             mode="multiple"
             style={{ width: 260, marginLeft: 12 }}
-            placeholder="team"
+            placeholder="Team"
             onChange={(value: any) => setTeam(value)}
             options={teamOptions}
           />
@@ -284,16 +287,14 @@ const Task = ({
         showErrorModal={showErrorModal}
         setErrorModal={setErrorModal}
       />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button
-            type="primary"
-            icon={<StepBackwardOutlined />}
-            onClick={Previos}
-            disabled={data?.previous ? false : true}
-          ></Button>
+          <Button onClick={Previos} disabled={data?.previous ? false : true}>
+            <img src={leftPagination} />
+          </Button>
+
           <Input
-            style={{ width: 50, textAlign: "right" }}
+            style={{ width: 30, textAlign: "center" }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -302,14 +303,12 @@ const Task = ({
               }
             }}
           />
-          <Button
-            type="primary"
-            icon={<StepForwardOutlined />}
-            onClick={Next}
-            disabled={data?.next ? false : true}
-          ></Button>
+
+          <Button onClick={Next} disabled={data?.next ? false : true}>
+            <img src={rightPagination} />
+          </Button>
         </Space>
-      </Space>
+      </Space> */}
     </div>
   );
 };

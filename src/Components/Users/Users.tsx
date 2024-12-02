@@ -6,6 +6,7 @@ import UserTable from "./UserTable";
 import IconSearch from "../../assets/searchIcon.png";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
+import { Typography } from "antd";
 
 const User = () => {
   const [open, setOpen] = useState(false);
@@ -30,11 +31,12 @@ const User = () => {
     }, 1000);
   };
   const theme = localStorage.getItem("theme") === "true" ? true : false;
+
   return (
     <div>
       {open && <AddUser open={open} setOpen={setOpen} refetch={refetch} />}
       <div className="header d-flex">
-        <p className="title">Users</p>
+        <Typography className="title">Users</Typography>
         <button
           className="btn-add d-flex"
           style={{ marginRight: 0 }}

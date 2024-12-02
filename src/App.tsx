@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import { Layout, Menu, ConfigProvider, Dropdown, notification } from "antd";
+import {
+  Layout,
+  Menu,
+  ConfigProvider,
+  Dropdown,
+  notification,
+  Button,
+} from "antd";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { mainItems, superItems } from "./Utils/sidebar";
 import Login from "./Auth/Login";
@@ -9,6 +16,8 @@ import { LogoutApi } from "./API/auth/Logout";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 // @ts-ignore
+import TT_ELD from "./assets/tticon.svg";
+import collapsedIcon from "./assets/collapsed.png";
 import themeBtn from "./assets/theme-btn.svg";
 // @ts-ignore
 import avatar from "./assets/avatar-img.svg";
@@ -44,6 +53,7 @@ import Requests from "./Components/Requests/Requests";
 import { callController } from "./API/LayoutApi/callrequests";
 import Call from "./Components/CallRequests/Call";
 import { dark, light } from "./Utils/styles";
+// import Input from "antd/es/input/Input";
 const { Header, Sider, Content } = Layout;
 const userJSON: any = localStorage.getItem("user");
 const userObject = JSON.parse(userJSON);
@@ -265,8 +275,9 @@ const App: React.FC = () => {
         // taskSocket = new WebSocket(
         //   `ws://10.10.10.64:8080/global/?user_id=${admin_id}`
         // );
+        // taskSocket = new WebSocket(`wss://api.tteld.co/global/?user_id=${admin_id}`);
         taskSocket = new WebSocket(
-          `wss://api.tteld.co/global/?user_id=${admin_id}`
+          `wss://ontime-socket.tteld.co/global/?user_id=${admin_id}`
         );
 
         taskSocket.addEventListener("open", (event) => {
@@ -290,6 +301,28 @@ const App: React.FC = () => {
   useEffect(() => {
     connect();
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
 
   // function checkConnection() {
   //   if (!isLive) {
@@ -354,22 +387,41 @@ const App: React.FC = () => {
             ) : (
               <Sider
                 theme={"dark"}
-                collapsible
                 collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
+                onCollapse={toggleCollapsed}
                 style={{
                   height: "100vh",
                   background:
                     theme === true ? "#202020" : "rgba(20, 22, 41, 1)",
                 }}
               >
-                <p
-                  onClick={rep}
-                  style={{ cursor: "pointer" }}
-                  className={collapsed ? "logo-collapsed" : "logo"}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                  }}
                 >
-                  TT ELD
-                </p>
+                  <p
+                    onClick={rep}
+                    style={{ cursor: "pointer" }}
+                    className={collapsed ? "logo-collapsed" : "logo"}
+                  >
+                    {collapsed ? (
+                      <img
+                        className="tt-icon-collapsed"
+                        src={TT_ELD}
+                        alt="Icon"
+                      />
+                    ) : (
+                      "TT ELD"
+                    )}
+                  </p>
+                  <button onClick={toggleCollapsed} style={{ all: "unset" }}>
+                    <img src={collapsedIcon} />
+                  </button>
+                </div>
+
                 <Menu
                   theme={"dark"}
                   mode="inline"
@@ -404,8 +456,7 @@ const App: React.FC = () => {
                   className="site-layout-background"
                   style={{
                     padding: 0,
-                    background:
-                      theme === true ? "#202020" : "rgba(215, 216, 224, 1)",
+                    background: theme === true ? "#202020" : "#F5F5F8",
                     display: "flex",
                     justifyContent: "end",
                     alignItems: "center",
@@ -482,7 +533,7 @@ const App: React.FC = () => {
                   padding: 24,
                   minHeight: "92vh",
                   maxHeight: "calc(90vh - 10px)",
-                  overflowY: "scroll",
+                  overflowY: "auto",
                   background: theme === true ? "#202020" : "#fff",
                 }}
               >

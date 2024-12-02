@@ -93,7 +93,13 @@ function CustomerTable({
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
-        pagination={false}
+        size="middle"
+        bordered
+        pagination={{
+          pageSize: 10,
+          size: "default",
+        }}
+        scroll={{ x: "768px" }}
       />
     </div>
   );

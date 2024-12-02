@@ -41,7 +41,7 @@ const AddTeam = ({
       >
         <FormAnt
           form={form}
-          layout="horizontal"
+          layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
         >

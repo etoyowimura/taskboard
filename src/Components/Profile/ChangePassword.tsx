@@ -12,10 +12,10 @@ const ChangePassword = () => {
   };
 
   return (
-    <div style={{ width: 500 }}>
+    <div style={{ width: 350 }}>
       <FormAnt
         form={form}
-        layout="horizontal"
+        layout="vertical"
         name="form_in_modal"
         initialValues={{ modifier: "public" }}
       >

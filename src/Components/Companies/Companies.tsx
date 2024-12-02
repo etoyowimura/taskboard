@@ -3,14 +3,13 @@ import AddCompany from "./AddCompanies";
 import CompanyTable from "./CompaniesTable";
 import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
 import { useCompanyPaginated } from "../../Hooks/Companies";
-import { Button, Input, Space } from "antd";
+import { Button, Input, Space, Typography } from "antd";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
-import { role } from "../../App";
 
-const theme = localStorage.getItem("theme") === "true" ? true : false;
+import { role } from "../../App";
 
 const Company = () => {
   const [open, setOpen] = useState(false);
@@ -51,11 +50,13 @@ const Company = () => {
     }
   };
 
+  const theme = localStorage.getItem("theme") === "true" ? true : false;
+
   return (
     <div>
       {open && <AddCompany open={open} refetch={refetch} setOpen={setOpen} />}
       <div className="header d-flex">
-        <h1 className="title">Companies</h1>
+        <Typography className="title">Companies</Typography>
         {role !== "Checker" && (
           <button
             style={{ marginRight: 0 }}
@@ -80,16 +81,13 @@ const Company = () => {
       </div>
 
       <CompanyTable data={data?.data} isLoading={isLoading} />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button
-            type="primary"
-            icon={<StepBackwardOutlined />}
-            onClick={Previos}
-            disabled={data?.previous ? false : true}
-          ></Button>
+          <Button onClick={Previos} disabled={data?.previous ? false : true}>
+            <img src={leftPagination} />
+          </Button>
           <Input
-            style={{ width: 50, textAlign: "right" }}
+            style={{ width: 30, textAlign: "center" }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -98,14 +96,11 @@ const Company = () => {
               }
             }}
           />
-          <Button
-            type="primary"
-            icon={<StepForwardOutlined />}
-            onClick={Next}
-            disabled={data?.next ? false : true}
-          ></Button>
+          <Button onClick={Next} disabled={data?.next ? false : true}>
+            <img src={rightPagination} />
+          </Button>
         </Space>
-      </Space>
+      </Space> */}
     </div>
   );
 };

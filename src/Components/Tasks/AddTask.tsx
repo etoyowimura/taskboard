@@ -28,6 +28,9 @@ import ontime from "../../assets/ontimeicon.svg";
 import tt from "../../assets/tticon.svg";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
+//ts-ignore
+import fileUpload from "../../assets/upload-file.png";
+
 import AddCustomer from "../Customers/AddCustomer";
 import AddDriver from "../Companies/AddDriver";
 import TextArea from "antd/es/input/TextArea";
@@ -180,7 +183,7 @@ const AddTask = ({
       <AddDriver id={companyId} open={driverOpen} setOpen={setDriverOpen} />
       <Modal
         open={open}
-        width={600}
+        width={720}
         title="Add task"
         okText="Create"
         cancelText="Cancel"
@@ -200,11 +203,12 @@ const AddTask = ({
       >
         <FormAnt
           form={form}
-          layout={isMobile ? "vertical" : "horizontal"}
+          // layout={isMobile ? "vertical" : "horizontal"}
+          layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
         >
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 0]}>
             <Col span={24}>
               <FormAnt.Item
                 label="Company"
@@ -244,13 +248,13 @@ const AddTask = ({
                 style={{
                   display: "flex",
                   justifyContent: "space-around",
-                  alignItems: isMobile ? "center" : "none",
+                  alignItems: "center",
                 }}
               >
                 <FormAnt.Item
                   label="Driver"
                   name="customer_id"
-                  style={{ width: "85%" }}
+                  style={{ width: "90%" }}
                   rules={[
                     { required: true, message: "Please input service points!" },
                   ]}
@@ -276,7 +280,7 @@ const AddTask = ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    marginTop: isMobile ? 5 : 0,
+                    marginTop: 5,
                   }}
                   disabled={!companyId}
                 >
@@ -286,17 +290,7 @@ const AddTask = ({
               </div>
             </Col>
 
-            <Col span={isMobile ? 12 : 24}>
-              <FormAnt.Item
-                label="Service"
-                name="service_id"
-                rules={[{ required: true, message: "Please select service!" }]}
-              >
-                <Select options={serviceOptions?.sort(sortByLabel)} />
-              </FormAnt.Item>
-            </Col>
-
-            <Col span={isMobile ? 12 : 24}>
+            <Col span={12}>
               <FormAnt.Item
                 label="Assigned to"
                 name="assigned_to_id"
@@ -320,12 +314,25 @@ const AddTask = ({
               </FormAnt.Item>
             </Col>
 
+            <Col span={12}>
+              <FormAnt.Item
+                label="Service"
+                name="service_id"
+                rules={[{ required: true, message: "Please select service!" }]}
+              >
+                <Select options={serviceOptions?.sort(sortByLabel)} />
+              </FormAnt.Item>
+            </Col>
+
             <Col span={isMobile ? 12 : 12}>
               <FormAnt.Item
                 label="Status"
                 name="status"
                 rules={[
-                  { required: false, message: "Please input service points!" },
+                  {
+                    required: false,
+                    message: "Please input service points!",
+                  },
                 ]}
               >
                 <Select defaultValue="New">
@@ -400,7 +407,7 @@ const AddTask = ({
                 <div>
                   <Upload.Dragger
                     name="file"
-                    height={isMobile ? 100 : 150}
+                    height={174}
                     multiple={true}
                     customRequest={({ file, onSuccess }: any) => {
                       const formData = new FormData();
@@ -419,9 +426,7 @@ const AddTask = ({
                   >
                     {!isMobile ? (
                       <p className={`ant-upload-drag-icon`}>
-                        <UploadOutlined
-                          style={{ color: "rgba(249, 158, 44, 1)" }}
-                        />
+                        <img src={fileUpload} />
                       </p>
                     ) : (
                       <UploadOutlined />
@@ -429,10 +434,17 @@ const AddTask = ({
                     {!isMobile && (
                       <p
                         className="ant-upload-text"
-                        style={{ color: "rgba(249, 158, 44, 1)" }}
+                        style={{ color: "#9b9daa", fontSize: 14 }}
                       >
-                        Click or drag a file here to upload (only .jpeg .jpg
-                        .png .pdf)
+                        <strong> Drag and drop files or </strong>
+                        <span style={{ color: "#f99e2c" }}>
+                          Click to select
+                        </span>
+                        <br />
+                        <span style={{ fontSize: 13 }}>
+                          Maximum file size is 10 MB <br />
+                          (only .jpeg .jpg .png .pdf)
+                        </span>
                       </p>
                     )}
                   </Upload.Dragger>
