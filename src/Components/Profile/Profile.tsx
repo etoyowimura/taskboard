@@ -1,4 +1,5 @@
 import { useState } from "react";
+import dayjs from "dayjs";
 
 import {
   LineChart,
@@ -88,6 +89,12 @@ const Profile = () => {
     tasks: stat.number_of_tasks,
   }));
 
+  const firstDayOfMonth = dayjs().startOf("month"); // Oyning birinchi kuni
+  // const lastDayOfMonth = dayjs().endOf("month");
+  const today = dayjs();
+
+  const dateFormat = "YYYY-MM-DD";
+
   return (
     <div>
       <Spin size="large" spinning={!data}>
@@ -165,13 +172,17 @@ const Profile = () => {
                       <Row gutter={[16, 10]}>
                         {data && data.team !== "" && (
                           <Col>
-                            <Form.Item
-                              wrapperCol={{ span: "100%" }}
-                              label="Team"
-                              name="team"
-                            >
-                              <Input readOnly />
-                            </Form.Item>
+                            {role === "Owner" || role === "Tech Support" ? (
+                              ""
+                            ) : (
+                              <Form.Item
+                                wrapperCol={{ span: "100%" }}
+                                label="Team"
+                                name="team"
+                              >
+                                <Input readOnly />
+                              </Form.Item>
+                            )}
                           </Col>
                         )}
                       </Row>
@@ -185,7 +196,13 @@ const Profile = () => {
                         justifyContent: "flex-start",
                       }}
                     >
-                      <RangePicker onCalendarChange={datePick} />
+                      <RangePicker
+                        onCalendarChange={datePick}
+                        defaultValue={[
+                          dayjs(firstDayOfMonth, dateFormat),
+                          dayjs(today, dateFormat),
+                        ]}
+                      />
                     </div>
 
                     <div

@@ -11,6 +11,8 @@ import {
 } from "antd";
 import { TCall } from "../../types/CallRequests/TCall";
 import { TSocket } from "../../types/common/TSocket";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { theme } from "antd";
 
 const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
   const [status, setStatus] = useState("Awaiting");
@@ -19,10 +21,11 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
   const { data, isLoading, refetch } = useCallData({
     status: status,
     page: page,
-    page_size: 10,
+    page_size: 15,
   });
 
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  // const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const { token } = theme.useToken();
 
   useEffect(() => {
     setTableData(data?.data);
@@ -98,13 +101,42 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
       </div>
       <CallTable data={tableData} isLoading={isLoading} refetch={refetch} />
 
-      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
-        <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button onClick={Previos} disabled={data?.previous ? false : true}>
-            <img src={leftPagination} />
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
           </Button>
           <Input
-            style={{ width: 30, textAlign: "center" }}
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -113,11 +145,19 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
               }
             }}
           />
-          <Button onClick={Next} disabled={data?.next ? false : true}>
-            <img src={rightPagination} />
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
           </Button>
         </Space>
-      </Space> */}
+      </Space>
     </div>
   );
 };

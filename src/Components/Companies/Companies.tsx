@@ -30,7 +30,7 @@ const Company = () => {
     name: search,
     is_active: undefined,
     page: page,
-    page_size: 10,
+    page_size: 15,
   });
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);

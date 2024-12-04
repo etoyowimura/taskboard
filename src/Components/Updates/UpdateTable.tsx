@@ -297,7 +297,7 @@ const UpdateTable = ({
         size="small"
         scroll={{ x: "768px" }}
         pagination={{
-          pageSize: 10,
+          pageSize: 15,
           size: "default",
           style: {
             margin: 0,

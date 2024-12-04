@@ -19,19 +19,13 @@ const Customer = () => {
     setOpen(true);
   };
 
-  const page_size = 10;
-
-  const handlePageChange = (page: number) => {
-    setPage(page);
-  };
-
   const { token } = theme.useToken();
 
   const [search, setSearch] = useState("");
   const { data, isLoading, refetch } = useCustomerData({
     name: search,
     is_active: undefined,
-    page_size: 10,
+    page_size: 15,
     page: page,
   });
 
@@ -142,9 +136,9 @@ const Customer = () => {
 
           {/* <Pagination
             current={page}
-            total={10}
-            pageSize={page_size}
-            onChange={handlePageChange}
+            total={100}
+            pageSize={data?.page_size}
+            onChange={(page) => setPage(page)}
           /> */}
         </Space>
       </Space>

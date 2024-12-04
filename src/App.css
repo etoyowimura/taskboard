@@ -104,7 +104,7 @@
 
 .profile-dropdown:hover {
   border-radius: 8px;
-  background: #7c7c7c;
+  cursor: pointer;
 }
 
 .profile-dropdown-ava {
@@ -864,6 +864,10 @@
   border: 1px solid #d7d8e0;
   border-radius: 8px;
 } */
+
+.ant-pagination-item {
+  width: 40px;
+}
 
 .btn-refresh-dark img {
   animation: none;

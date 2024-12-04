@@ -107,7 +107,7 @@ const UserTable = ({
         }
         scroll={{ x: "768px" }}
         pagination={{
-          pageSize: 50,
+          pageSize: 15,
           size: "default",
           style: {
             margin: 0,

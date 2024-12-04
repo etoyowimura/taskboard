@@ -481,7 +481,7 @@ const App: React.FC = () => {
                     >
                       <img src={themeBtn} alt="" />
                     </button>
-                    <Dropdown overlay={menu} trigger={["click"]}>
+                    <Dropdown overlay={menu} trigger={["hover"]}>
                       <div
                         style={{ cursor: "pointer" }}
                         onClick={(e) => e.preventDefault()}
