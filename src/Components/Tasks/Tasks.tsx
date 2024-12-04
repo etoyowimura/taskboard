@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import AddTask from "./AddTask";
-import { Button, Input, Select, Space, Typography } from "antd";
+import { Button, Input, Pagination, Select, Space, Typography } from "antd";
 import TaskTable from "./TaskTable";
 import { useTeamData } from "../../Hooks/Teams";
 import { useTasks } from "../../Hooks/Tasks";
@@ -16,6 +16,10 @@ import TaskModal from "./TaskModal";
 import TaskUploadModal from "./TaskUploadModal";
 import { TSocket } from "../../types/common/TSocket";
 import ErrorUncompletedTasksModal from "./ErrorUncompletedTasksModal";
+
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+
+import { theme } from "antd";
 
 const { Option } = Select;
 const Task = ({
@@ -37,6 +41,8 @@ const Task = ({
   const [uploadOpen, setUploadOpen] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [uncomletedData, setUncomletedData] = useState<TTask[]>();
+
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     if (
@@ -123,13 +129,13 @@ const Task = ({
       label: item?.name,
       value: item?.id,
     }));
-  const page_size = isMobile ? 10 : 15;
+  const page_size = 10;
   const { data, isLoading, refetch } = useTasks({
     search,
     status,
     team,
     page,
-    page_size,
+    page_size: 10,
   });
   useEffect(() => {
     if (data) {
@@ -167,6 +173,11 @@ const Task = ({
     }
   };
 
+  const handlePageChange = (page: number, pageSize: number) => {
+    setPage(page);
+    setPageSize(pageSize);
+  };
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (timerRef.current) {
@@ -178,7 +189,9 @@ const Task = ({
       setSearch(searchText);
     }, 1000);
   };
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const themes = localStorage.getItem("theme") === "true" ? true : false;
+
+  const { token } = theme.useToken();
 
   return (
     <div>
@@ -210,10 +223,6 @@ const Task = ({
       )}
       <div className="header d-flex">
         <div className="header-title d-flex">
-          {/* <p className="title " style={{ color: theme ? "#fff" : "#000" }}>
-            Tasks
-          </p> */}
-
           <Typography className="title">Tasks</Typography>
         </div>
         <div className="d-flex">
@@ -229,6 +238,10 @@ const Task = ({
           )}
           <button
             className={`btn-refresh-${false && "dark"} d-flex`}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+            }}
             onClick={() => {
               refetch();
               if (!isLive) {
@@ -249,7 +262,7 @@ const Task = ({
         <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
-            className={`search-input-${theme}`}
+            className={`search-input-${themes}`}
             type="text"
             placeholder="Search"
             onChange={handleSearchChange}
@@ -287,14 +300,43 @@ const Task = ({
         showErrorModal={showErrorModal}
         setErrorModal={setErrorModal}
       />
-      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
-        <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button onClick={Previos} disabled={data?.previous ? false : true}>
-            <img src={leftPagination} />
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
           </Button>
 
           <Input
-            style={{ width: 30, textAlign: "center" }}
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -304,11 +346,25 @@ const Task = ({
             }}
           />
 
-          <Button onClick={Next} disabled={data?.next ? false : true}>
-            <img src={rightPagination} />
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
           </Button>
+          {/* <Pagination
+            current={page}
+            total={data?.data.length}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+          /> */}
         </Space>
-      </Space> */}
+      </Space>
     </div>
   );
 };

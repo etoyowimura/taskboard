@@ -1,16 +1,16 @@
 import { useRef, useState } from "react";
 import AddCustomer from "./AddCustomer";
 import CustomerTable from "./CustomersTable";
-import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useCustomerData } from "../../Hooks/Customers";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 // @ts-ignore
-import leftPagination from "../../assets/pagination-left.png";
-import rightPagination from "../../assets/right-pagination.png";
+
 import IconSearch from "../../assets/searchIcon.png";
 
-import { Button, Input, Space, Typography } from "antd";
+import { Button, Input, Pagination, Space, Typography } from "antd";
+import { theme } from "antd";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
@@ -18,6 +18,14 @@ const Customer = () => {
   const showModal = () => {
     setOpen(true);
   };
+
+  const page_size = 10;
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
+
+  const { token } = theme.useToken();
 
   const [search, setSearch] = useState("");
   const { data, isLoading, refetch } = useCustomerData({
@@ -50,7 +58,7 @@ const Customer = () => {
       setSearch(searchText);
     }, 1000);
   };
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const themes = localStorage.getItem("theme") === "true" ? true : false;
 
   return (
     <div>
@@ -66,7 +74,7 @@ const Customer = () => {
         <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
-            className={`search-input-${theme}`}
+            className={`search-input-${themes}`}
             type="text"
             placeholder="Search"
             onChange={handleSearchChange}
@@ -74,13 +82,43 @@ const Customer = () => {
         </div>
       </div>
       <CustomerTable data={data?.data} isLoading={isLoading} />
-      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
-        <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button onClick={Previos} disabled={!data?.previous}>
-            <img src={leftPagination} />
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Button
+            type="primary"
+            onClick={Previos}
+            disabled={!data?.previous}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
           </Button>
           <Input
-            style={{ width: 30, textAlign: "center" }}
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -89,11 +127,27 @@ const Customer = () => {
               }
             }}
           />
-          <Button onClick={Next} disabled={!data?.next}>
-            <img src={rightPagination} />
+          <Button
+            type="primary"
+            onClick={Next}
+            disabled={!data?.next}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
           </Button>
+
+          {/* <Pagination
+            current={page}
+            total={10}
+            pageSize={page_size}
+            onChange={handlePageChange}
+          /> */}
         </Space>
-      </Space> */}
+      </Space>
     </div>
   );
 };

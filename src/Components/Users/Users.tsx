@@ -6,7 +6,7 @@ import UserTable from "./UserTable";
 import IconSearch from "../../assets/searchIcon.png";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
-import { Typography } from "antd";
+import { Pagination, Space, Typography } from "antd";
 
 const User = () => {
   const [open, setOpen] = useState(false);
@@ -58,6 +58,48 @@ const User = () => {
         </div>
       </div>
       <UserTable data={data} isLoading={isLoading} refetch={refetch} />
+
+      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            // backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Button onClick={Previos} disabled={data?.previous ? false : true}>
+            ＜
+          </Button>
+
+          <Input
+            style={{ width: 30, textAlign: "center" }}
+            value={page}
+            onChange={(e) => {
+              let num = e.target.value;
+              if (Number(num) && num !== "0") {
+                setPage(Number(num));
+              }
+            }}
+          />
+
+          <Button onClick={Next} disabled={data?.next ? false : true}>
+            ＞
+          </Button>
+          <Pagination
+          // current={page}
+          // total={}
+          // pageSize={page_size}
+          // onChange={handlePageChange}
+          />
+        </Space>
+      </Space> */}
     </div>
   );
 };

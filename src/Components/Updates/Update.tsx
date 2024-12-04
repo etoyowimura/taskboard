@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddUpdate from "./AddUpdate";
-import { Select, Typography } from "antd";
+import { Select, Typography, theme } from "antd";
 import UpdateTable from "./UpdateTable";
 import { useUpdateData } from "../../Hooks/Update";
 //@ts-ignore
@@ -22,7 +22,9 @@ const Update = () => {
   const showModal = () => {
     setOpen(true);
   };
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+
+  const { token } = theme.useToken();
+
   return (
     <div>
       {open && <AddUpdate refetch={refetch} open={open} setOpen={setOpen} />}
@@ -35,6 +37,10 @@ const Update = () => {
           </button>
           <button
             className={`btn-refresh-${false && "dark"} d-flex`}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+            }}
             onClick={() => {
               refetch();
             }}

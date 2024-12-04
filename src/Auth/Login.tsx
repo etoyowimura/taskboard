@@ -1,7 +1,12 @@
 import React from "react";
 import { Button, Card, Input, Space } from "antd";
 import { Form, Field } from "react-final-form";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  LockOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { LoginApi } from "../API/auth/Login";
 import { Link } from "react-router-dom";
 
@@ -25,7 +30,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="ContainerClassName" style={{ height: "100vh" }}>
+    <div
+      className="ContainerClassName"
+      style={{
+        height: "100vh",
+      }}
+    >
       <Form
         onSubmit={onSubmit}
         validate={validate}
@@ -42,7 +52,7 @@ const Login: React.FC = () => {
             }}
           >
             <Card
-              bodyStyle={{ background: "rgb(250, 250, 250)" }}
+              bodyStyle={{ backgroundColor: "rgb(250, 250, 250)" }}
               title="Login"
               className="login-form-card "
               style={{ width: 400 }}
@@ -84,6 +94,13 @@ const Login: React.FC = () => {
                           {...input}
                           type="password"
                           placeholder="Password"
+                          iconRender={(visible) =>
+                            visible ? (
+                              <EyeTwoTone style={{ color: "#bbb" }} />
+                            ) : (
+                              <EyeInvisibleOutlined style={{ color: "#bbb" }} />
+                            )
+                          }
                         />
                         {meta.error && meta.touched && (
                           <span style={{ color: "red" }}>{meta.error}</span>

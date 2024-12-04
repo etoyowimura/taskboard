@@ -20,6 +20,8 @@ import tagIcon from "../../assets/tagIcon.png";
 import tgIcon from "../../assets/telegram.png";
 import { isMobile, role } from "../../App";
 
+import { theme } from "antd";
+
 const admin_id = localStorage.getItem("admin_id");
 const TaskTable = ({
   data,
@@ -80,6 +82,8 @@ const TaskTable = ({
   };
 
   const [isTextSelected, setIsTextSelected] = useState(false);
+
+  const { token } = theme.useToken();
 
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -427,10 +431,23 @@ const TaskTable = ({
         rowClassName={rowClassName}
         scroll={{ x: "768px" }}
         bordered
-        pagination={{
-          pageSize: 10,
-          size: "default",
-        }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        // }}
+        pagination={false}
       />
     </div>
   );

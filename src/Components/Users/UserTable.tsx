@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import tagIcon from "../../assets/tagIcon.png";
 import { isMobile, role } from "../../App";
 import { userController } from "../../API/LayoutApi/users";
+
+import { theme } from "antd";
+
 const UserTable = ({
   data,
   isLoading,
@@ -33,6 +36,7 @@ const UserTable = ({
         isTextSelected = false;
       }
     });
+
     return {
       onClick: () => {
         if (isTextSelected) {
@@ -42,6 +46,8 @@ const UserTable = ({
       },
     };
   };
+
+  const { token } = theme.useToken();
 
   return (
     <div>
@@ -100,7 +106,23 @@ const UserTable = ({
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         scroll={{ x: "768px" }}
-        pagination={{ pageSize: 10, size: "default" }}
+        pagination={{
+          pageSize: 50,
+          size: "default",
+          style: {
+            margin: 0,
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          },
+          showLessItems: true,
+        }}
         bordered
       />
     </div>

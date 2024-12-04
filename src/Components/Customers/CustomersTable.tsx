@@ -15,6 +15,9 @@ import ontime from "../../assets/ontimeicon.svg";
 import tt from "../../assets/tticon.svg";
 import { role } from "../../App";
 
+import { theme } from "antd";
+import { useState } from "react";
+
 function CustomerTable({
   data,
   isLoading,
@@ -25,6 +28,11 @@ function CustomerTable({
   type RowProps = {
     id: number;
   };
+
+  const { token } = theme.useToken();
+
+  const [pageSize, setPageSize] = useState(10); // Default sahifa hajmi
+  const [currentPage, setCurrentPage] = useState(1);
 
   const Row = (record: RowProps) => {
     return {
@@ -95,11 +103,24 @@ function CustomerTable({
         }
         size="middle"
         bordered
-        pagination={{
-          pageSize: 10,
-          size: "default",
-        }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        // }}
         scroll={{ x: "768px" }}
+        pagination={false}
       />
     </div>
   );

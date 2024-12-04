@@ -18,6 +18,8 @@ import tt from "../../assets/tticon.svg";
 import tagIcon from "../../assets/tagIcon.png";
 import { role } from "../../App";
 
+import { theme } from "antd";
+
 function CompanyTable({
   data,
   isLoading,
@@ -34,6 +36,8 @@ function CompanyTable({
       return "super";
     }
   }
+
+  const { token } = theme.useToken();
 
   const getImageSource = (source: string) => {
     switch (source) {
@@ -139,10 +143,23 @@ function CompanyTable({
         }
         size="small"
         scroll={{ x: "768px" }}
-        pagination={{
-          pageSize: 10,
-          size: "default",
-        }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        // }}
+        pagination={false}
         bordered
       />
     </div>

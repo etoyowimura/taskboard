@@ -178,7 +178,7 @@ const Profile = () => {
                     </Form>
                   )}
                   <div className="">
-                    <h2 style={{ marginBottom: 20 }}>Your Statistics</h2>
+                    <h2 style={{ marginBottom: 20 }}>My Statistics</h2>
                     <div
                       style={{
                         display: "flex",

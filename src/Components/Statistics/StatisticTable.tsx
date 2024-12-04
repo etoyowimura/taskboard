@@ -7,6 +7,9 @@ import {
 } from "react-query";
 // @ts-ignore
 import tagIcon from "../../assets/tagIcon.png";
+
+import { theme } from "antd";
+
 const StatTable = ({
   data,
   isLoading,
@@ -18,6 +21,8 @@ const StatTable = ({
   data: { data: TStat[] | undefined };
   isLoading: boolean;
 }) => {
+  const { token } = theme.useToken();
+
   return (
     <div>
       <Table
@@ -53,6 +58,18 @@ const StatTable = ({
         pagination={{
           pageSize: 10,
           size: "default",
+          style: {
+            margin: 0,
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          },
         }}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"

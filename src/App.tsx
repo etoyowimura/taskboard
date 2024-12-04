@@ -391,6 +391,7 @@ const App: React.FC = () => {
                 onCollapse={toggleCollapsed}
                 style={{
                   height: "100vh",
+                  zIndex: 9999,
                   background:
                     theme === true ? "#202020" : "rgba(20, 22, 41, 1)",
                 }}

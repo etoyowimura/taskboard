@@ -9,6 +9,8 @@ import { TService } from "../../types/Service/TService";
 // @ts-ignore
 import tagIcon from "../../assets/tagIcon.png";
 import { role } from "../../App";
+import { theme } from "antd";
+
 type numStr = string | number;
 
 interface serviceSource {
@@ -45,6 +47,9 @@ const ServiceTable = ({
       dataIndex: "points",
     },
   ];
+
+  const { token } = theme.useToken();
+
   return (
     <div>
       <Table
@@ -75,6 +80,18 @@ const ServiceTable = ({
         pagination={{
           pageSize: 10,
           size: "default",
+          style: {
+            margin: 0,
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          },
         }}
         bordered
       />

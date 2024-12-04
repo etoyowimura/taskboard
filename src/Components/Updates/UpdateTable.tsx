@@ -1,4 +1,4 @@
-import { Space, Table, Tooltip } from "antd";
+import { Space, Table, Tooltip, theme } from "antd";
 import moment from "moment";
 import { useCompanyData } from "../../Hooks/Companies";
 import { useCustomerData } from "../../Hooks/Customers";
@@ -27,6 +27,7 @@ import zeelog from "../../assets/zeelogicon.svg";
 import ontime from "../../assets/ontimeicon.svg";
 // @ts-ignore
 import tt from "../../assets/tticon.svg";
+
 const UpdateTable = ({
   data = [],
   isLoading,
@@ -81,6 +82,8 @@ const UpdateTable = ({
         return tt;
     }
   };
+
+  const { token } = theme.useToken();
 
   return (
     <div>
@@ -293,7 +296,22 @@ const UpdateTable = ({
         loading={isLoading}
         size="small"
         scroll={{ x: "768px" }}
-        pagination={{ pageSize: 10, size: "default" }}
+        pagination={{
+          pageSize: 10,
+          size: "default",
+          style: {
+            margin: 0,
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          },
+        }}
         bordered
       />
     </div>

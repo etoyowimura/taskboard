@@ -1,4 +1,4 @@
-import { Button, Space, Table } from "antd";
+import { Button, Space, Table, theme } from "antd";
 import {
   QueryObserverResult,
   RefetchOptions,
@@ -68,6 +68,9 @@ const RequestsTable = ({
       refetch();
     });
   };
+
+  const { token } = theme.useToken();
+
   return (
     <div>
       <Table
@@ -161,7 +164,23 @@ const RequestsTable = ({
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         scroll={{ x: "768px" }}
-        pagination={{ pageSize: 10, size: "default" }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        // }}
+        pagination={false}
         bordered
       />
     </div>

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRequestsData } from "../../Hooks/Requests";
-import { StepForwardOutlined, StepBackwardOutlined } from "@ant-design/icons";
+import {
+  StepForwardOutlined,
+  StepBackwardOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Input,
@@ -8,6 +13,7 @@ import {
   RadioChangeEvent,
   Space,
   Typography,
+  theme,
 } from "antd";
 import { TRequests } from "../../types/Requests/TRequests";
 import { TSocket } from "../../types/common/TSocket";
@@ -43,7 +49,7 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
     }, 1000);
   };
 
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const themes = localStorage.getItem("theme") === "true" ? true : false;
 
   useEffect(() => {
     if (data) {
@@ -75,6 +81,9 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
       setPage(a);
     }
   };
+
+  const { token } = theme.useToken();
+
   return (
     <div>
       {modalOpen && (
@@ -92,7 +101,7 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
         <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
-            className={`search-input-${theme}`}
+            className={`search-input-${themes}`}
             type="text"
             placeholder="Search"
             onChange={handleSearchChange}
@@ -117,13 +126,41 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
         setRequestData={setRequestData}
       />
 
-      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
-        <Space style={{ width: "100%", justifyContent: "flex-end" }} wrap>
-          <Button onClick={Previos} disabled={data?.previous ? false : true}>
-            <img src={leftPagination} />
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
           </Button>
           <Input
-            style={{ width: 30, textAlign: "center" }}
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -132,11 +169,19 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
               }
             }}
           />
-          <Button onClick={Next} disabled={data?.next ? false : true}>
-            <img src={rightPagination} />
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
           </Button>
         </Space>
-      </Space> */}
+      </Space>
     </div>
   );
 };

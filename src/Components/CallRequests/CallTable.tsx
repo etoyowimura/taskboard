@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Space, Table } from "antd";
+import { Button, Input, Modal, Space, Table, theme } from "antd";
 import { TCall } from "../../types/CallRequests/TCall";
 import { EditOutlined } from "@ant-design/icons";
 // @ts-ignore
@@ -12,6 +12,7 @@ import {
 } from "react-query";
 import { useState } from "react";
 import { TPagination } from "../../types/common/TPagination";
+import useToken from "antd/es/theme/useToken";
 const CallTable = ({
   data,
   isLoading,
@@ -57,6 +58,9 @@ const CallTable = ({
   const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNote(e.target.value);
   };
+
+  const { token } = theme.useToken();
+
   return (
     <div>
       <Table
@@ -134,7 +138,22 @@ const CallTable = ({
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         scroll={{ x: "768px" }}
-        pagination={{ pageSize: 10, size: "default" }}
+        pagination={{
+          pageSize: 10,
+          size: "default",
+          style: {
+            margin: 0,
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          },
+        }}
         bordered
       />
     </div>

@@ -97,6 +97,13 @@ export const dark = {
       colorPrimary: "rgba(249, 158, 44, 1)",
       hoverBorderColor: "#BBBBBB",
     },
+    Pagination: {
+      itemActiveBg: "#3a3a3a",
+      colorPrimary: "#bbb",
+      colorPrimaryHover: "rgba(249, 158, 44, 1)",
+      colorText: "#fff",
+      colorTextDisabled: "#fff",
+    },
     Empty: {
       colorText: "rgba(249, 158, 44, 1)",
       colorTextDisabled: "rgba(249, 158, 44, 1)",
@@ -106,6 +113,7 @@ export const dark = {
     fontFamily: "Inter, sans-serif",
     colorText: "#bbb",
     borderRadius: 8,
+    colorBgContainer: "#3a3a3a",
   },
 };
 export const light = {
@@ -138,10 +146,16 @@ export const light = {
     Menu: {
       darkItemSelectedBg: "rgba(255, 255, 255, 0.08)",
     },
+    Pagination: {
+      colorPrimary: "#262626",
+      colorPrimaryHover: "rgba(249, 158, 44, 1)",
+      colorBorder: "#000",
+    },
   },
   token: {
     fontFamily: "Inter, sans-serif",
     color: "#262626",
+    colorBgContainer: "#fff",
     borderRadius: 8,
   },
 };

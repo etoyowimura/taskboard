@@ -827,14 +827,14 @@
   ) !important; /* Используйте нужный вам цвет фона */
 }
 
-.ant-pagination {
+/* .ant-pagination {
   position: fixed;
-  bottom: 90px;
-  right: 20px;
-  color: #f99e2c;
-}
 
-.ant-pagination-item-active {
+  bottom: 0;
+  right: 20px;
+} */
+
+/* .ant-pagination-item-active {
   background-color: #f99e2c;
   color: white;
 }
@@ -854,17 +854,16 @@
 }
 .ant-pagination .ant-pagination-item-active:hover {
   border-color: #f99e3c;
-}
+} */
 
-.ant-pagination-prev,
+/* .ant-pagination-prev,
 .ant-pagination-next {
   width: 40px;
   height: 32px;
   background-color: #fff;
   border: 1px solid #d7d8e0;
   border-radius: 8px;
-  background-color: transparent;
-}
+} */
 
 .btn-refresh-dark img {
   animation: none;
@@ -886,10 +885,6 @@
 }
 .btn-refresh-false img.spin {
   animation: spin 1s linear;
-}
-
-.ant-btn-default {
-  color: #0f111c;
 }
 
 @keyframes spin {
