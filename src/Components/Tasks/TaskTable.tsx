@@ -360,7 +360,7 @@ const TaskTable = ({
         dataIndex: "action",
         width: "10%",
         key: "11",
-        fixed: "right",
+        fixed: isMobile ? "right" : false,
         render: (text: string, record: TTask) => {
           return (
             <div style={{ zIndex: 1000 }}>
