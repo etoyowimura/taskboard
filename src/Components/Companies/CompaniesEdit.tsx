@@ -15,9 +15,14 @@ import {
   Radio,
   RadioChangeEvent,
   Select,
+  theme,
 } from "antd";
 import { companyController } from "../../API/LayoutApi/companies";
-import { DashboardOutlined } from "@ant-design/icons";
+import {
+  DashboardOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import Notfound from "../../Utils/Notfound";
 import Table from "antd/es/table";
 import AddDriver from "./AddDriver";
@@ -52,6 +57,8 @@ const CompanyEdit = () => {
   const { id } = useParams<params>();
   const customerData = useCustomerByComanyData({ page, page_size: 10 }, id);
   const { data, refetch, status } = useCompanyOne(id);
+
+  const { token } = theme.useToken();
 
   const showModal = () => {
     setOpen(true);
@@ -346,17 +353,40 @@ const CompanyEdit = () => {
                       direction="vertical"
                     >
                       <Space
-                        style={{ width: "100%", justifyContent: "flex-end" }}
+                        style={{
+                          justifyContent: "end",
+                          position: "fixed",
+                          bottom: 0,
+                          left: 0,
+                          width: "100%",
+                          // backgroundColor: token.colorBgContainer,
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+                          padding: "10px 0",
+                          zIndex: 1000,
+                        }}
                         wrap
                       >
                         <Button
-                          type="primary"
-                          icon={<StepBackwardOutlined />}
                           onClick={Previos}
                           disabled={customerData.data?.previous ? false : true}
-                        ></Button>
+                          style={{
+                            backgroundColor: token.colorBgContainer,
+                            color: token.colorText,
+                            border: "none",
+                          }}
+                        >
+                          <LeftOutlined />
+                        </Button>
                         <Input
-                          style={{ width: 50, textAlign: "right" }}
+                          disabled
+                          style={{
+                            width: 40,
+                            textAlign: "center",
+                            background: token.colorBgContainer,
+                            border: "1px solid",
+                            borderColor: token.colorText,
+                            color: token.colorText,
+                          }}
                           value={page}
                           onChange={(e) => {
                             let num = e.target.value;
@@ -366,11 +396,16 @@ const CompanyEdit = () => {
                           }}
                         />
                         <Button
-                          type="primary"
-                          icon={<StepForwardOutlined />}
                           onClick={Next}
                           disabled={customerData.data?.next ? false : true}
-                        ></Button>
+                          style={{
+                            backgroundColor: token.colorBgContainer,
+                            color: token.colorText,
+                            border: "none",
+                          }}
+                        >
+                          <RightOutlined />
+                        </Button>
                       </Space>
                     </Space>
                     {open && (
