@@ -1,13 +1,5 @@
 import { TTask } from "../../types/Tasks/TTasks";
-import {
-  Dropdown,
-  MenuProps,
-  Modal,
-  Table,
-  Tabs,
-  Tooltip,
-  message,
-} from "antd";
+import { Dropdown, MenuProps, Modal, Table, Tabs, Tooltip, theme } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { role, timeZone } from "../../App";
 import { useTaskHistory } from "../../Hooks/Tasks";
@@ -16,7 +8,11 @@ import { useEffect, useState } from "react";
 import { taskController } from "../../API/LayoutApi/tasks";
 import { useTeamData } from "../../Hooks/Teams";
 import { TTeam } from "../../types/Team/TTeam";
-import { EditOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  CaretRightOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { TSocket } from "../../types/common/TSocket";
 // @ts-ignore
 import closeIcon from "../../assets/closeIcon.png";
@@ -71,12 +67,14 @@ const TaskModal = ({
   socketData: TSocket | undefined;
 }) => {
   const moment = require("moment-timezone");
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const themes = localStorage.getItem("theme") === "true" ? true : false;
   const [text, setText] = useState<string | undefined>(recordTask?.note);
   const [pti, setPti] = useState<boolean | undefined>(recordTask?.pti);
   const [status, setStatus] = useState(recordTask?.status);
   const [teamName, setTeamName] = useState(recordTask?.assigned_to?.name);
   const { data, isLoading } = useTaskHistory(recordTask?.id);
+
+  const { token } = theme.useToken();
 
   const handleCancel = () => {
     setModalOpen(!modalOpen);
@@ -211,13 +209,13 @@ const TaskModal = ({
       onCancel={handleCancel}
       footer={null}
       open={modalOpen}
-      width={800}
+      width={700}
       maskClosable={true}
       // style={{ position: "fixed", right: 0, top: 0, bottom: 0, height: 1000 }}
     >
-      <div className={!theme ? "TaskModal-header" : "TaskModal-header-dark"}>
-        <div className={!theme ? "TaskModal-title" : "TaskModal-title-dark"}>
-          <p className={!theme ? "p-driver" : "p-driver-dark"}>
+      <div className={!themes ? "TaskModal-header" : "TaskModal-header-dark"}>
+        <div className={!themes ? "TaskModal-title" : "TaskModal-title-dark"}>
+          <p className={!themes ? "p-driver" : "p-driver-dark"}>
             {recordTask?.customer?.name}
           </p>
           <Dropdown
@@ -227,7 +225,11 @@ const TaskModal = ({
             disabled={role === "Checker" && status === "Done"}
           >
             <button
-              style={{ marginLeft: 12, display: "flex", alignItems: "center" }}
+              style={{
+                marginLeft: 12,
+                display: "flex",
+                alignItems: "center",
+              }}
               className={`status-${status}`}
             >
               {status}
@@ -247,16 +249,24 @@ const TaskModal = ({
           >
             <button
               disabled={recordTask?.status !== "New"}
-              style={{ marginRight: 12 }}
-              className={`btn-modal-action-${theme && "dark"}`}
+              style={{
+                marginRight: 12,
+                color: token.colorText,
+                backgroundColor: token.colorBgContainer,
+              }}
+              className={`btn-modal-action-${themes && "dark"}`}
             >
               <img src={forwardIcon} alt="" />
               Forward
             </button>
           </Dropdown>
           <button
-            style={{ marginLeft: 12 }}
-            className={`btn-modal-action-${theme && "dark"}`}
+            style={{
+              marginLeft: 12,
+              color: token.colorText,
+              backgroundColor: token.colorBgContainer,
+            }}
+            className={`btn-modal-action-${themes && "dark"}`}
             onClick={showUploadModal}
           >
             <img src={uploadIcon} alt="" />
@@ -264,8 +274,12 @@ const TaskModal = ({
           </button>
           <button
             onClick={handleCancel}
-            style={{ marginLeft: 20 }}
-            className={`btn-modal-action-${theme && "dark"}`}
+            style={{
+              marginLeft: 20,
+              color: token.colorText,
+              backgroundColor: token.colorBgContainer,
+            }}
+            className={`btn-modal-action-${themes && "dark"}`}
           >
             <img style={{ margin: 2 }} src={closeIcon} alt="" />
           </button>
@@ -301,36 +315,36 @@ const TaskModal = ({
               </p>
               <div className="info-body">
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>Comapany</p>
-                  <p className={!theme ? "info" : "info-dark"}>
+                  <p className={!themes ? "sub" : "sub-dark"}>Comapany</p>
+                  <p className={!themes ? "info" : "info-dark"}>
                     {recordTask?.company?.name}
                   </p>
                 </tr>
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>Driver</p>
-                  <p className={!theme ? "info" : "info-dark"}>
+                  <p className={!themes ? "sub" : "sub-dark"}>Driver</p>
+                  <p className={!themes ? "info" : "info-dark"}>
                     {recordTask?.customer?.name}
                   </p>
                 </tr>
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>Service</p>
-                  <p className={!theme ? "info" : "info-dark"}>
+                  <p className={!themes ? "sub" : "sub-dark"}>Service</p>
+                  <p className={!themes ? "info" : "info-dark"}>
                     {recordTask?.service?.title}
                   </p>
                 </tr>
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>Team</p>
-                  <p className={!theme ? "info" : "info-dark"}>{teamName}</p>
+                  <p className={!themes ? "sub" : "sub-dark"}>Team</p>
+                  <p className={!themes ? "info" : "info-dark"}>{teamName}</p>
                 </tr>
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>Assignee</p>
-                  <p className={!theme ? "info" : "info-dark"}>
+                  <p className={!themes ? "sub" : "sub-dark"}>Assignee</p>
+                  <p className={!themes ? "info" : "info-dark"}>
                     {recordTask?.in_charge?.username}
                   </p>
                 </tr>
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>PTI</p>
-                  <p className={!theme ? "info" : "info-dark"}>
+                  <p className={!themes ? "sub" : "sub-dark"}>PTI</p>
+                  <p className={!themes ? "info" : "info-dark"}>
                     {pti === false ? "Do" : "No need"}
                   </p>
                   <button
@@ -348,8 +362,8 @@ const TaskModal = ({
                   </button>
                 </tr>
                 <tr>
-                  <p className={!theme ? "sub" : "sub-dark"}>Created at</p>
-                  <p className={!theme ? "info" : "info-dark"}>
+                  <p className={!themes ? "sub" : "sub-dark"}>Created at</p>
+                  <p className={!themes ? "info" : "info-dark"}>
                     {moment(
                       recordTask?.created_at,
                       "YYYY-MM-DD HH:mm:ss"
@@ -358,7 +372,7 @@ const TaskModal = ({
                 </tr>
               </div>
               <div style={{ marginTop: 20 }}>
-                <label className={!theme ? "sub" : "sub-dark"}>Note:</label>
+                <label className={!themes ? "sub" : "sub-dark"}>Note:</label>
                 <TextArea
                   style={{ padding: "7px 11px", marginTop: 10 }}
                   placeholder="Description"
@@ -368,8 +382,12 @@ const TaskModal = ({
                 />
               </div>
               <button
-                style={{ marginTop: 20 }}
-                className={`btn-modal-action-${theme && "dark"}`}
+                style={{
+                  marginTop: 20,
+                  color: token.colorText,
+                  backgroundColor: token.colorBgContainer,
+                }}
+                className={`btn-modal-action-${themes && "dark"}`}
                 onClick={(e) => patchTask()}
               >
                 <img src={editIcon} alt="" />
@@ -495,7 +513,7 @@ const TaskModal = ({
                           alignItems: "center",
                           justifyContent: "space-between",
                           borderRadius: 8,
-                          color: !theme ? "rgba(15, 17, 28, 1)" : "#bbb",
+                          color: !themes ? "rgba(15, 17, 28, 1)" : "#bbb",
                           border: "1px solid rgba(215, 216, 224, 1)",
                           boxShadow: "0px 1px 3px 0px rgba(20, 22, 41, 0.1)",
                         }}

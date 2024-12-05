@@ -183,7 +183,7 @@ const AddTask = ({
       <AddDriver id={companyId} open={driverOpen} setOpen={setDriverOpen} />
       <Modal
         open={open}
-        width={720}
+        width={600}
         title="Add task"
         okText="Create"
         cancelText="Cancel"
@@ -281,6 +281,7 @@ const AddTask = ({
                     alignItems: "center",
                     justifyContent: "space-between",
                     marginTop: 5,
+                    marginLeft: 3,
                   }}
                   disabled={!companyId}
                 >
@@ -290,7 +291,17 @@ const AddTask = ({
               </div>
             </Col>
 
-            <Col span={12}>
+            <Col span={24}>
+              <FormAnt.Item
+                label="Service"
+                name="service_id"
+                rules={[{ required: true, message: "Please select service!" }]}
+              >
+                <Select options={serviceOptions?.sort(sortByLabel)} />
+              </FormAnt.Item>
+            </Col>
+
+            <Col span={24}>
               <FormAnt.Item
                 label="Assigned to"
                 name="assigned_to_id"
@@ -311,16 +322,6 @@ const AddTask = ({
                     form.setFieldsValue({ assigned_to_id: value })
                   }
                 />
-              </FormAnt.Item>
-            </Col>
-
-            <Col span={12}>
-              <FormAnt.Item
-                label="Service"
-                name="service_id"
-                rules={[{ required: true, message: "Please select service!" }]}
-              >
-                <Select options={serviceOptions?.sort(sortByLabel)} />
               </FormAnt.Item>
             </Col>
 

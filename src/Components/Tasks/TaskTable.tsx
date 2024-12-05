@@ -327,24 +327,40 @@ const TaskTable = ({
       {
         title: "Created at",
         dataIndex: "created",
-        width: "12%",
+        width: "15%",
         key: "10",
-        responsive: ["xxl"],
+        // responsive: ["xxl"],
         ellipsis: {
           showTitle: false,
         },
-        render: (note: string) => (
-          <Tooltip placement="topLeft" title={note}>
-            {note}
-          </Tooltip>
+        render: (note: string, record: TTask) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+            }}
+          >
+            <Tooltip placement="topLeft" title={note}>
+              {note}
+            </Tooltip>
+            <div>
+              {record?.via_telegram && (
+                <Tooltip placement="topLeft" title={"Created via Telegram"}>
+                  <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
+                </Tooltip>
+              )}
+            </div>
+          </div>
         ),
       },
       {
         title: "Actions",
         dataIndex: "action",
-        width: isMobile ? "3%" : "10%",
+        width: "10%",
         key: "11",
-        fixed: isMobile ? "right" : false,
+        fixed: "right",
         render: (text: string, record: TTask) => {
           return (
             <div style={{ zIndex: 1000 }}>
@@ -429,7 +445,7 @@ const TaskTable = ({
         columns={columns as any}
         loading={isLoading}
         rowClassName={rowClassName}
-        scroll={{ x: "768px" }}
+        scroll={{ x: "800px" }}
         bordered
         // pagination={{
         //   pageSize: 10,

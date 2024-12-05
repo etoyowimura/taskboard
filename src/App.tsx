@@ -304,7 +304,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 1000) {
         setCollapsed(true);
       } else {
         setCollapsed(false);
