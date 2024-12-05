@@ -338,8 +338,8 @@ const TaskTable = ({
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              gap: 10,
+              justifyContent: "start",
+              gap: 5,
             }}
           >
             <Tooltip placement="topLeft" title={note}>

@@ -30,6 +30,7 @@ import tt from "../../assets/tticon.svg";
 import addicon from "../../assets/addiconpng.png";
 //ts-ignore
 import fileUpload from "../../assets/upload-file.png";
+import closeIcon from "../../assets/closeIcon.png";
 
 import AddCustomer from "../Customers/AddCustomer";
 import AddDriver from "../Companies/AddDriver";
@@ -184,9 +185,26 @@ const AddTask = ({
       <Modal
         open={open}
         width={600}
-        title="Add task"
+        title={
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span>Add Task</span>
+            <Button type="text" onClick={handleCancel}>
+              <img src={closeIcon} />
+            </Button>
+          </div>
+        }
         okText="Create"
         cancelText="Cancel"
+        centered={false}
+        bodyStyle={{
+          height: 685,
+        }}
         onCancel={handleCancel}
         onOk={() => {
           form.validateFields().then(async (values) => {
@@ -277,9 +295,6 @@ const AddTask = ({
                   onClick={(e) => setDriverOpen(true)}
                   type="primary"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
                     marginTop: 5,
                     marginLeft: 3,
                   }}
@@ -325,7 +340,7 @@ const AddTask = ({
               </FormAnt.Item>
             </Col>
 
-            <Col span={isMobile ? 12 : 12}>
+            <Col span={12}>
               <FormAnt.Item
                 label="Status"
                 name="status"
@@ -344,7 +359,7 @@ const AddTask = ({
               </FormAnt.Item>
             </Col>
 
-            <Col span={isMobile ? 12 : 12}>
+            <Col span={12}>
               <FormAnt.Item
                 label="PTI"
                 name="pti"
@@ -366,7 +381,7 @@ const AddTask = ({
               >
                 <TextArea
                   style={{ padding: "7px 11px" }}
-                  placeholder="note"
+                  placeholder="Note"
                   autoSize={{ minRows: isMobile ? 1 : 2, maxRows: 1 }}
                   onChange={changeText}
                   value={text}
@@ -396,19 +411,18 @@ const AddTask = ({
                     />
                   </div>
                 )}
-                <br />
               </FormAnt.Item>
             </Col>
           </Row>
         </FormAnt>
         <FormAnt>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 0]}>
             <Col span={isMobile ? 6 : 24}>
               <FormAnt.Item name="attachment">
                 <div>
                   <Upload.Dragger
                     name="file"
-                    height={174}
+                    height={100}
                     multiple={true}
                     customRequest={({ file, onSuccess }: any) => {
                       const formData = new FormData();
@@ -426,7 +440,10 @@ const AddTask = ({
                     }}
                   >
                     {!isMobile ? (
-                      <p className={`ant-upload-drag-icon`}>
+                      <p
+                        className={`ant-upload-drag-icon`}
+                        style={{ margin: 0 }}
+                      >
                         <img src={fileUpload} />
                       </p>
                     ) : (
@@ -442,9 +459,8 @@ const AddTask = ({
                           Click to select
                         </span>
                         <br />
-                        <span style={{ fontSize: 13 }}>
-                          Maximum file size is 10 MB <br />
-                          (only .jpeg .jpg .png .pdf)
+                        <span style={{ fontSize: 12 }}>
+                          Maximum file size is 10 MB
                         </span>
                       </p>
                     )}

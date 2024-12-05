@@ -743,12 +743,6 @@
   cursor: pointer;
 }
 
-.ant-upload-wrapper .ant-upload-drag {
-  border: 0.5px solid rgba(215, 216, 224, 1);
-  padding: 25px 0;
-  color: #333333;
-}
-
 .card_stat {
   /* font-weight: 500; */
   /* font-size: 20px; */
@@ -814,8 +808,8 @@
 }
 
 .ant-upload-list-text {
-  overflow: scroll;
-  height: 50px;
+  /* overflow: scroll; */
+  height: 0;
 }
 
 .ant-modal-mask {
