@@ -209,7 +209,7 @@ const TaskModal = ({
       onCancel={handleCancel}
       footer={null}
       open={modalOpen}
-      width={700}
+      width={800}
       maskClosable={true}
       // style={{ position: "fixed", right: 0, top: 0, bottom: 0, height: 1000 }}
     >

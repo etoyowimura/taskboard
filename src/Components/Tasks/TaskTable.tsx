@@ -18,6 +18,9 @@ import tt from "../../assets/tticon.svg";
 import tagIcon from "../../assets/tagIcon.png";
 // @ts-ignore
 import tgIcon from "../../assets/telegram.png";
+//
+import webIcon from "../../assets/web.png";
+//
 import { isMobile, role } from "../../App";
 
 import { theme } from "antd";
@@ -142,7 +145,6 @@ const TaskTable = ({
       //   title: "",
       //   dataIndex: "no",
       //   width: isMobile ? "1%" : "3.5%",
-      //   fixed: isMobile ? "left" : false,
       //   key: "1",
       //   render: (text: any, record: TTask) => (
       //     <div
@@ -156,6 +158,7 @@ const TaskTable = ({
       //         <Tooltip placement="topLeft" title={"Created via Telegram"}>
       //           <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
       //         </Tooltip>
+      //       )
       //       )}
       //     </div>
       //   ),
@@ -327,31 +330,43 @@ const TaskTable = ({
       {
         title: "Created at",
         dataIndex: "created",
-        width: "15%",
+        width: "10%",
         key: "10",
         // responsive: ["xxl"],
         ellipsis: {
           showTitle: false,
         },
-        render: (note: string, record: TTask) => (
+        render: (note: string) => (
+          <Tooltip placement="topLeft" title={note}>
+            {note}
+          </Tooltip>
+        ),
+      },
+      {
+        title: "Source",
+        dataIndex: "source",
+        width: "6%",
+        key: "1",
+        ellipsis: {
+          showTitle: false,
+        },
+        render: (text: any, record: TTask) => (
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "start",
-              gap: 5,
+              justifyContent: "space-around",
             }}
           >
-            <Tooltip placement="topLeft" title={note}>
-              {note}
-            </Tooltip>
-            <div>
-              {record?.via_telegram && (
-                <Tooltip placement="topLeft" title={"Created via Telegram"}>
-                  <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
-                </Tooltip>
-              )}
-            </div>
+            {record?.via_telegram ? (
+              <Tooltip placement="topLeft" title={"Created via Telegram"}>
+                <img src={tgIcon} alt="" style={{ width: 20, height: 20 }} />
+              </Tooltip>
+            ) : (
+              <Tooltip placement="topLeft" title={"Created via Taskboard"}>
+                <img src={webIcon} alt="" style={{ width: 20, height: 20 }} />
+              </Tooltip>
+            )}
           </div>
         ),
       },
