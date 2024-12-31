@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Table, Tooltip } from "antd";
 import { TStat } from "../../types/Statistic/TStat";
 import {
   QueryObserverResult,
@@ -50,9 +50,41 @@ const StatTable = ({
             key: "team_name ",
           },
           {
+            title: "Tasks",
+            dataIndex: "number_of_tasks",
+            key: "number_of_tasks",
+          },
+          {
             title: "Points",
             dataIndex: "total_points",
             key: "total_points",
+          },
+          {
+            title: "Salary",
+            dataIndex: "salary",
+            key: "salary",
+            render: (text: string, record: any) => (
+              <Tooltip
+                title={
+                  <div>
+                    {record.salary_type === "Hybrid" ? (
+                      <p>
+                        <strong>Base Amount:</strong>{" "}
+                        ${record.salary_base_amount}
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                    <p>
+                      <strong>Performance based amount:</strong>{" "}
+                      ${record.salary - record.salary_base_amount}
+                    </p>
+                  </div>
+                }
+              >
+                <span>${record.salary}</span>
+              </Tooltip>
+            ),
           },
         ]}
         pagination={{

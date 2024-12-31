@@ -21,7 +21,9 @@ import Notfound from "../../Utils/Notfound";
 import { useTeamData } from "../../Hooks/Teams";
 import { useRoleData } from "../../Hooks/Role";
 import { role } from "../../App";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DollarOutlined } from "@ant-design/icons";
+
 const TabPane = Tabs.TabPane;
 type params = {
   readonly id: string;
@@ -29,19 +31,31 @@ type params = {
 
 const UserEdit = () => {
   const { id } = useParams<params>();
+  const { Option } = Select;
 
   const { data, refetch, status } = useUserOne(id);
+  const initialUsername = data?.username;
   const roleData = useRoleData();
+
   const techSupport = roleData.data?.find(
     (item) => item.name === "Tech Support"
   );
+
   const onSubmit = async (value: any) => {
+    if (initialUsername === value.username) {
+      value.username = undefined;
+    }
     if (value.role_id === techSupport?.id) {
       value.team_id = null;
 
       id && (await userController.userPatch(value, id));
     } else {
       id && (await userController.userPatch(value, id));
+    }
+
+    if (!value.salary_type) {
+      console.error("Salary type tanlanmagan!");
+      return;
     }
 
     refetch();
@@ -69,6 +83,20 @@ const UserEdit = () => {
     }
   };
   const [activeTab, setActiveTab] = useState("1");
+
+  const [showInput, setShowInput] = useState(false);
+
+  const handleChange = (value: string) => {
+    // Agar Hybrid bo'lsa, inputni ko'rsatish; Task based bo'lsa, yashirish
+    setShowInput(value === "hybrid");
+  };
+
+  useEffect(() => {
+    if (data?.salary_type === "hybrid") {
+      setShowInput(true);
+    }
+  }, [data]);
+
   return (
     <div>
       <Spin size="large" spinning={!data}>
@@ -168,6 +196,34 @@ const UserEdit = () => {
                               />
                             </Form.Item>
                           </Col>
+                        )}
+
+                        {data.role.name === "Checker" && (
+                          <Col span={4}>
+                            <Form.Item
+                              wrapperCol={{ span: "100%" }}
+                              label="Salary type"
+                              name="salary_type" // Form ma'lumotlarini yuborish uchun 'name' qo'shilgan
+                            >
+                              <Select
+                                onChange={handleChange}
+                                placeholder="Select salary type"
+                              >
+                                <Option value="task_based">Task based</Option>
+                                <Option value="hybrid">Hybrid</Option>
+                              </Select>
+                            </Form.Item>
+                          </Col>
+                        )}
+
+                        {showInput && (
+                          <Form.Item
+                            wrapperCol={{ span: "100%" }}
+                            label="Base amount"
+                            name="salary_base_amount"
+                          >
+                            <Input prefix={<DollarOutlined />} />
+                          </Form.Item>
                         )}
                       </Row>
                       <Form.Item>

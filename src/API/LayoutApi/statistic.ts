@@ -6,6 +6,7 @@ export type TStatGetParams = {
   team?: string;
   start_date?: string;
   end_date?: string;
+  for_salary?: boolean;
 };
 
 export type TStatTeamGetParams = {

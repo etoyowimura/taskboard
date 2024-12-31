@@ -278,6 +278,7 @@ const App: React.FC = () => {
         // taskSocket = new WebSocket(`wss://api.tteld.co/global/?user_id=${admin_id}`);
         taskSocket = new WebSocket(
           `wss://ontime-socket.tteld.co/global/?user_id=${admin_id}`
+          // `ws://10.10.10.64:8000/global/?user_id=${admin_id}`
         );
 
         taskSocket.addEventListener("open", (event) => {
@@ -481,7 +482,7 @@ const App: React.FC = () => {
                     >
                       <img src={themeBtn} alt="" />
                     </button>
-                    <Dropdown overlay={menu} trigger={["hover"]}>
+                    <Dropdown overlay={menu} trigger={["click"]}>
                       <div
                         style={{ cursor: "pointer" }}
                         onClick={(e) => e.preventDefault()}

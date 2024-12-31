@@ -7,4 +7,6 @@ export type TUser = {
     last_name:    string | '';
     is_active:    boolean;
     is_superuser: boolean;
+    salary_type: string;
+    salary_base_amount: number;
 }

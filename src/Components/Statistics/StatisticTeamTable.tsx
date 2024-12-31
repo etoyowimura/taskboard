@@ -5,6 +5,8 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
+
+import { theme } from "antd";
 // @ts-ignore
 import tagIcon from "../../assets/tagIcon.png";
 const StatTeamTable = ({
@@ -18,6 +20,7 @@ const StatTeamTable = ({
   data: TStatTeam[] | undefined;
   isLoading: boolean;
 }) => {
+  const { token } = theme.useToken();
   return (
     <div style={{ maxHeight: "400px", overflow: "auto" }}>
       <Table
@@ -35,6 +38,10 @@ const StatTeamTable = ({
           {
             title: "Team",
             dataIndex: "name",
+          },
+          {
+            title: "Total tasks",
+            dataIndex: "number_of_tasks",
           },
           {
             title: "Total points",
@@ -64,7 +71,20 @@ const StatTeamTable = ({
           },
         ]}
         pagination={{
-          pageSize: 5,
+          pageSize: 10,
+          size: "default",
+          style: {
+            margin: 0,
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          },
         }}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
