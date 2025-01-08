@@ -75,10 +75,10 @@ const Stat = () => {
     }
   };
 
-  const datePick = (a: any, b: any) => {
-    if (b[0] && b[1]) {
-      setStartDate(`${b[0]} 00:00:00`);
-      setEndDate(`${b[1]} 23:59:59`);
+  const datePick = (dates: any) => {
+    if (dates && dates[0] && dates[1]) {
+      setStartDate(dates[0].startOf("day").format("YYYY-MM-DD HH:mm:ss"));
+      setEndDate(dates[1].endOf("day").format("YYYY-MM-DD HH:mm:ss"));
     }
   };
 
@@ -89,20 +89,20 @@ const Stat = () => {
     } else {
       const firstDate = date;
       const secondDate = date?.add(1, "month");
-      const yearStart = Number(firstDate?.year());
-      const monthStart = Number(firstDate?.month()) + 1;
-      const yearEnd = Number(secondDate?.year());
-      const monthEnd = Number(secondDate?.month()) + 1;
+      // const yearStart = Number(firstDate?.year());
+      // const monthStart = Number(firstDate?.month()) + 1;
+      // const yearEnd = Number(secondDate?.year());
+      // const monthEnd = Number(secondDate?.month()) + 1;
 
-      setStartDate(`${yearStart}-${monthStart}-01 00:00:00`);
-      setEndDate(`${yearEnd}-${monthEnd}-01 00:00:00`);
+      // setStartDate(`${yearStart}-${monthStart}-01 00:00:00`);
+      // setEndDate(`${yearEnd}-${monthEnd}-01 00:00:00`);
+
+      const formattedStartDate = firstDate.format("YYYY-MM-DD");
+      const formattedEndDate = secondDate.format("YYYY-MM-DD");
+      setStartDate(formattedStartDate);
+      setEndDate(formattedEndDate);
       setForSalary(true);
     }
-  };
-
-  const clearDatePcker = () => {
-    setStartDate("");
-    setEndDate("");
   };
 
   const { data, refetch, isLoading } = useStatsData({
@@ -137,6 +137,10 @@ const Stat = () => {
     }, 1000);
   };
   const theme = localStorage.getItem("theme") === "true" ? true : false;
+
+  const disabledDate = (current: any) => {
+    return current && current >= moment().add(1, "month").startOf("month");
+  };
 
   // const chartData = [
   //   {
@@ -226,8 +230,11 @@ const Stat = () => {
             onChange={onChangeDate}
             picker="month"
             format={"MMMM"}
+            disabledDate={disabledDate}
             defaultValue={now}
             style={{ marginRight: 10, width: 120, marginBottom: 10 }}
+            // value={datePickerValue}
+            // defaultValue={dayjs().startOf("month")}
           />
           <RangePicker style={{ width: 260 }} onCalendarChange={datePick} />
         </div>
@@ -252,7 +259,7 @@ const Stat = () => {
             </div>
             <Select
               style={{ width: 260 }}
-              placeholder="team"
+              placeholder="Team"
               onChange={(value: any) => setTeam(value)}
               options={teamOptions}
             />

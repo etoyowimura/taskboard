@@ -5,6 +5,7 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
+import { QuestionCircleOutlined, QuestionOutlined } from "@ant-design/icons";
 // @ts-ignore
 import tagIcon from "../../assets/tagIcon.png";
 
@@ -60,24 +61,31 @@ const StatTable = ({
             key: "total_points",
           },
           {
-            title: "Salary",
+            title: (
+              <div>
+                <span>Salary</span> &nbsp;&nbsp;
+                <Tooltip title="The calculation of salary begins at the start of the month and continues to the current day. Select a month to review salary details for prior periods.">
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </div>
+            ),
             dataIndex: "salary",
             key: "salary",
             render: (text: string, record: any) => (
               <Tooltip
                 title={
                   <div>
-                    {record.salary_type === "Hybrid" ? (
+                    {record.salary_type === "hybrid" ? (
                       <p>
-                        <strong>Base Amount:</strong>{" "}
-                        ${record.salary_base_amount}
+                        <strong>Base Amount:</strong> $
+                        {record.salary_base_amount}
                       </p>
                     ) : (
                       ""
                     )}
                     <p>
-                      <strong>Performance based amount:</strong>{" "}
-                      ${record.salary - record.salary_base_amount}
+                      <strong>Performance based amount:</strong> $
+                      {record.performance_based_amount}
                     </p>
                   </div>
                 }
@@ -113,3 +121,5 @@ const StatTable = ({
 };
 
 export default StatTable;
+
+// The calculation of salary begins at the start of the month and continues to the current day. Select a month to review salary details for prior periods.

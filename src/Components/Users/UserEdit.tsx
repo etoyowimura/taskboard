@@ -87,13 +87,16 @@ const UserEdit = () => {
   const [showInput, setShowInput] = useState(false);
 
   const handleChange = (value: string) => {
-    // Agar Hybrid bo'lsa, inputni ko'rsatish; Task based bo'lsa, yashirish
-    setShowInput(value === "hybrid");
+    if (data?.role.name === "Checker") {
+      setShowInput(value === "hybrid");
+    }
   };
 
   useEffect(() => {
-    if (data?.salary_type === "hybrid") {
+    if (data?.role.name === "Checker" && data?.salary_type === "hybrid") {
       setShowInput(true);
+    } else if (data?.role.name !== "Checker") {
+      setShowInput(false);
     }
   }, [data]);
 
@@ -198,12 +201,12 @@ const UserEdit = () => {
                           </Col>
                         )}
 
-                        {data.role.name === "Checker" && (
+                        {data?.role?.name === "Checker" && (
                           <Col span={4}>
                             <Form.Item
                               wrapperCol={{ span: "100%" }}
                               label="Salary type"
-                              name="salary_type" // Form ma'lumotlarini yuborish uchun 'name' qo'shilgan
+                              name="salary_type"
                             >
                               <Select
                                 onChange={handleChange}
