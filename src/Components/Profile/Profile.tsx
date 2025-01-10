@@ -89,8 +89,7 @@ const Profile = () => {
     tasks: stat.number_of_tasks,
   }));
 
-  const firstDayOfMonth = dayjs().startOf("month"); // Oyning birinchi kuni
-  // const lastDayOfMonth = dayjs().endOf("month");
+  const firstDayOfMonth = dayjs().startOf("month");
   const today = dayjs();
 
   const dateFormat = "YYYY-MM-DD";

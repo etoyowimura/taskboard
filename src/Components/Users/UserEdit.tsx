@@ -92,6 +92,8 @@ const UserEdit = () => {
     }
   };
 
+  const [form] = Form.useForm();
+
   useEffect(() => {
     if (data?.role.name === "Checker" && data?.salary_type === "hybrid") {
       setShowInput(true);
@@ -136,6 +138,7 @@ const UserEdit = () => {
                     style={{ display: "flex" }}
                   >
                     <Form
+                      form={form}
                       name="basic"
                       layout="vertical"
                       wrapperCol={{ span: 16 }}
@@ -201,28 +204,28 @@ const UserEdit = () => {
                           </Col>
                         )}
 
-                        {data?.role?.name === "Checker" && (
-                          <Col span={4}>
-                            <Form.Item
-                              wrapperCol={{ span: "100%" }}
-                              label="Salary type"
-                              name="salary_type"
-                            >
-                              <Select
-                                onChange={handleChange}
-                                placeholder="Select salary type"
+                        {data?.role?.name === "Checker" &&
+                          form.getFieldsValue().role_id !== 3 && (
+                            <Col span={4}>
+                              <Form.Item
+                                wrapperCol={{ span: "100%" }}
+                                label="Salary type"
+                                name="salary_type"
                               >
-                                <Option value="task_based">Task based</Option>
-                                <Option value="hybrid">Hybrid</Option>
-                              </Select>
-                            </Form.Item>
-                          </Col>
-                        )}
-
+                                <Select
+                                  onChange={handleChange}
+                                  placeholder="Select salary type"
+                                >
+                                  <Option value="task_based">Task based</Option>
+                                  <Option value="hybrid">Hybrid</Option>
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                          )}
                         {showInput && (
                           <Form.Item
                             wrapperCol={{ span: "100%" }}
-                            label="Base amount"
+                            label="Fixed Amount"
                             name="salary_base_amount"
                           >
                             <Input prefix={<DollarOutlined />} />

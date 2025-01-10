@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   QueryObserverResult,
   RefetchOptions,
@@ -23,6 +23,8 @@ import TabPane from "antd/es/tabs/TabPane";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   Legend,
   Line,
@@ -33,6 +35,15 @@ import {
   YAxis,
 } from "recharts";
 
+import generalActive from "../../assets/generalActive.svg";
+import general from "../../assets/general.svg";
+import checkersIcon from "../../assets/checkerIcon.svg";
+import chekersIconActive from "../../assets/checkersIconActive.svg";
+import teamsIcon from "../../assets/teamsIcon.svg";
+import teamsIconActive from "../../assets/teamsIconActive.svg";
+
+import axios from "axios";
+
 const Stat = () => {
   const now = dayjs();
   const { RangePicker } = DatePicker;
@@ -40,7 +51,10 @@ const Stat = () => {
   const currentDate = moment();
   const nextMonth = currentDate.clone().add(1, "months");
   const start_date = `${currentDate.format("YYYY-MM")}-01 00:00:00`;
-  const end_date = `${nextMonth.format("YYYY-MM")}-01 00:00:00`;
+  const end_date = `${currentDate
+    .clone()
+    .endOf("month")
+    .format("YYYY-MM-DD")} 23:59:59`;
 
   const [search, setSearch] = useState<string>("");
   const [team, setTeam] = useState<any>("");
@@ -87,8 +101,8 @@ const Stat = () => {
       setStartDate("");
       setEndDate("");
     } else {
-      const firstDate = date;
-      const secondDate = date?.add(1, "month");
+      const firstDate = date.startOf("month");
+      const secondDate = date?.add(1, "month").startOf("month");
       // const yearStart = Number(firstDate?.year());
       // const monthStart = Number(firstDate?.month()) + 1;
       // const yearEnd = Number(secondDate?.year());
@@ -97,8 +111,10 @@ const Stat = () => {
       // setStartDate(`${yearStart}-${monthStart}-01 00:00:00`);
       // setEndDate(`${yearEnd}-${monthEnd}-01 00:00:00`);
 
-      const formattedStartDate = firstDate.format("YYYY-MM-DD");
-      const formattedEndDate = secondDate.format("YYYY-MM-DD");
+      const formattedStartDate = firstDate.format("YYYY-MM-01 00:00:00");
+      const formattedEndDate = secondDate
+        .subtract(1, "day")
+        .format("YYYY-MM-DD 23:59:59");
       setStartDate(formattedStartDate);
       setEndDate(formattedEndDate);
       setForSalary(true);
@@ -137,6 +153,8 @@ const Stat = () => {
     }, 1000);
   };
   const theme = localStorage.getItem("theme") === "true" ? true : false;
+
+  const [activeTab, setActiveTab] = useState("1");
 
   const disabledDate = (current: any) => {
     return current && current >= moment().add(1, "month").startOf("month");
@@ -218,6 +236,59 @@ const Stat = () => {
   // lines massivini yangilash
   // const lines = updateLines(chartData, predefinedColors);
 
+  const [chartData, setChartData] = useState([]);
+  const [summaryData, setSummaryData] = useState<Record<string, any> | null>(
+    null
+  );
+
+  const token = localStorage.getItem("access");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const today = dayjs().endOf("day");
+
+        let finalEndDate = dayjs(endDate);
+
+        if (finalEndDate.isAfter(today)) {
+          finalEndDate = today;
+        }
+        const formattedEndDate = finalEndDate.format("YYYY-MM-DD HH:mm:ss");
+
+        const response = await axios.get(
+          "https://api.tteld.co/api/v1/stats/general-stats",
+          {
+            params: { start_date: startDate, end_date: formattedEndDate },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (response.data.daily_stats) {
+          setChartData(response.data.daily_stats);
+        }
+        if (response.data.summary) {
+          setSummaryData(response.data.summary);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching daily stats:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [token, startDate, endDate]);
+
+  if (loading) return <p>Loading...</p>;
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-EN", {
+      day: "2-digit",
+      month: "short",
+    }).format(date);
+  };
+
   return (
     <div>
       <div
@@ -239,8 +310,145 @@ const Stat = () => {
           <RangePicker style={{ width: 260 }} onCalendarChange={datePick} />
         </div>
       </div>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab={<span>Users</span>} key="1">
+      <Tabs
+        defaultActiveKey="1"
+        activeKey={activeTab}
+        onChange={(key) => setActiveTab(key)}
+      >
+        <TabPane
+          tab={
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <img
+                style={{ marginRight: 5 }}
+                src={activeTab === "1" ? generalActive : general}
+                alt="icon"
+              />
+              General
+            </span>
+          }
+          key="1"
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 20,
+              marginTop: 40,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+                flexDirection: "column",
+                gap: 20,
+                flexWrap: "wrap",
+              }}
+            >
+              {summaryData && (
+                <div
+                  className="card_stat"
+                  style={{
+                    backgroundColor: "#F99E2C",
+                  }}
+                >
+                  <p>Total</p>
+                  <span>{summaryData.total}</span>
+                  <p>Tasks</p>
+                </div>
+              )}
+              {summaryData && (
+                <div
+                  className="card_stat"
+                  style={{
+                    backgroundColor: "#27AE60",
+                  }}
+                >
+                  <p>Active</p>
+                  <span>{summaryData.total_completed}</span>
+                  <p>Tasks</p>
+                </div>
+              )}
+              {summaryData && (
+                <div
+                  className="card_stat"
+                  style={{
+                    backgroundColor: "#F64747",
+                  }}
+                >
+                  <p>Inactive</p>
+                  <span>{summaryData.total_incomplete}</span>
+                  <p>Tasks</p>
+                </div>
+              )}
+            </div>
+            <ResponsiveContainer
+              width="100%"
+              height={517}
+              style={{ textTransform: "capitalize" }}
+            >
+              <LineChart
+                data={chartData}
+                // margin={{
+                //   top: 5,
+                //   right: 30,
+                //   left: 20,
+                //   bottom: 5,
+                // }}
+              >
+                <CartesianGrid vertical={false} stroke="#D7D8E080" />
+                <XAxis
+                  dataKey="task_date"
+                  style={{
+                    color: "#9B9DAA",
+                    fontSize: 10,
+                    lineHeight: "12.4px",
+                    fontWeight: 400,
+                  }}
+                  tickFormatter={formatDate}
+                />
+                <YAxis
+                  style={{
+                    color: "#9B9DAA",
+                    fontSize: 10,
+                    fontWeight: 400,
+                  }}
+                />
+                <Tooltip />
+                <Legend />
+                <Line
+                  dataKey="total_tasks"
+                  stroke="#F99E2C"
+                  name="Total Tasks"
+                />
+                <Line
+                  dataKey="completed_tasks"
+                  stroke="#27AE60"
+                  name="Active tasks"
+                />
+                <Line
+                  dataKey="incomplete_tasks"
+                  stroke="#F64747"
+                  name="Inactive Tasks"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </TabPane>
+        <TabPane
+          tab={
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <img
+                style={{ marginRight: 5 }}
+                src={activeTab === "2" ? chekersIconActive : checkersIcon}
+                alt="icon"
+              />
+              Checkers
+            </span>
+          }
+          key="2"
+        >
           <span
             style={{
               display: "flex",
@@ -277,13 +485,29 @@ const Stat = () => {
             Save as file
           </Button>
         </TabPane>
-        <TabPane tab={<span>Teams</span>} key="2">
+        <TabPane
+          tab={
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <img
+                style={{ marginRight: 5 }}
+                src={activeTab === "3" ? teamsIconActive : teamsIcon}
+                alt="icon"
+              />
+              Teams
+            </span>
+          }
+          key="3"
+        >
           <StatTeamTable
             data={TeamData?.data}
             isLoading={TeamData?.isLoading}
             refetch={TeamData?.refetch}
           />
-          <Button type="primary" onClick={(e) => handleSave("")}>
+          <Button
+            type="primary"
+            onClick={(e) => handleSave("")}
+            style={{ marginTop: 10 }}
+          >
             Save as file
           </Button>
 

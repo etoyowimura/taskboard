@@ -77,7 +77,7 @@ const StatTable = ({
                   <div>
                     {record.salary_type === "hybrid" ? (
                       <p>
-                        <strong>Base Amount:</strong> $
+                        <strong>Fixed Amount:</strong> $
                         {record.salary_base_amount}
                       </p>
                     ) : (
@@ -89,6 +89,9 @@ const StatTable = ({
                     </p>
                   </div>
                 }
+                overlayStyle={{
+                  maxWidth: "700px",
+                }}
               >
                 <span>${record.salary}</span>
               </Tooltip>
