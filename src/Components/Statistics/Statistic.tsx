@@ -6,8 +6,19 @@ import {
 } from "react-query";
 import { statController } from "../../API/LayoutApi/statistic";
 import { useTeamData } from "../../Hooks/Teams/index";
-import { useStatTeamData, useStatsData } from "../../Hooks/Stats";
-import { TStatTeam } from "../../types/Statistic/TStat";
+import {
+  useCreatorsData,
+  useGeneralChartData,
+  useStatTeamData,
+  useStatsData,
+  useTeamChartData,
+} from "../../Hooks/Stats";
+import {
+  TGeneralChartData,
+  TStatCreators,
+  TStatTeam,
+  TteamChartData,
+} from "../../types/Statistic/TStat";
 import StatTable from "./StatisticTable";
 import StatTeamTable from "./StatisticTeamTable";
 import dayjs from "dayjs";
@@ -41,8 +52,11 @@ import checkersIcon from "../../assets/checkerIcon.svg";
 import chekersIconActive from "../../assets/checkersIconActive.svg";
 import teamsIcon from "../../assets/teamsIcon.svg";
 import teamsIconActive from "../../assets/teamsIconActive.svg";
+import techSupports from "../../assets/techsupportIcon.svg";
+import techSupportsActive from "../../assets/techsupportIconActive.svg";
 
 import axios from "axios";
+import StatisticsSupportTable from "./StatisticsSupportTable";
 
 const Stat = () => {
   const now = dayjs();
@@ -57,6 +71,7 @@ const Stat = () => {
     .format("YYYY-MM-DD")} 23:59:59`;
 
   const [search, setSearch] = useState<string>("");
+  const [SupportSearch, setSupportSearch] = useState<string>("");
   const [team, setTeam] = useState<any>("");
   const [startDate, setStartDate] = useState(start_date);
   const [endDate, setEndDate] = useState(end_date);
@@ -141,6 +156,42 @@ const Stat = () => {
     end_date: endDate,
   });
 
+  interface TaskCreatorsType {
+    data?: TStatCreators[];
+    refetch: <TPageData>(
+      options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+    ) => Promise<QueryObserverResult<TStatCreators[], unknown>>;
+    isLoading: boolean;
+  }
+
+  const CreatorsData: TaskCreatorsType = useCreatorsData({
+    search: SupportSearch,
+    start_date: startDate,
+    end_date: endDate,
+  });
+
+  interface TeamschartDataType {
+    data?: TteamChartData[];
+    refetch: <TPageData>(
+      options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+    ) => Promise<QueryObserverResult<TteamChartData[], unknown>>;
+    isLoading: boolean;
+  }
+
+  const today = dayjs().endOf("day");
+
+  let finalEndDate = dayjs(endDate);
+
+  if (finalEndDate.isAfter(today)) {
+    finalEndDate = today;
+  }
+  const formattedEndDate = finalEndDate.format("YYYY-MM-DD HH:mm:ss");
+
+  const TeamschartData: TeamschartDataType = useTeamChartData({
+    start_date: startDate,
+    end_date: formattedEndDate,
+  });
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (timerRef.current) {
@@ -152,6 +203,20 @@ const Stat = () => {
       setSearch(searchText);
     }, 1000);
   };
+
+  const handleTechSupportSearchChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    const searchText = e.target.value;
+    timerRef.current = setTimeout(() => {
+      setSupportSearch(searchText);
+    }, 1000);
+  };
+
   const theme = localStorage.getItem("theme") === "true" ? true : false;
 
   const [activeTab, setActiveTab] = useState("1");
@@ -160,81 +225,47 @@ const Stat = () => {
     return current && current >= moment().add(1, "month").startOf("month");
   };
 
-  // const chartData = [
-  //   {
-  //     date: "2024-12-01",
-  //     ABM: { points: 4500, count: 20 },
-  //     ZNX: { points: 2500, count: 18 },
-  //     TYP: { points: 3900, count: 24 },
-  //     LMO: { points: 3100, count: 16 },
-  //     QWE: { points: 2800, count: 21 },
-  //     RST: { points: 4400, count: 19 },
-  //     UVX: { points: 3950, count: 22 },
-  //     WYZ: { points: 4100, count: 20 },
-  //     ERT: { points: 3700, count: 17 },
-  //     KLM: { points: 4200, count: 25 },
-  //     LBS: { points: 1200, count: 25 },
-  //   },
-  //   {
-  //     date: "2024-12-02",
-  //     ABM: { points: 4600, count: 21 },
-  //     ZNX: { points: 2400, count: 17 },
-  //     TYP: { points: 3850, count: 23 },
-  //     LMO: { points: 3200, count: 15 },
-  //     QWE: { points: 2750, count: 20 },
-  //     RST: { points: 4450, count: 18 },
-  //     UVX: { points: 4000, count: 23 },
-  //     WYZ: { points: 4200, count: 19 },
-  //     ERT: { points: 3750, count: 16 },
-  //     KLM: { points: 4250, count: 24 },
-  //     LBS: { points: 1250, count: 26 },
-  //   },
-  //   {
-  //     date: "2024-12-03",
-  //     ABM: { points: 4550, count: 19 },
-  //     ZNX: { points: 2550, count: 19 },
-  //     TYP: { points: 3950, count: 25 },
-  //     LMO: { points: 3150, count: 17 },
-  //     QWE: { points: 2850, count: 22 },
-  //     RST: { points: 4500, count: 20 },
-  //     UVX: { points: 3900, count: 21 },
-  //     WYZ: { points: 4300, count: 21 },
-  //     ERT: { points: 3800, count: 18 },
-  //     KLM: { points: 4300, count: 26 },
-  //     LBS: { points: 1300, count: 27 },
-  //   },
-  // ];
+  const predefinedColors = [
+    "#ff2600", // Tomato
+    "#FF4500", // OrangeRed
+    "#FF1493", // DeepPink
+    "#006800", // LimeGreen
+    "#3CB371", // MediumSeaGreen
+    "#00BFFF", // DeepSkyBlue
+    "#FFD700", // Gold
+    "#F08080", // LightCoral
+    "#8A2BE2", // BlueViolet
+    "#FFB6C1", // LightPink
+  ];
 
-  // const lines = [
-  //   { key: "ABM.points", color: "#FF5733" }, // orange-red
-  //   { key: "ZNX.points", color: "#00b822" }, // lime-green
-  //   { key: "TYP.points", color: "#5733FF" }, // blue-purple
-  //   { key: "LMO.points", color: "#FFC300" }, // gold
-  //   { key: "QWE.points", color: "#009790" }, // turquoise
-  //   { key: "RST.points", color: "#FF33A1" }, // hot pink
-  //   { key: "UVX.points", color: "#8D33FF" }, // violet
-  //   { key: "WYZ.points", color: "#FF8D33" }, // orange
-  //   { key: "ERT.points", color: "#33A1FF" }, // sky blue
-  //   { key: "KLM.points", color: "#4a8a01" }, // light green
-  // ];
+  function updateLines(chartData: any, predefinedColors: any) {
+    if (!chartData || chartData.length === 0) {
+      return []; // Agar chartData mavjud bo'lmasa, bo'sh massiv qaytariladi
+    }
 
-  // console.log(chartData, );
+    const keys = Object.keys(chartData[0]).filter((key) => key !== "date");
 
-  // const predefinedColors = ["#FF5733", "#00b822"];
+    // Har bir key uchun chiziqlar yaratish
+    const newLines = keys.flatMap((key, index) => {
+      const color = predefinedColors[index % predefinedColors.length]; // Ranglarni aylantirib foydalanadi
 
-  // function updateLines(chartData: any, predefinedColors: any) {
-  //   const keys = Object.keys(chartData[0]).filter((key) => key !== "date");
+      // Har bir "key" uchun ikkita chiziq (biri number_of_tasks, ikkinchisi total_points)
+      return [
+        {
+          key: `${key}.total_points`,
+          color,
+          name: `${key} points`,
+          legend_name: `${key}`,
+        },
+      ];
+    });
 
-  //   const newLines = keys.map((key, index) => {
-  //     const color = predefinedColors[index % predefinedColors.length]; // Ranglarni aylantirib foydalanadi
-  //     return { key: `${key}.points`, color, name: `${key}` };
-  //   });
+    return newLines;
+  }
 
-  //   return newLines;
-  // }
-
-  // lines massivini yangilash
-  // const lines = updateLines(chartData, predefinedColors);
+  const lines = TeamschartData.data
+    ? updateLines(TeamschartData.data, predefinedColors)
+    : [];
 
   const [chartData, setChartData] = useState([]);
   const [summaryData, setSummaryData] = useState<Record<string, any> | null>(
@@ -278,8 +309,6 @@ const Stat = () => {
 
     fetchData();
   }, [token, startDate, endDate]);
-
-  if (loading) return <p>Loading...</p>;
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -388,15 +417,7 @@ const Stat = () => {
               height={517}
               style={{ textTransform: "capitalize" }}
             >
-              <LineChart
-                data={chartData}
-                // margin={{
-                //   top: 5,
-                //   right: 30,
-                //   left: 20,
-                //   bottom: 5,
-                // }}
-              >
+              <LineChart data={chartData}>
                 <CartesianGrid vertical={false} stroke="#D7D8E080" />
                 <XAxis
                   dataKey="task_date"
@@ -436,18 +457,56 @@ const Stat = () => {
             </ResponsiveContainer>
           </div>
         </TabPane>
+
         <TabPane
           tab={
             <span style={{ display: "flex", alignItems: "center" }}>
               <img
                 style={{ marginRight: 5 }}
-                src={activeTab === "2" ? chekersIconActive : checkersIcon}
+                src={activeTab === "2" ? techSupportsActive : techSupports}
+                alt="icon"
+              />
+              Tech Supports
+            </span>
+          }
+          key="2"
+        >
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <div className="search-div" style={{ marginRight: 12 }}>
+              <img src={IconSearch} alt="" />
+              <input
+                className={`search-input-${theme}`}
+                type="text"
+                placeholder="Search"
+                onChange={handleTechSupportSearchChange}
+              />
+            </div>
+          </span>
+          <StatisticsSupportTable
+            data={CreatorsData?.data}
+            isLoading={CreatorsData?.isLoading}
+            refetch={CreatorsData?.refetch}
+          />
+        </TabPane>
+
+        <TabPane
+          tab={
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <img
+                style={{ marginRight: 5 }}
+                src={activeTab === "3" ? chekersIconActive : checkersIcon}
                 alt="icon"
               />
               Checkers
             </span>
           }
-          key="2"
+          key="3"
         >
           <span
             style={{
@@ -490,13 +549,13 @@ const Stat = () => {
             <span style={{ display: "flex", alignItems: "center" }}>
               <img
                 style={{ marginRight: 5 }}
-                src={activeTab === "3" ? teamsIconActive : teamsIcon}
+                src={activeTab === "4" ? teamsIconActive : teamsIcon}
                 alt="icon"
               />
               Teams
             </span>
           }
-          key="3"
+          key="4"
         >
           <StatTeamTable
             data={TeamData?.data}
@@ -511,31 +570,55 @@ const Stat = () => {
             Save as file
           </Button>
 
-          {/* <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              width={800}
-              height={400}
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
+          <div style={{ display: "flex", alignItems: "center", marginTop: 30 }}>
+            <ResponsiveContainer width="100%" height={517}>
+              <LineChart
+                data={TeamschartData.data || []}
+                margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+              >
+                <CartesianGrid vertical={false} stroke="#D7D8E080" />
+                <XAxis
+                  dataKey="date"
+                  style={{
+                    color: "#9B9DAA",
+                    fontSize: 12,
+                    lineHeight: "15.4px",
+                    fontWeight: 400,
 
-              {lines.map((line, index) => (
-                <Line
-                  key={index}
-                  type="linear"
-                  dataKey={line.key}
-                  name={line.name}
-                  stroke={line.color}
-                  activeDot={{ r: 7 }}
+                    letterSpacing: 0.8,
+                  }}
+                  tickFormatter={formatDate}
                 />
-              ))}
-            </LineChart>
-          </ResponsiveContainer> */}
+                <YAxis
+                  style={{
+                    color: "#9B9DAA",
+                    fontSize: 10,
+                    fontWeight: 400,
+                  }}
+                />
+                <Tooltip />
+                <Legend
+                  payload={lines.map((line) => ({
+                    value: line.legend_name, // Legenddagi yozuv sifatida `name` beriladi
+                    type: "line",
+                    id: line.key,
+                    color: line.color,
+                  }))}
+                />
+
+                {lines.map((line, index) => (
+                  <Line
+                    key={index}
+                    type="linear"
+                    dataKey={line.key}
+                    name={line.name}
+                    stroke={line.color}
+                    activeDot={{ r: 7 }}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </TabPane>
       </Tabs>
     </div>

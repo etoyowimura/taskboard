@@ -1,3 +1,8 @@
+import {
+  TGeneralChartGetParams,
+  TStatCreatorsGetParams,
+  TteamChartGetParams,
+} from "./../../API/LayoutApi/statistic";
 import { useQuery } from "react-query";
 import { TStatGetParams, statController } from "../../API/LayoutApi/statistic";
 
@@ -27,10 +32,34 @@ export const useStatTeamData = ({
   );
 };
 
-export const useCreatorsData = ({ start_date, end_date }: TStatGetParams) => {
+export const useCreatorsData = ({
+  start_date,
+  end_date,
+  search,
+}: TStatCreatorsGetParams) => {
   return useQuery(
-    [`stats/task-creators/`, start_date, end_date],
-    () => statController.creators({ start_date, end_date }),
+    [`stats/task-creators/`, search, start_date, end_date],
+    () => statController.creators({ start_date, end_date, search }),
+    { refetchOnWindowFocus: false }
+  );
+};
+export const useTeamChartData = ({
+  start_date,
+  end_date,
+}: TteamChartGetParams) => {
+  return useQuery(
+    [`stats/teams-line-chart/`, start_date, end_date],
+    () => statController.teamChart({ start_date, end_date }),
+    { refetchOnWindowFocus: false }
+  );
+};
+export const useGeneralChartData = ({
+  start_date,
+  end_date,
+}: TGeneralChartGetParams) => {
+  return useQuery(
+    [`stats/general-stats/`, start_date, end_date],
+    () => statController.generalChart({ start_date, end_date }),
     { refetchOnWindowFocus: false }
   );
 };

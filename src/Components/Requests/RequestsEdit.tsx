@@ -99,7 +99,7 @@ const RequestsEdit = ({
         onCancel={handleCancel}
         footer={null}
         open={modalOpen}
-        width={1000}
+        width={800}
         maskClosable={true}
       >
         <div className="info-div">

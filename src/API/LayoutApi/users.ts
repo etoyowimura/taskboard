@@ -6,6 +6,8 @@ export type TUsersGetParams = {
   name?: string;
   team?: string;
   role?: string;
+  page?: number;
+  page_size?: number;
 };
 
 export type TUsersPutParams = {
@@ -25,6 +27,10 @@ export type TUsersPostParams = {
 export const userController = {
   async read(filterObject: TUsersGetParams) {
     const params = { ...filterObject };
+
+    if (!!filterObject.page && filterObject.page !== 0)
+      params.page = filterObject.page;
+    params.page_size = filterObject.page_size;
 
     if (!!filterObject.name) params.name = filterObject.name;
     if (Array.isArray(filterObject.team)) {

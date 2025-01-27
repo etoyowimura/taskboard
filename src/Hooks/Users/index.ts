@@ -1,10 +1,16 @@
 import { useQuery } from "react-query";
 import { TUsersGetParams, userController } from "../../API/LayoutApi/users";
 
-export const useUserData = ({ name, team, role }: TUsersGetParams) => {
+export const useUserData = ({
+  name,
+  team,
+  role,
+  page,
+  page_size,
+}: TUsersGetParams) => {
   return useQuery(
-    [`users/admins/`, { name, team, role }],
-    () => userController.read({ name, team, role }),
+    [`users/admins/`, { name, team, role, page, page_size }],
+    () => userController.read({ name, team, role, page, page_size }),
     { refetchOnWindowFocus: false }
   );
 };

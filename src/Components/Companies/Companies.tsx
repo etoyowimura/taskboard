@@ -8,7 +8,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { useCompanyPaginated } from "../../Hooks/Companies";
-import { Button, Input, Pagination, Space, Typography } from "antd";
+import { Button, Input, Space, Typography } from "antd";
 import { theme } from "antd";
 
 // @ts-ignore
@@ -30,7 +30,7 @@ const Company = () => {
     name: search,
     is_active: undefined,
     page: page,
-    page_size: 15,
+    page_size: 10,
   });
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -58,12 +58,6 @@ const Company = () => {
   };
 
   const { token } = theme.useToken();
-
-  const page_size = 15;
-
-  const handlePageChange = (page: number) => {
-    setPage(page);
-  };
 
   const themes = localStorage.getItem("theme") === "true" ? true : false;
 
@@ -152,12 +146,6 @@ const Company = () => {
           >
             <RightOutlined />
           </Button>
-          {/* <Pagination
-            current={page}
-            total={data?.page_size}
-            pageSize={page_size}
-            onChange={handlePageChange}
-          /> */}
         </Space>
       </Space>
     </div>

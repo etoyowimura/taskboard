@@ -54,49 +54,55 @@ const StatTable = ({
             title: "Tasks",
             dataIndex: "number_of_tasks",
             key: "number_of_tasks",
+            sorter: (a: any, b: any) => a.number_of_tasks - b.number_of_tasks,
+            sortDirections: ["ascend", "descend"],
           },
           {
             title: "Points",
             dataIndex: "total_points",
             key: "total_points",
+            sorter: (a: any, b: any) => a.total_points - b.total_points,
+            sortDirections: ["ascend", "descend"],
           },
-          {
-            title: (
-              <div>
-                <span>Salary</span> &nbsp;&nbsp;
-                <Tooltip title="The calculation of salary begins at the start of the month and continues to the current day. Select a month to review salary details for prior periods.">
-                  <QuestionCircleOutlined />
-                </Tooltip>
-              </div>
-            ),
-            dataIndex: "salary",
-            key: "salary",
-            render: (text: string, record: any) => (
-              <Tooltip
-                title={
-                  <div>
-                    {record.salary_type === "hybrid" ? (
-                      <p>
-                        <strong>Fixed Amount:</strong> $
-                        {record.salary_base_amount}
-                      </p>
-                    ) : (
-                      ""
-                    )}
-                    <p>
-                      <strong>Performance based amount:</strong> $
-                      {record.performance_based_amount}
-                    </p>
-                  </div>
-                }
-                overlayStyle={{
-                  maxWidth: "700px",
-                }}
-              >
-                <span>${record.salary}</span>
-              </Tooltip>
-            ),
-          },
+          // {
+          //   title: (
+          //     <div>
+          //       <span>Salary</span> &nbsp;&nbsp;
+          //       <Tooltip title="The calculation of salary begins at the start of the month and continues to the current day. Select a month to review salary details for prior periods.">
+          //         <QuestionCircleOutlined />
+          //       </Tooltip>
+          //     </div>
+          //   ),
+          //   dataIndex: "salary",
+          //   key: "salary",
+          //   render: (text: string, record: any) => (
+          //     <Tooltip
+          //       title={
+          //         <div>
+          //           {record.salary_type === "hybrid" ? (
+          //             <p>
+          //               <strong>Fixed Amount:</strong> $
+          //               {record.salary_base_amount}
+          //             </p>
+          //           ) : (
+          //             ""
+          //           )}
+          //           <p>
+          //             <strong>Performance based amount:</strong> $
+          //             {record.performance_based_amount}
+          //           </p>
+          //         </div>
+          //       }
+          //       overlayStyle={{
+          //         maxWidth: "700px",
+          //       }}
+          //     >
+          //       <span>${record.salary}</span>
+          //     </Tooltip>
+          //   ),
+          //   sorter: (a: any, b: any) => a.salary - b.total_points,
+          //   sortDirections: ["ascend", "descend"],
+          // },
         ]}
         pagination={{
           pageSize: 10,

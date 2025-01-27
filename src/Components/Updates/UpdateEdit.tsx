@@ -31,6 +31,8 @@ import attachmentIcon from "../../assets/attachmentIcon.png";
 // @ts-ignore
 import attachmentIconActive from "../../assets/attachmentIconActive.png";
 
+import uploadImg from "../../assets/upload-file.png";
+
 const { Option } = Select;
 const TabPane = Tabs.TabPane;
 type params = {
@@ -395,15 +397,19 @@ const UpdateEdit = () => {
                                     }}
                                   >
                                     <p className="ant-upload-drag-icon">
-                                      <UploadOutlined
-                                        style={{ color: "#b5f5ec" }}
-                                      />
+                                      <img src={uploadImg} alt="upload image" />
                                     </p>
                                     <p
                                       className="ant-upload-text"
-                                      style={{ color: "#b5f5ec" }}
+                                      style={{ color: "#9B9DAA", fontSize: 14 }}
                                     >
-                                      Click or drag file to this area to upload
+                                      Drag and drop files or Click to select
+                                    </p>
+                                    <p
+                                      className="ant-upload-text"
+                                      style={{ color: "#9B9DAA", fontSize: 13 }}
+                                    >
+                                      Maximum file size is 10 MB
                                     </p>
                                   </Upload.Dragger>
                                   <p>{imgname.join(",\n")}</p>

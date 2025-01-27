@@ -13,6 +13,36 @@ export type TStatTeam = {
   total_points: number;
 };
 
+export type TStatCreators = {
+  id: number;
+  username: string;
+  full_name: string;
+  number_of_tasks: number;
+};
+
+type TaskPerformance = {
+  number_of_tasks: number;
+  total_points: number;
+};
+export type TteamChartData = {
+  date: string;
+  [category: string]: TaskPerformance | string;
+};
+
+export type TGeneralDailyStat = {
+  task_date: string;
+  total_tasks: number;
+  completed_tasks: number;
+  incomplete_tasks: number;
+};
+
+export type TGeneralWrapper = {
+  daily_stats: TGeneralDailyStat[];
+};
+export type TGeneralChartData = {
+  daily_stats: TGeneralWrapper[];
+};
+
 export type TCard = {
   all_tasks: number;
   active_tasks: number;

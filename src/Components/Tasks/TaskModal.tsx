@@ -241,25 +241,27 @@ const TaskModal = ({
           </Dropdown>
         </div>
         <div className="mdoal-actions">
-          <Dropdown
-            disabled={recordTask?.status !== "New"}
-            menu={{ items: teams }}
-            placement="bottom"
-            arrow={{ pointAtCenter: true }}
-          >
-            <button
+          {role !== "Checker" && (
+            <Dropdown
               disabled={recordTask?.status !== "New"}
-              style={{
-                marginRight: 12,
-                color: token.colorText,
-                backgroundColor: token.colorBgContainer,
-              }}
-              className={`btn-modal-action-${themes && "dark"}`}
+              menu={{ items: teams }}
+              placement="bottom"
+              arrow={{ pointAtCenter: true }}
             >
-              <img src={forwardIcon} alt="" />
-              Forward
-            </button>
-          </Dropdown>
+              <button
+                disabled={recordTask?.status !== "New"}
+                style={{
+                  marginRight: 12,
+                  color: token.colorText,
+                  backgroundColor: token.colorBgContainer,
+                }}
+                className={`btn-modal-action-${themes && "dark"}`}
+              >
+                <img src={forwardIcon} alt="" />
+                Forward
+              </button>
+            </Dropdown>
+          )}
           <button
             style={{
               marginLeft: 12,

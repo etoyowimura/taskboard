@@ -894,6 +894,11 @@
   }
 }
 
+.requests-filter {
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media (max-width: 768px) {
   .btn-add {
     padding: 7px 10px 7px 10px;

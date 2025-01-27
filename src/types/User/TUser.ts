@@ -10,3 +10,12 @@ export type TUser = {
     salary_type: string;
     salary_base_amount: number;
 }
+
+export type TUserResponse = {
+  page: number;
+  page_size: number;
+  next: string | null;
+  previous: string | null;
+  current_time: string;
+  data: TUser[];
+};

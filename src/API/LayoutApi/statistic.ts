@@ -1,4 +1,11 @@
-import { TCard, TStat, TStatTeam } from "../../types/Statistic/TStat";
+import {
+  TCard,
+  TGeneralChartData,
+  TStat,
+  TStatCreators,
+  TStatTeam,
+  TteamChartData,
+} from "../../types/Statistic/TStat";
 import instance from "../api";
 
 export type TStatGetParams = {
@@ -16,6 +23,15 @@ export type TStatTeamGetParams = {
 };
 
 export type TStatCreatorsGetParams = {
+  start_date?: string;
+  end_date?: string;
+  search?: string;
+};
+export type TteamChartGetParams = {
+  start_date?: string;
+  end_date?: string;
+};
+export type TGeneralChartGetParams = {
   start_date?: string;
   end_date?: string;
 };
@@ -53,10 +69,14 @@ export const statController = {
 
     if (!!filterObject.start_date) params.start_date = filterObject.start_date;
     if (!!filterObject.end_date) params.end_date = filterObject.end_date;
+    if (!!filterObject.search) params.search = filterObject.search;
 
-    const { data } = await instance.get<TStatTeam[]>(`stats/task-creators/`, {
-      params,
-    });
+    const { data } = await instance.get<TStatCreators[]>(
+      `stats/task-creators/`,
+      {
+        params,
+      }
+    );
     return data;
   },
   async cards(filterObject: TStatCreatorsGetParams) {
@@ -68,6 +88,34 @@ export const statController = {
     const { data } = await instance.get<TCard>(`stats/tasks-comparison/`, {
       params,
     });
+    return data;
+  },
+  async teamChart(filterObject: TteamChartGetParams) {
+    const params = { ...filterObject };
+
+    if (!!filterObject.start_date) params.start_date = filterObject.start_date;
+    if (!!filterObject.end_date) params.end_date = filterObject.end_date;
+
+    const { data } = await instance.get<TteamChartData[]>(
+      `stats/teams-line-chart/`,
+      {
+        params,
+      }
+    );
+    return data;
+  },
+  async generalChart(filterObject: TGeneralChartGetParams) {
+    const params = { ...filterObject };
+
+    if (!!filterObject.start_date) params.start_date = filterObject.start_date;
+    if (!!filterObject.end_date) params.end_date = filterObject.end_date;
+
+    const { data } = await instance.get<TGeneralChartData[]>(
+      `stats/general-stats/`,
+      {
+        params,
+      }
+    );
     return data;
   },
 

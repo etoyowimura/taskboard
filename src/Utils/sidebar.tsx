@@ -12,6 +12,8 @@ import Stat from "../Components/Statistics/Statistic";
 import Profile from "../Components/Profile/Profile";
 import Update from "../Components/Updates/Update";
 import UpdateEdit from "../Components/Updates/UpdateEdit";
+import Accounting from "../Components/Accounting/Accounting";
+import AccountingDetails from "../Components/Accounting/AccountingDetails";
 
 type TItems = {
   path: string;
@@ -50,6 +52,16 @@ export const mainItems: TItems[] = [
     component: <ServiceEdit />,
     key: "/service/:id/",
   },
+  {
+    path: "/accounting/",
+    component: <Accounting />,
+    key: "/accounting/",
+  },
+  {
+    path: "/accounting/:id/",
+    component: <AccountingDetails />,
+    key: "/accounting/:id/",
+  },
 ];
 
 export const superItems: TItems[] = [
@@ -75,7 +87,7 @@ export const superItems: TItems[] = [
   },
   {
     path: "/stats/",
-    component: <Stat />, 
+    component: <Stat />,
     key: "/stats/",
   },
   {

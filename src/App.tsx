@@ -41,6 +41,9 @@ import driverIcon from "./assets/customersIcon.png";
 import requestIcon from "./assets/requestIcon.png";
 // @ts-ignore
 import callIcon from "./assets/callIcon.png";
+
+import accountingIcon from "./assets/acoountingIcon.svg";
+
 import Register from "./Auth/Register";
 import Activate from "./Auth/Activate";
 import Invite from "./Auth/Invite";
@@ -53,6 +56,7 @@ import Requests from "./Components/Requests/Requests";
 import { callController } from "./API/LayoutApi/callrequests";
 import Call from "./Components/CallRequests/Call";
 import { dark, light } from "./Utils/styles";
+import Accounting from "./Components/Accounting/Accounting";
 // import Input from "antd/es/input/Input";
 const { Header, Sider, Content } = Layout;
 const userJSON: any = localStorage.getItem("user");
@@ -190,6 +194,11 @@ const App: React.FC = () => {
         </Link>,
         "calls/",
         <img alt="" src={callIcon} />
+      ),
+      getItem(
+        <Link to="accounting/">Accounting</Link>,
+        "accounting/",
+        <img alt="" src={accountingIcon} />
       )
     );
   }

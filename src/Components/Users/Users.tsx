@@ -2,23 +2,39 @@ import { useRef, useState } from "react";
 import { useUserData } from "../../Hooks/Users";
 import AddUser from "./AddUser";
 import UserTable from "./UserTable";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { theme } from "antd";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
-import { Pagination, Space, Typography } from "antd";
+import { Button, Input, Pagination, Space, Typography } from "antd";
 
 const User = () => {
+  const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showModal = () => {
     setOpen(true);
   };
 
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
+
   const { data, refetch, isLoading } = useUserData({
     name: search,
     team: "",
   });
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (timerRef.current) {
@@ -30,7 +46,9 @@ const User = () => {
       setSearch(searchText);
     }, 1000);
   };
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const themes = localStorage.getItem("theme") === "true" ? true : false;
+
+  const { token } = theme.useToken();
 
   return (
     <div>
@@ -50,7 +68,7 @@ const User = () => {
         <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
-            className={`search-input-${theme}`}
+            className={`search-input-${themes}`}
             type="text"
             placeholder="Search"
             onChange={handleSearchChange}
@@ -67,19 +85,35 @@ const User = () => {
             bottom: 0,
             left: 0,
             width: "100%",
-            // backgroundColor: token.colorBgContainer,
+            backgroundColor: token.colorBgContainer,
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
             padding: "10px 0",
             zIndex: 1000,
           }}
           wrap
         >
-          <Button onClick={Previos} disabled={data?.previous ? false : true}>
-            ＜
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
           </Button>
 
           <Input
-            style={{ width: 30, textAlign: "center" }}
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -89,15 +123,17 @@ const User = () => {
             }}
           />
 
-          <Button onClick={Next} disabled={data?.next ? false : true}>
-            ＞
+          <Button
+            onClick={Next}
+            // disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
           </Button>
-          <Pagination
-          // current={page}
-          // total={}
-          // pageSize={page_size}
-          // onChange={handlePageChange}
-          />
         </Space>
       </Space> */}
     </div>

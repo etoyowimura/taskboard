@@ -42,8 +42,6 @@ const Task = ({
   const [errorModal, setErrorModal] = useState(false);
   const [uncomletedData, setUncomletedData] = useState<TTask[]>();
 
-  const [pageSize, setPageSize] = useState(10);
-
   useEffect(() => {
     if (
       socketData &&
@@ -129,7 +127,6 @@ const Task = ({
       label: item?.name,
       value: item?.id,
     }));
-  const page_size = 10;
   const { data, isLoading, refetch } = useTasks({
     search,
     status,
@@ -171,11 +168,6 @@ const Task = ({
       const a = Number(page) - 1;
       setPage(a);
     }
-  };
-
-  const handlePageChange = (page: number, pageSize: number) => {
-    setPage(page);
-    setPageSize(pageSize);
   };
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -357,12 +349,6 @@ const Task = ({
           >
             <RightOutlined />
           </Button>
-          {/* <Pagination
-            current={page}
-            total={data?.data.length}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-          /> */}
         </Space>
       </Space>
     </div>

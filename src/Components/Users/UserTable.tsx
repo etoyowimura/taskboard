@@ -107,7 +107,7 @@ const UserTable = ({
         }
         scroll={{ x: "768px" }}
         pagination={{
-          pageSize: 15,
+          pageSize: 10,
           size: "default",
           style: {
             margin: 0,
@@ -123,6 +123,7 @@ const UserTable = ({
           },
           showLessItems: true,
         }}
+        // pagination={false}
         bordered
       />
     </div>

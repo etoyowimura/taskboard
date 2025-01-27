@@ -104,6 +104,16 @@ export const dark = {
       colorText: "#fff",
       colorTextDisabled: "#fff",
     },
+    Drawer: {
+      colorBgElevated: "#262626", // Drawer foni
+      colorText: "#ffffff", // Matn rangi
+      colorPrimary: "#f99e2c", // Asosiy tugma rangi
+      colorPrimaryHover: "#ffb347", // Tugmalar hover rangi
+      paddingLG: 24, // Ichki padding
+      borderRadiusLG: 10, // Burchaklarni yumshatish
+      colorIcon: "#ffffff", // Close tugmasining rangi (✖)
+      colorIconHover: "#ffb347",
+    },
     Empty: {
       colorText: "rgba(249, 158, 44, 1)",
       colorTextDisabled: "rgba(249, 158, 44, 1)",
