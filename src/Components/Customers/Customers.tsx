@@ -1,7 +1,12 @@
 import { useRef, useState } from "react";
 import AddCustomer from "./AddCustomer";
 import CustomerTable from "./CustomersTable";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  PlusOutlined,
+  RightOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useCustomerData } from "../../Hooks/Customers";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
@@ -25,7 +30,7 @@ const Customer = () => {
   const { data, isLoading, refetch } = useCustomerData({
     name: search,
     is_active: undefined,
-    page_size: 15,
+    page_size: 10,
     page: page,
   });
 
@@ -59,13 +64,25 @@ const Customer = () => {
       {open && <AddCustomer open={open} setOpen={setOpen} />}
       <div className="header d-flex">
         <Typography className="title">Drivers</Typography>
-        <button className="btn-add d-flex" onClick={showModal}>
+        {/* <button className="btn-add d-flex" onClick={showModal}>
           <img src={addicon} style={{ marginRight: 8 }} alt="" />
           Add Driver
-        </button>
+        </button> */}
+        <Button
+          className="d-flex"
+          onClick={showModal}
+          icon={<PlusOutlined />}
+          style={{
+            backgroundColor: "#f99e2c",
+            color: "white",
+            padding: 18,
+          }}
+        >
+          Add Driver
+        </Button>
       </div>
       <div className="filter d-flex">
-        <div className="search-div">
+        {/* <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
             className={`search-input-${themes}`}
@@ -73,10 +90,18 @@ const Customer = () => {
             placeholder="Search"
             onChange={handleSearchChange}
           />
+        </div> */}
+        <div>
+          <Input
+            // className={`search-input-${themes}`}
+            placeholder="Search"
+            prefix={<SearchOutlined />}
+            onChange={handleSearchChange}
+          />
         </div>
       </div>
       <CustomerTable data={data?.data} isLoading={isLoading} />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",

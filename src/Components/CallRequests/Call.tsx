@@ -21,7 +21,7 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
   const { data, isLoading, refetch } = useCallData({
     status: status,
     page: page,
-    page_size: 15,
+    page_size: 10,
   });
 
   // const theme = localStorage.getItem("theme") === "true" ? true : false;
@@ -101,7 +101,7 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
       </div>
       <CallTable data={tableData} isLoading={isLoading} refetch={refetch} />
 
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",

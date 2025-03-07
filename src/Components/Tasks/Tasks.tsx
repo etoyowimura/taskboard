@@ -6,6 +6,11 @@ import { useTeamData } from "../../Hooks/Teams";
 import { useTasks } from "../../Hooks/Tasks";
 import { TTask } from "../../types/Tasks/TTasks";
 import { isMobile, role, team_id } from "../../App";
+import {
+  PlusOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 //@ts-ignore
@@ -219,16 +224,48 @@ const Task = ({
         </div>
         <div className="d-flex">
           {role !== "Checker" && (
-            <button className="btn-add d-flex" onClick={showModal}>
-              <img
-                style={{ marginRight: isMobile ? "0px" : "8px" }}
-                src={addicon}
-                alt=""
-              />
-              {!isMobile && "Add Task"}
-            </button>
+            // <button className="btn-add d-flex" onClick={showModal}>
+            //   <img
+            //     style={{ marginRight: isMobile ? "0px" : "8px" }}
+            //     src={addicon}
+            //     alt="Add Icon"
+            //   />
+            //   {!isMobile && "Add Task"}
+            // </button>
+            <Button
+              size="middle"
+              className="d-flex"
+              onClick={showModal}
+              icon={!isMobile && <PlusOutlined />}
+              style={{
+                marginRight: isMobile ? "0px" : "8px",
+                backgroundColor: "#f99e2c",
+                color: "white",
+                padding: 18,
+              }}
+            >
+              Add Task
+            </Button>
           )}
-          <button
+
+          <Button
+            className="d-flex" // Bu yerda `false` o'rniga shartni to'g'rilashingiz kerak
+            style={{
+              backgroundColor: token.colorBgContainer, // Dynamic background color
+              color: token.colorText,
+              padding: 18, // Dynamic text color
+            }}
+            icon={<ReloadOutlined />} // Ikonka
+            onClick={() => {
+              refetch();
+              if (!isLive) {
+                connect();
+              }
+            }}
+          >
+            Refresh
+          </Button>
+          {/* <button
             className={`btn-refresh-${false && "dark"} d-flex`}
             style={{
               backgroundColor: token.colorBgContainer,
@@ -247,16 +284,24 @@ const Task = ({
               alt=""
             />
             {!isMobile && "Refetch"}
-          </button>
+          </button> */}
         </div>
       </div>
       <div className={`filter ${isMobile ? "mobile-filter" : "d-flex"}`}>
-        <div className="search-div">
+        {/* <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
             className={`search-input-${themes}`}
             type="text"
             placeholder="Search"
+            onChange={handleSearchChange}
+          />
+        </div> */}
+        <div>
+          <Input
+            // className={`search-input-${themes}`}
+            placeholder="Search"
+            prefix={<SearchOutlined />}
             onChange={handleSearchChange}
           />
         </div>
@@ -292,7 +337,7 @@ const Task = ({
         showErrorModal={showErrorModal}
         setErrorModal={setErrorModal}
       />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",

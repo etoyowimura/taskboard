@@ -2,7 +2,12 @@ import { useRef, useState } from "react";
 import { useUserData } from "../../Hooks/Users";
 import AddUser from "./AddUser";
 import UserTable from "./UserTable";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  PlusOutlined,
+  RightOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { theme } from "antd";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
@@ -33,6 +38,8 @@ const User = () => {
   const { data, refetch, isLoading } = useUserData({
     name: search,
     team: "",
+    page: page,
+    page_size: 10,
   });
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -55,17 +62,29 @@ const User = () => {
       {open && <AddUser open={open} setOpen={setOpen} refetch={refetch} />}
       <div className="header d-flex">
         <Typography className="title">Users</Typography>
-        <button
+        {/* <button
           className="btn-add d-flex"
           style={{ marginRight: 0 }}
           onClick={showModal}
         >
           <img src={addicon} style={{ marginRight: 8 }} alt="" />
           Invite User
-        </button>
+        </button> */}
+        <Button
+          className="d-flex"
+          style={{
+            backgroundColor: "#f99e2c",
+            color: "white",
+            padding: 18,
+          }}
+          onClick={showModal}
+          icon={<PlusOutlined />}
+        >
+          Invite User
+        </Button>
       </div>
       <div className="filter d-flex">
-        <div className="search-div">
+        {/* <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
             className={`search-input-${themes}`}
@@ -73,11 +92,18 @@ const User = () => {
             placeholder="Search"
             onChange={handleSearchChange}
           />
+        </div> */}
+        <div>
+          <Input
+            placeholder="Search"
+            prefix={<SearchOutlined />}
+            onChange={handleSearchChange}
+          />
         </div>
       </div>
-      <UserTable data={data} isLoading={isLoading} refetch={refetch} />
+      <UserTable data={data?.data} isLoading={isLoading} refetch={refetch} />
 
-      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",
@@ -125,7 +151,7 @@ const User = () => {
 
           <Button
             onClick={Next}
-            // disabled={data?.next ? false : true}
+            disabled={data?.next ? false : true}
             style={{
               backgroundColor: token.colorBgContainer,
               color: token.colorText,
@@ -135,7 +161,7 @@ const User = () => {
             <RightOutlined />
           </Button>
         </Space>
-      </Space> */}
+      </Space>
     </div>
   );
 };

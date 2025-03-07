@@ -28,11 +28,10 @@ export const userController = {
   async read(filterObject: TUsersGetParams) {
     const params = { ...filterObject };
 
-    if (!!filterObject.page && filterObject.page !== 0)
-      params.page = filterObject.page;
-    params.page_size = filterObject.page_size;
-
     if (!!filterObject.name) params.name = filterObject.name;
+    if (!!filterObject.page) params.page = filterObject.page;
+    if (!!filterObject.page_size) params.page_size = filterObject.page_size;
+
     if (Array.isArray(filterObject.team)) {
       params.team = filterObject.team.join(", ");
     }
@@ -40,7 +39,7 @@ export const userController = {
       params.role = filterObject.role.join(", ");
     }
 
-    const { data } = await instance.get<TUser[]>(`users/`, { params });
+    const { data } = await instance.get(`users/`, { params });
     return data;
   },
 

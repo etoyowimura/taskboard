@@ -8,7 +8,7 @@ import {
 } from "react-query";
 import { timeZone } from "../../App";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 
 import { theme } from "antd";
 
@@ -62,7 +62,7 @@ const TeamTable = ({
         },
       ]}
       pagination={{
-        pageSize: 15,
+        pageSize: 10,
         size: "default",
         style: {
           margin: 0,

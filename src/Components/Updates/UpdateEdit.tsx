@@ -15,7 +15,11 @@ import {
   Upload,
 } from "antd";
 import { updateController } from "../../API/LayoutApi/update";
-import { UploadOutlined } from "@ant-design/icons";
+import {
+  InfoCircleFilled,
+  InfoCircleOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import Notfound from "../../Utils/Notfound";
 import { companyController } from "../../API/LayoutApi/companies";
 import { customerController } from "../../API/LayoutApi/customers";
@@ -148,6 +152,7 @@ const UpdateEdit = () => {
     }
   }
   const [activeTab, setActiveTab] = useState("1");
+
   return (
     <div>
       {role !== "Checker" || inCharge == admin_id || inCharge == null ? (
@@ -194,14 +199,20 @@ const UpdateEdit = () => {
                         >
                           <Row gutter={[16, 10]}>
                             {companyId !== null && (
-                              <Col span={6}>
+                              <Col span={8}>
                                 <Form.Item
                                   wrapperCol={{ span: "100%" }}
                                   label="Company"
                                 >
-                                  {companyValue !== undefined && (
+                                  {/* {data?.company.id !== undefined && (
+                                    // <Input
+                                    //   defaultValue={data?.company?.id}
+                                    //   readOnly
+                                    // />
+                                  )} */}
+                                  {data?.company.id !== undefined && (
                                     <Input
-                                      defaultValue={companyValue}
+                                      defaultValue={data?.company?.name}
                                       readOnly
                                     />
                                   )}
@@ -209,14 +220,14 @@ const UpdateEdit = () => {
                               </Col>
                             )}
                             {customerId !== null && (
-                              <Col span={6}>
+                              <Col span={8}>
                                 <Form.Item
                                   wrapperCol={{ span: "100%" }}
                                   label="Driver"
                                 >
-                                  {customerValue !== undefined && (
+                                  {data?.customer.id !== undefined && (
                                     <Input
-                                      defaultValue={customerValue}
+                                      defaultValue={data?.customer.name}
                                       readOnly
                                     />
                                   )}

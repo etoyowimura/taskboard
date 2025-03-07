@@ -20,7 +20,7 @@ import { role } from "../../App";
 import { useUserData } from "../../Hooks/Users";
 import AddUserToTeam from "./AddUserToTeam";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 // @ts-ignore
 import infoIcon from "../../assets/infoIcon.png";
 // @ts-ignore
@@ -38,6 +38,7 @@ type MyObjectType = {
 const TeamEdit = () => {
   const { id } = useParams<params>();
   const { data, refetch, status }: MyObjectType = useTeamOne(id);
+
   let navigate = useNavigate();
 
   const onSubmit = async (value: any) => {
@@ -57,7 +58,7 @@ const TeamEdit = () => {
     }
   };
 
-  const userData = useUserData({ name: "", team: id });
+  const userData = useUserData({ name: "", team: data?.name });
 
   const [open, setOpen] = useState(false);
   const showModal = () => {
@@ -147,7 +148,7 @@ const TeamEdit = () => {
                     key="2"
                   >
                     <Table
-                      dataSource={userData?.data?.map((item, i) => ({
+                      dataSource={userData?.data?.map((item: any, i: any) => ({
                         no: i + 1,
                         ...item,
                       }))}
@@ -178,8 +179,8 @@ const TeamEdit = () => {
                     />
                     <Button
                       type="primary"
-                      style={{ marginLeft: "auto" }}
-                      size={"large"}
+                      style={{ marginLeft: "auto", marginTop: 15 }}
+                      size="middle"
                       onClick={showModal}
                     >
                       Add User

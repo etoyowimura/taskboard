@@ -87,17 +87,20 @@ const UserEdit = () => {
   const [showInput, setShowInput] = useState(false);
 
   const handleChange = (value: string) => {
-    if (data?.role.name === "Checker") {
-      setShowInput(value === "hybrid");
+    if (data?.role.name !== "Accountant") {
+      setShowInput(true);
     }
   };
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (data?.role.name === "Checker" && data?.salary_type === "hybrid") {
+    if (
+      (data?.role.name !== "Accountant" && data?.salary_type === "hybrid") ||
+      data?.salary_type === "fixed"
+    ) {
       setShowInput(true);
-    } else if (data?.role.name !== "Checker") {
+    } else if (data?.role.name === "Accountant") {
       setShowInput(false);
     }
   }, [data]);
@@ -204,7 +207,7 @@ const UserEdit = () => {
                           </Col>
                         )}
 
-                        {data?.role?.name === "Checker" &&
+                        {data?.role?.name !== "Accountant" &&
                           form.getFieldsValue().role_id !== 3 && (
                             <Col span={4}>
                               <Form.Item
@@ -218,6 +221,7 @@ const UserEdit = () => {
                                 >
                                   <Option value="task_based">Task based</Option>
                                   <Option value="hybrid">Hybrid</Option>
+                                  <Option value="fixed">Fixed</Option>
                                 </Select>
                               </Form.Item>
                             </Col>

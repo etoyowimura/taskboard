@@ -5,7 +5,7 @@ import {
   RefetchQueryFilters,
 } from "react-query";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 import moment from "moment";
 import { TRequests } from "../../types/Requests/TRequests";
 import { useEffect, useState } from "react";
@@ -86,12 +86,13 @@ const RequestsTable = ({
           ...u,
         }))}
         loading={isLoading}
-        size="middle"
+        size="small"
         columns={[
           {
             title: <img src={tagIcon} alt="" />,
             dataIndex: "no",
             width: "5%",
+            align: "center",
           },
           {
             title: "Full name",

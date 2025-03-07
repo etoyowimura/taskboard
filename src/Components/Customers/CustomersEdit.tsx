@@ -79,7 +79,9 @@ const CustomerEdit = () => {
 
   const [companyName, setCompanyName] = useState<string>("");
   const [companyVal, setCompanyVal] = useState<any>();
-  const { data: companyData } = useCompanyData({ name: companyName });
+  const { data: companyData } = useCompanyData({
+    name: companyName,
+  });
 
   return (
     <div>
@@ -132,6 +134,7 @@ const CustomerEdit = () => {
                               label="Company"
                             >
                               <Select
+                                showSearch
                                 defaultValue={data?.company?.name}
                                 onSearch={(value: any) => setCompanyName(value)}
                                 onChange={(e: any) => {
@@ -159,7 +162,6 @@ const CustomerEdit = () => {
                                 filterOption={false}
                                 autoClearSearchValue={false}
                                 allowClear
-                                // value={companyName}
                               />
                             </Form.Item>
                           </Col>

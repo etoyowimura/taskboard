@@ -24,9 +24,9 @@ export type TUpdatePostParams = {
 };
 
 export const updateController = {
-  async read(status: string) {
-    const { data } = await instance.get<TUpdate[]>(
-      `shift-updates/?status=${status}`
+  async read(status: string, page: number, page_size: number) {
+    const { data } = await instance.get(
+      `shift-updates/?status=${status}&page=${page}&page_size=${page_size}`
     );
     return data;
   },

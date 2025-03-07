@@ -5,6 +5,7 @@ import {
   StepBackwardOutlined,
   LeftOutlined,
   RightOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -95,15 +96,22 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
         />
       )}
       <div className="header d-flex">
-        <Typography className="title">Requests</Typography>
+        <Typography className="title">Driver Requests</Typography>
       </div>
       <div className="filter d-flex requests-filter ">
-        <div className="search-div">
+        {/* <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
             className={`search-input-${themes}`}
             type="text"
             placeholder="Search"
+            onChange={handleSearchChange}
+          />
+        </div> */}
+        <div>
+          <Input
+            placeholder="Search"
+            prefix={<SearchOutlined />}
             onChange={handleSearchChange}
           />
         </div>
@@ -126,7 +134,7 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
         setRequestData={setRequestData}
       />
 
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",

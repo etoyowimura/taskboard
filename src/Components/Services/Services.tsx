@@ -4,20 +4,15 @@ import AddService from "./AddService";
 import ServiceTable from "./ServiceTable";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
+import { PlusOutlined } from "@ant-design/icons";
 import { role } from "../../App";
-import { Pagination, Space, Typography } from "antd";
+import { Button, Pagination, Space, Typography } from "antd";
 import { theme } from "antd";
 
 const Service = () => {
   const [page, setPage] = useState(1);
 
   const { token } = theme.useToken();
-
-  const page_size = 10;
-
-  const handlePageChange = (page: number) => {
-    setPage(page);
-  };
 
   const { data, isLoading, refetch } = useServiceData();
   const [open, setOpen] = useState(false);
@@ -31,10 +26,23 @@ const Service = () => {
       <div className="header d-flex" style={{ marginBottom: "10px" }}>
         <Typography className="title">Services</Typography>
         {role !== "Checker" && (
-          <button onClick={showModal} className="btn-add d-flex">
-            <img src={addicon} style={{ marginRight: 8 }} alt="" />
+          // <button onClick={showModal} className="btn-add d-flex">
+          //   <img src={addicon} style={{ marginRight: 8 }} alt="" />
+          //   Add Service
+          // </button>
+
+          <Button
+            style={{
+              backgroundColor: "#f99e2c",
+              color: "white",
+              padding: 18,
+            }}
+            onClick={showModal}
+            className="d-flex"
+            icon={<PlusOutlined />} // Ant-design ikonkasi
+          >
             Add Service
-          </button>
+          </Button>
         )}
       </div>
       <ServiceTable data={data} isLoading={isLoading} refetch={refetch} />

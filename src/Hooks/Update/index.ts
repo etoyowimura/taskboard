@@ -9,10 +9,14 @@ import { updateController } from "../../API/LayoutApi/update";
 //   );
 // };
 
-export const useUpdateData = (status: string) => {
+export const useUpdateData = (
+  status: string,
+  page: number,
+  page_size: number
+) => {
   return useQuery(
-    [`shift-updates`, status],
-    () => updateController.read(status),
+    [`shift-updates`, status, page, page_size],
+    () => updateController.read(status, page, page_size),
     { refetchOnWindowFocus: false }
   );
 };

@@ -68,7 +68,7 @@ const ResetPassword: React.FC = () => {
                           size={"large"}
                           {...input}
                           type="text"
-                          placeholder="username or e-mail"
+                          placeholder="Username or E-mail"
                         />
                         {(meta.error || meta.submitError) && meta.touched && (
                           <span style={{ color: "red" }}>

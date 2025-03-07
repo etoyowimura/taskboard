@@ -7,7 +7,7 @@ import {
   RefetchQueryFilters,
 } from "react-query";
 import { TStatCreators } from "../../types/Statistic/TStat";
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 
 const StatisticsSupportTable = ({
   data,
@@ -22,7 +22,7 @@ const StatisticsSupportTable = ({
 }) => {
   const { token } = theme.useToken();
   return (
-    <div style={{ maxHeight: "400px" }}>
+    <div style={{ paddingBottom: 40 }}>
       <Table
         loading={isLoading}
         size="small"
@@ -66,6 +66,7 @@ const StatisticsSupportTable = ({
             padding: "10px 0",
             zIndex: 1000,
           },
+          showLessItems: true,
         }}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"

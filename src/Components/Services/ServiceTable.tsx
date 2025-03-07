@@ -7,7 +7,7 @@ import {
 } from "react-query";
 import { TService } from "../../types/Service/TService";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 import { role } from "../../App";
 import { theme } from "antd";
 
@@ -94,6 +94,7 @@ const ServiceTable = ({
           },
         }}
         bordered
+        size="middle"
       />
     </div>
   );

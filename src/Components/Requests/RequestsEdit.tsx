@@ -1,6 +1,7 @@
 import { Modal, Select, Button } from "antd";
 import { TRequests } from "../../types/Requests/TRequests";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
 import {
   useCustomerByComanyData,
   useCustomerData,
@@ -15,6 +16,7 @@ import {
 } from "react-query";
 import { useCompanyData } from "../../Hooks/Companies";
 import { TPagination } from "../../types/common/TPagination";
+import { TCompany } from "../../types/Company/TCompany";
 const RequestsEdit = ({
   modalOpen,
   setModalOpen,
@@ -35,16 +37,24 @@ const RequestsEdit = ({
 
   const [companyName, setCompanyName] = useState<string>();
   const [customerName, setCustomerName] = useState<string>();
+  const [customerNameCompany, setCustomerNameCompany] = useState<string>();
   const [driverId, setDriverId] = useState<number>();
-  const companyData = useCompanyData({ name: companyName });
   const [companyId, setCompanyId] = useState<number>();
   const [customerOption, setCustomerOption] = useState<any>();
+
+  const companyData = useCompanyData({
+    name: companyName,
+    page: 1,
+    page_size: 5,
+  });
+
   const customerData = useCustomerData({
     name: customerName,
     page: 1,
     page_size: 5,
     for_driver_request: true,
   });
+
   const customerDataByCompany = useCustomerByComanyData(
     {
       name: customerName,
@@ -53,19 +63,49 @@ const RequestsEdit = ({
     companyId
   );
 
+  // useEffect(() => {
+  //   if (companyId && customerDataByCompany) {
+  //     const newCustomerOption = customerDataByCompany.data?.data?.map(
+  //       (item) => ({
+  //         label: item.name,
+  //         value: item.id,
+  //       })
+  //     );
+  //     console.log(customerDataByCompany.data);
+  //     if (
+  //       JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)
+  //     ) {
+  //       setCustomerOption(newCustomerOption);
+  //     }
+  //   } else if (!companyId && customerData) {
+  //     const newCustomerOption = customerData.data?.data.map((item) => ({
+  //       label: `${item?.name} - ${item.company?.name}`,
+  //       value: item.id,
+  //     }));
+
+  //     if (
+  //       JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)
+  //     ) {
+  //       setCustomerOption(newCustomerOption);
+  //     }
+  //   }
+  // }, [companyId, customerData, customerDataByCompany, customerOption]);
+
   useEffect(() => {
     if (companyId && customerDataByCompany) {
-      const newCustomerOption = customerDataByCompany.data?.data?.map(
-        (item) => ({
-          label: item.name,
-          value: item.id,
-        })
-      );
+      const customerData = customerDataByCompany.data;
+      if (Array.isArray(customerData)) {
+        const newCustomerOption = customerData.map((item) => ({
+          label: `${item?.name} - ${item.company?.name}`,
+          value: item?.id,
+        }));
 
-      if (
-        JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)
-      ) {
-        setCustomerOption(newCustomerOption);
+        if (
+          JSON.stringify(newCustomerOption) !== JSON.stringify(customerOption)
+        ) {
+          setCustomerOption(newCustomerOption);
+        }
+      } else {
       }
     } else if (!companyId && customerData) {
       const newCustomerOption = customerData.data?.data.map((item) => ({
@@ -84,13 +124,34 @@ const RequestsEdit = ({
   const assignClick = () => {
     const value = {
       ...requestData,
-      status: "Assigned",
       customer_id: driverId,
     };
     requestsController.requestPatch(value, requestData?.id).then(() => {
       refetch();
       setModalOpen(false);
     });
+  };
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSearch = (value: string) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      setCustomerName(value);
+    }, 1000);
+  };
+
+  const handleSearchCompany = (value: string) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      setCompanyName(value);
+    }, 1000);
   };
 
   return (
@@ -206,12 +267,21 @@ const RequestsEdit = ({
                   showSearch
                   style={{ marginRight: 15, width: "40%" }}
                   placeholder="Search Company"
-                  onSearch={(value) => setCompanyName(value)}
+                  // onSearch={(value) => setCompanyName(value)}
+                  onSearch={handleSearchCompany}
                   onChange={(value: number) => setCompanyId(value)}
-                  options={companyData?.data?.map((item) => ({
-                    label: item?.name,
-                    value: item?.id,
-                  }))}
+                  // options={companyData?.data?.map((item: any) => ({
+                  //   label: item?.name,
+                  //   value: item?.id,
+                  // }))}
+                  options={
+                    Array.isArray((companyData as any)?.data?.data)
+                      ? (companyData as any).data.data.map((item: any) => ({
+                          label: item?.name || "No Name",
+                          value: item?.id || "No ID",
+                        }))
+                      : []
+                  }
                   filterOption={false}
                   autoClearSearchValue={false}
                   allowClear
@@ -220,10 +290,16 @@ const RequestsEdit = ({
                   style={{ width: "50%" }}
                   showSearch
                   placeholder="Search Driver"
-                  onSearch={(value) => setCustomerName(value)}
+                  // onSearch={(value) => setCustomerName(value)}
+                  onSearch={handleSearch}
                   onChange={(value: number) => setDriverId(value)}
                   options={customerOption}
-                  filterOption={false}
+                  // options={options}
+                  filterOption={(input: string, option?: { label?: string }) =>
+                    option?.label
+                      ?.toLowerCase()
+                      .includes(input.toLowerCase()) ?? false
+                  }
                   autoClearSearchValue={false}
                   allowClear
                 />
@@ -255,8 +331,8 @@ const RequestsEdit = ({
                     alignItems: "center",
                   }}
                   className="btn-add"
+                  icon={<PlusOutlined />}
                 >
-                  <img src={plus} alt="" style={{ marginRight: 8 }} />
                   New driver
                 </Button>
               </div>

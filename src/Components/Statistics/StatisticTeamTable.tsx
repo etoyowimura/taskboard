@@ -8,7 +8,7 @@ import {
 
 import { theme } from "antd";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 const StatTeamTable = ({
   data,
   isLoading,

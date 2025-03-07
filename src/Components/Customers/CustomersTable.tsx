@@ -2,7 +2,7 @@ import { Table, Tooltip } from "antd";
 import { useCompanyData } from "../../Hooks/Companies";
 import { TCustomer } from "../../types/Customer/TCustomer";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 // @ts-ignore
 import zippy from "../../assets/zippyicon.svg";
 // @ts-ignore
@@ -30,9 +30,6 @@ function CustomerTable({
   };
 
   const { token } = theme.useToken();
-
-  const [pageSize, setPageSize] = useState(10); // Default sahifa hajmi
-  const [currentPage, setCurrentPage] = useState(1);
 
   const Row = (record: RowProps) => {
     return {
@@ -101,7 +98,7 @@ function CustomerTable({
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
-        size="middle"
+        size="small"
         bordered
         // pagination={{
         //   pageSize: 10,

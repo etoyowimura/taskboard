@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Typography from "antd/es/typography/Typography";
 import { DatePicker, DatePickerProps, Table } from "antd";
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 import dayjs from "dayjs";
 
 interface User {

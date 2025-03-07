@@ -2,23 +2,33 @@ import { useQuery } from "react-query";
 import {
   AccountingController,
   TAccountingGetParams,
+  TAccountingHistoryGetParams,
 } from "../../API/LayoutApi/accounting";
 
-export const useAccountingData = ({ month }: TAccountingGetParams) => {
+export const useAccountingData = ({
+  month,
+  search,
+  team,
+}: TAccountingGetParams) => {
   return useQuery(
-    [`stats/all-users/`, month],
+    [`/employees-salaries`, month, search, team],
     () =>
       AccountingController.read({
         month,
+        search,
+        team,
       }),
     { refetchOnWindowFocus: false }
   );
 };
 
-export const useAccountingHistory = () => {
+export const useAccountingHistory = ({
+  search,
+  team,
+}: TAccountingHistoryGetParams) => {
   return useQuery(
-    [`employees-salaries-history/`],
-    () => AccountingController.history(),
+    [`/employees-salaries-history/`, search, team],
+    () => AccountingController.history({ search, team }),
     {
       refetchOnWindowFocus: false,
     }

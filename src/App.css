@@ -188,7 +188,7 @@
   padding: 10px 15px 10px 12px;
   border: none;
   border-radius: 8px;
-  background: rgba(249, 158, 44, 1);
+  background: #f99e2c;
   color: rgba(255, 255, 255, 1);
   font-size: 14px;
   font-weight: 500;
@@ -215,10 +215,10 @@
   letter-spacing: -0.01em;
   text-align: left;
   font-family: Inter;
-  border: 1px solid rgba(215, 216, 224, 1);
+  border: 1px solid #d7d8e0;
   box-shadow: 0px 1px 3px 0px rgba(20, 22, 41, 0.1);
-  background: rgba(255, 255, 255, 1);
-  color: rgba(15, 17, 28, 1);
+  background: #ffffff;
+  color: #0f111c;
   cursor: pointer;
 }
 .btn-refresh-dark {
@@ -925,4 +925,11 @@
     flex-wrap: wrap;
     gap: 10px;
   }
+}
+
+.ant-picker-disabled .ant-picker-input input {
+  color: #bbb !important;
+}
+.ant-picker-disabled .ant-picker-suffix {
+  color: #bbb !important;
 }

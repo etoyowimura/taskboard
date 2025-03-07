@@ -73,7 +73,7 @@ const Login: React.FC = () => {
                           size={"large"}
                           {...input}
                           type="text"
-                          placeholder="username or e-mail"
+                          placeholder="Username or e-mail"
                         />
                         {(meta.error || meta.submitError) && meta.touched && (
                           <span style={{ color: "red" }}>

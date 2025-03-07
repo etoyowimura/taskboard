@@ -30,6 +30,7 @@ export const companyController = {
     if (!!filterObject.name) params.name = filterObject.name;
     if (!!filterObject.is_active) params.is_active = filterObject.is_active;
     if (!!filterObject.page) params.page = filterObject.page;
+    if (!!filterObject.page_size) params.page_size = filterObject.page_size;
 
     const { data } = await instance.get<TCompany[]>(`companies/`, {
       params,

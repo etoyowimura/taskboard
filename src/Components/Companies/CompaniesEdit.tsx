@@ -41,7 +41,7 @@ import ontime from "../../assets/ontimeicon.svg";
 // @ts-ignore
 import tt from "../../assets/tticon.svg";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 // @ts-ignore
 import infoIcon from "../../assets/infoIcon.png";
 // @ts-ignore

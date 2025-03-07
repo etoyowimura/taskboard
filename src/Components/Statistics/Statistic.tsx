@@ -26,10 +26,12 @@ import {
   Button,
   DatePicker,
   DatePickerProps,
+  Input,
   Select,
   Tabs,
   Typography,
 } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import TabPane from "antd/es/tabs/TabPane";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
@@ -478,12 +480,19 @@ const Stat = () => {
               marginBottom: 10,
             }}
           >
-            <div className="search-div" style={{ marginRight: 12 }}>
+            {/* <div className="search-div">
               <img src={IconSearch} alt="" />
               <input
                 className={`search-input-${theme}`}
                 type="text"
                 placeholder="Search"
+                onChange={handleTechSupportSearchChange}
+              />
+            </div> */}
+            <div>
+              <Input
+                placeholder="Search"
+                prefix={<SearchOutlined />}
                 onChange={handleTechSupportSearchChange}
               />
             </div>
@@ -515,12 +524,19 @@ const Stat = () => {
               marginBottom: 10,
             }}
           >
-            <div className="search-div" style={{ marginRight: 12 }}>
+            {/* <div className="search-div" style={{ marginRight: 12 }}>
               <img src={IconSearch} alt="" />
               <input
                 className={`search-input-${theme}`}
                 type="text"
                 placeholder="Search"
+                onChange={handleSearchChange}
+              />
+            </div> */}
+            <div style={{ marginRight: 12 }}>
+              <Input
+                placeholder="Search"
+                prefix={<SearchOutlined />}
                 onChange={handleSearchChange}
               />
             </div>
@@ -539,7 +555,7 @@ const Stat = () => {
           <Button
             type="primary"
             onClick={(e) => handleSave("team")}
-            style={{ marginTop: 10 }}
+            style={{ marginTop: 10, marginBottom: 40 }}
           >
             Save as file
           </Button>

@@ -61,10 +61,17 @@ const AddTeam = ({
           >
             <Select
               mode="multiple"
-              options={data?.map((items) => ({
-                label: items.username,
-                value: items.id,
-              }))}
+              showSearch
+              options={data?.map(
+                (item: any): { label: string; value: number } => ({
+                  label: item.username,
+                  value: item.id,
+                })
+              )}
+              filterOption={(input: string, option?: { label?: string }) =>
+                option?.label?.toLowerCase().includes(input.toLowerCase()) ??
+                false
+              }
             />
           </FormAnt.Item>
         </FormAnt>

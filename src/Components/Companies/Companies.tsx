@@ -6,15 +6,12 @@ import {
   StepBackwardOutlined,
   LeftOutlined,
   RightOutlined,
+  PlusOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { useCompanyPaginated } from "../../Hooks/Companies";
 import { Button, Input, Space, Typography } from "antd";
 import { theme } from "antd";
-
-// @ts-ignore
-import IconSearch from "../../assets/searchIcon.png";
-//@ts-ignore
-import addicon from "../../assets/addiconpng.png";
 
 import { role } from "../../App";
 
@@ -67,18 +64,31 @@ const Company = () => {
       <div className="header d-flex">
         <Typography className="title">Companies</Typography>
         {role !== "Checker" && (
-          <button
-            style={{ marginRight: 0 }}
-            className="btn-add d-flex"
+          // <button
+          //   style={{ marginRight: 0 }}
+          //   className="btn-add d-flex"
+          //   onClick={showModal}
+          // >
+          //   <img src={addicon} style={{ marginRight: 8 }} alt="" />
+          //   Add Company
+          // </button>
+          <Button
+            style={{
+              marginRight: 0,
+              backgroundColor: "#f99e2c",
+              color: "white",
+              padding: 18,
+            }}
+            className="d-flex"
             onClick={showModal}
+            icon={<PlusOutlined />}
           >
-            <img src={addicon} style={{ marginRight: 8 }} alt="" />
             Add Company
-          </button>
+          </Button>
         )}
       </div>
       <div className="filter d-flex">
-        <div className="search-div">
+        {/* <div className="search-div">
           <img src={IconSearch} alt="" />
           <input
             className={`search-input-${themes}`}
@@ -86,11 +96,19 @@ const Company = () => {
             placeholder="Search"
             onChange={handleSearchChange}
           />
+        </div> */}
+        <div>
+          <Input
+            // className={`search-input-${themes}`}
+            placeholder="Search"
+            prefix={<SearchOutlined />}
+            onChange={handleSearchChange}
+          />
         </div>
       </div>
 
       <CompanyTable data={data?.data} isLoading={isLoading} />
-      <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",

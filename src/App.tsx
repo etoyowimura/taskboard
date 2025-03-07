@@ -196,7 +196,7 @@ const App: React.FC = () => {
         <img alt="" src={callIcon} />
       ),
       getItem(
-        <Link to="accounting/">Accounting</Link>,
+        <Link to="accounting/">Salaries</Link>,
         "accounting/",
         <img alt="" src={accountingIcon} />
       )

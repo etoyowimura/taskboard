@@ -35,7 +35,7 @@ import {
   useProfData,
 } from "../../Hooks/Profile";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 import { role } from "../../App";
 import ChangePassword from "./ChangePassword";
 const { Option } = Select;

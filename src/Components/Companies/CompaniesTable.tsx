@@ -15,7 +15,7 @@ import ontime from "../../assets/ontimeicon.svg";
 // @ts-ignore
 import tt from "../../assets/tticon.svg";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 import { role } from "../../App";
 
 import { theme } from "antd";
@@ -121,7 +121,7 @@ function CompanyTable({
             responsive: ["lg"],
           },
           {
-            width: "10%",
+            width: "8%",
             title: "Actions",
             dataIndex: "action",
             render: ({ id }: { id: string }) => {

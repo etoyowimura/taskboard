@@ -1,5 +1,14 @@
 import { TTask } from "../../types/Tasks/TTasks";
-import { Dropdown, MenuProps, Modal, Table, Tabs, Tooltip, theme } from "antd";
+import {
+  Button,
+  Dropdown,
+  MenuProps,
+  Modal,
+  Table,
+  Tabs,
+  Tooltip,
+  theme,
+} from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { role, timeZone } from "../../App";
 import { useTaskHistory } from "../../Hooks/Tasks";
@@ -11,7 +20,11 @@ import { TTeam } from "../../types/Team/TTeam";
 import {
   ArrowRightOutlined,
   CaretRightOutlined,
+  CloseOutlined,
   EditOutlined,
+  ForwardOutlined,
+  RotateRightOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import { TSocket } from "../../types/common/TSocket";
 // @ts-ignore
@@ -248,7 +261,7 @@ const TaskModal = ({
               placement="bottom"
               arrow={{ pointAtCenter: true }}
             >
-              <button
+              {/* <button
                 disabled={recordTask?.status !== "New"}
                 style={{
                   marginRight: 12,
@@ -259,10 +272,21 @@ const TaskModal = ({
               >
                 <img src={forwardIcon} alt="" />
                 Forward
-              </button>
+              </button> */}
+              <Button
+                disabled={recordTask?.status !== "New"}
+                style={{
+                  marginRight: 10,
+                  color: token.colorText,
+                  backgroundColor: token.colorBgContainer,
+                }}
+                icon={<ArrowRightOutlined />}
+              >
+                Forward
+              </Button>
             </Dropdown>
           )}
-          <button
+          {/* <button
             style={{
               marginLeft: 12,
               color: token.colorText,
@@ -273,8 +297,19 @@ const TaskModal = ({
           >
             <img src={uploadIcon} alt="" />
             Upload file
-          </button>
-          <button
+          </button> */}
+          <Button
+            style={{
+              marginLeft: 10,
+              color: token.colorText,
+              backgroundColor: token.colorBgContainer,
+            }}
+            onClick={showUploadModal}
+            icon={<UploadOutlined />}
+          >
+            Upload file
+          </Button>
+          {/* <button
             onClick={handleCancel}
             style={{
               marginLeft: 20,
@@ -284,7 +319,16 @@ const TaskModal = ({
             className={`btn-modal-action-${themes && "dark"}`}
           >
             <img style={{ margin: 2 }} src={closeIcon} alt="" />
-          </button>
+          </button> */}
+          <Button
+            onClick={handleCancel}
+            style={{
+              marginLeft: 20,
+              color: token.colorText,
+              backgroundColor: token.colorBgContainer,
+            }}
+            icon={<CloseOutlined />}
+          />
         </div>
       </div>
       <div className="TaskModal-content">
@@ -317,7 +361,7 @@ const TaskModal = ({
               </p>
               <div className="info-body">
                 <tr>
-                  <p className={!themes ? "sub" : "sub-dark"}>Comapany</p>
+                  <p className={!themes ? "sub" : "sub-dark"}>Company</p>
                   <p className={!themes ? "info" : "info-dark"}>
                     {recordTask?.company?.name}
                   </p>
@@ -349,7 +393,7 @@ const TaskModal = ({
                   <p className={!themes ? "info" : "info-dark"}>
                     {pti === false ? "Do" : "No need"}
                   </p>
-                  <button
+                  {/* <button
                     style={{
                       marginLeft: 10,
                       background: "#cecece",
@@ -361,7 +405,23 @@ const TaskModal = ({
                     onClick={(e) => setPti(!pti)}
                   >
                     change
-                  </button>
+                  </button> */}
+                  <Button
+                    type="primary" // Maxsus bir stil bilan
+                    size="small"
+                    onClick={(e) => setPti(!pti)}
+                    style={{
+                      marginLeft: 10,
+                      background: token.colorBgContainer,
+                      color: "#f68900",
+                      outline: "none",
+                      border: "1px solid #f68900",
+                      // padding: 4,
+                      borderRadius: 4,
+                    }}
+                  >
+                    Change
+                  </Button>
                 </tr>
                 <tr>
                   <p className={!themes ? "sub" : "sub-dark"}>Created at</p>
@@ -383,7 +443,7 @@ const TaskModal = ({
                   onChange={(e) => setText(e.target.value)}
                 />
               </div>
-              <button
+              {/* <button
                 style={{
                   marginTop: 20,
                   color: token.colorText,
@@ -394,7 +454,18 @@ const TaskModal = ({
               >
                 <img src={editIcon} alt="" />
                 Save
-              </button>
+              </button> */}
+              <Button
+                style={{
+                  marginTop: 20,
+                  color: "#f99e2c",
+                  backgroundColor: token.colorBgContainer,
+                }}
+                onClick={(e) => patchTask()}
+                icon={<EditOutlined />}
+              >
+                Save
+              </Button>
             </div>
           </TabPane>
           <TabPane

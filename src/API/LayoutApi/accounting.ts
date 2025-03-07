@@ -6,6 +6,12 @@ import instance from "../api";
 
 export type TAccountingGetParams = {
   month: string;
+  search?: string;
+  team?: string;
+};
+export type TAccountingHistoryGetParams = {
+  search?: string;
+  team?: string;
 };
 
 export const AccountingController = {
@@ -19,9 +25,16 @@ export const AccountingController = {
     });
     return data;
   },
-  async history() {
+  async history(filterObject: TAccountingHistoryGetParams) {
+    const params = { ...filterObject };
+    if (!!filterObject.search) params.search = filterObject.search;
+    if (!!filterObject.team) params.team = filterObject.team;
+
     const { data } = await instance.get<TAccountingHistory[]>(
-      `/employees-salaries-history/`
+      `/employees-salaries-history/`,
+      {
+        params,
+      }
     );
     return data;
   },

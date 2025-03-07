@@ -32,7 +32,7 @@ export const useCustomerByComanyData = (
   return useQuery(
     [`customers-by-company/${id}`, obj],
     () => customerController.customerByCompany(obj, id),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false, enabled: !!id }
   );
 };
 

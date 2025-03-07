@@ -7,11 +7,12 @@ import {
 export const useCompanyData = ({
   name,
   page,
+  page_size,
   is_active,
 }: TCompanyGetParams) => {
   return useQuery(
-    [`companies/`, name, page, is_active],
-    () => companyController.read({ name, page, is_active }),
+    [`companies/`, name, page, is_active,page_size],
+    () => companyController.read({ name, page, is_active,page_size }),
     { refetchOnWindowFocus: false }
   );
 };

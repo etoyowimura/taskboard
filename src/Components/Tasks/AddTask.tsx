@@ -10,6 +10,7 @@ import {
   Row,
   Col,
 } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import { taskController } from "../../API/LayoutApi/tasks";
 import { useEffect, useState } from "react";
 import { useServiceData } from "../../Hooks/Services";
@@ -194,9 +195,11 @@ const AddTask = ({
             }}
           >
             <span>Add Task</span>
-            <Button type="text" onClick={handleCancel}>
-              <img src={closeIcon} />
-            </Button>
+            <Button
+              type="text"
+              onClick={handleCancel}
+              icon={<CloseOutlined />}
+            />
           </div>
         }
         okText="Create"

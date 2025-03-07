@@ -1,4 +1,5 @@
-import { Space, Table, Tooltip, theme } from "antd";
+import { Button, Space, Table, Tooltip, theme } from "antd";
+import { PushpinOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useCompanyData } from "../../Hooks/Companies";
 import { useCustomerData } from "../../Hooks/Customers";
@@ -12,7 +13,7 @@ import {
 import { TUpdate } from "../../types/Update/TUpdate";
 import { useEffect, useState } from "react";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 // @ts-ignore
 import pin from "../../assets/pinicon.png";
 // @ts-ignore
@@ -39,9 +40,9 @@ const UpdateTable = ({
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TUpdate[], unknown>>;
 }) => {
-  const CompanyData = useCompanyData({});
-  const CustomerData = useCustomerData({});
-  const AdminData = useUserData({});
+  // const CompanyData = useCompanyData({});
+  // const CustomerData = useCustomerData({});
+  // const AdminData = useUserData({});
 
   const [isTextSelected, setIsTextSelected] = useState(false);
 
@@ -86,7 +87,7 @@ const UpdateTable = ({
   const { token } = theme.useToken();
 
   return (
-    <div>
+    <div style={{ paddingBottom: 40 }}>
       <Table
         onRow={(record) => ({
           onClick: (event) => Row(record, event),
@@ -94,18 +95,18 @@ const UpdateTable = ({
         dataSource={data?.map((u, i) => ({
           no: i + 1,
           ...u,
-          company_name: CompanyData?.data?.find(
-            (company: any) => company.id === u.company_id
-          )?.name,
-          customer_name: CustomerData?.data?.data?.find(
-            (customer: any) => customer.id === u.customer_id
-          )?.name,
-          in_charge_name: AdminData?.data?.find(
-            (admin: any) => admin.id === u.provider_id
-          )?.username,
-          executor_name: AdminData?.data?.find(
-            (admin: any) => admin.id === u.executor_id
-          )?.username,
+          // company_name: CompanyData?.data?.find(
+          //   (company: any) => company.id === u.company_id
+          // )?.name,
+          // customer_name: CustomerData?.data?.data?.find(
+          //   (customer: any) => customer.id === u.customer_id
+          // )?.name,
+          // in_charge_name: AdminData?.data?.find(
+          //   (admin: any) => admin.id === u.provider_id
+          // )?.username,
+          // executor_name: AdminData?.data?.find(
+          //   (admin: any) => admin.id === u.executor_id
+          // )?.username,
           created: moment(u?.created_at, "YYYY-MM-DD HH:mm:ss").format(
             "DD.MM.YYYY HH:mm"
           ),
@@ -116,6 +117,7 @@ const UpdateTable = ({
             title: <img src={tagIcon} alt="" />,
             dataIndex: "no",
             width: "4%",
+            align: "center",
           },
           {
             title: "Company",
@@ -154,15 +156,15 @@ const UpdateTable = ({
           },
           {
             title: "Created by",
-            dataIndex: "provider ",
+            dataIndex: "provider",
             ellipsis: {
               showTitle: false,
             },
             responsive: ["xl"],
             width: "10%",
-            render: (note: string) => (
-              <Tooltip placement="topLeft" title={note}>
-                {note}
+            render: (provider: { username: string }) => (
+              <Tooltip placement="topLeft" title={provider?.username}>
+                {provider?.username}
               </Tooltip>
             ),
           },
@@ -174,9 +176,9 @@ const UpdateTable = ({
             },
             responsive: ["lg"],
             width: "10%",
-            render: (note: string) => (
-              <Tooltip placement="topLeft" title={note}>
-                {note}
+            render: (executor: { username: string }) => (
+              <Tooltip placement="topLeft" title={executor?.username}>
+                {executor?.username}
               </Tooltip>
             ),
           },
@@ -243,15 +245,31 @@ const UpdateTable = ({
           {
             title: "Actions",
             dataIndex: "action",
-            width: "8%",
+            width: "6%",
+            align: "center",
             render: (record: TUpdate) => {
               return (
                 <div className="notedit">
                   {record.status !== "Done" && (
                     <Space>
                       {record.is_pinned ? (
-                        <button
-                          className="btn-unpin"
+                        // <button
+                        //   className="btn-unpin"
+                        //   onClick={(e) => {
+                        //     const updateData = {
+                        //       is_pinned: false,
+                        //     };
+                        //     updateController
+                        //       .updatePatch(updateData, record.id)
+                        //       .then(() => {
+                        //         refetch();
+                        //       });
+                        //   }}
+                        // >
+                        //   <img src={unpin} alt="" />
+                        // </button>
+                        <Button
+                          style={{ background: "#f99e2c", color: "#fff" }}
                           onClick={(e) => {
                             const updateData = {
                               is_pinned: false,
@@ -262,13 +280,26 @@ const UpdateTable = ({
                                 refetch();
                               });
                           }}
-                        >
-                          <img src={unpin} alt="" />
-                        </button>
+                          icon={<PushpinOutlined />}
+                        ></Button>
                       ) : (
-                        <button
-                          className="btn-pin"
-                          style={{ paddingTop: 2 }}
+                        // <button
+                        //   className="btn-pin"
+                        //   style={{ paddingTop: 2 }}
+                        //   onClick={(e) => {
+                        //     const updateData = {
+                        //       is_pinned: true,
+                        //     };
+                        //     updateController
+                        //       .updatePatch(updateData, record.id)
+                        //       .then(() => {
+                        //         refetch();
+                        //       });
+                        //   }}
+                        // >
+                        //   <img src={pin} alt="" />
+                        // </button>
+                        <Button
                           onClick={(e) => {
                             const updateData = {
                               is_pinned: true,
@@ -279,9 +310,8 @@ const UpdateTable = ({
                                 refetch();
                               });
                           }}
-                        >
-                          <img src={pin} alt="" />
-                        </button>
+                          icon={<PushpinOutlined />}
+                        ></Button>
                       )}
                     </Space>
                   )}
@@ -296,22 +326,24 @@ const UpdateTable = ({
         loading={isLoading}
         size="small"
         scroll={{ x: "768px" }}
-        pagination={{
-          pageSize: 15,
-          size: "default",
-          style: {
-            margin: 0,
-            justifyContent: "end",
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            backgroundColor: token.colorBgContainer,
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-            padding: "10px 0",
-            zIndex: 1000,
-          },
-        }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        //   showLessItems: true,
+        // }}
+        pagination={false}
         bordered
       />
     </div>

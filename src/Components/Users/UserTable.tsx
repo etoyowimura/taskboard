@@ -8,7 +8,7 @@ import {
 } from "react-query";
 import { useNavigate } from "react-router-dom";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 import { isMobile, role } from "../../App";
 import { userController } from "../../API/LayoutApi/users";
 
@@ -50,7 +50,7 @@ const UserTable = ({
   const { token } = theme.useToken();
 
   return (
-    <div>
+    <div style={{ paddingBottom: 40 }}>
       <Table
         onRow={(record) => Row(record)}
         dataSource={data?.map((u, i) => ({
@@ -61,7 +61,7 @@ const UserTable = ({
           ...u,
         }))}
         loading={isLoading}
-        size="middle"
+        size="small"
         columns={[
           {
             title: <img src={tagIcon} alt="" />,
@@ -106,24 +106,24 @@ const UserTable = ({
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         scroll={{ x: "768px" }}
-        pagination={{
-          pageSize: 10,
-          size: "default",
-          style: {
-            margin: 0,
-            justifyContent: "end",
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            backgroundColor: token.colorBgContainer,
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-            padding: "10px 0",
-            zIndex: 1000,
-          },
-          showLessItems: true,
-        }}
-        // pagination={false}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        //   showLessItems: true,
+        // }}
+        pagination={false}
         bordered
       />
     </div>

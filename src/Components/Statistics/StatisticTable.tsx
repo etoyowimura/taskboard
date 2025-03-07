@@ -7,7 +7,7 @@ import {
 } from "react-query";
 import { QuestionCircleOutlined, QuestionOutlined } from "@ant-design/icons";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.png";
+import tagIcon from "../../assets/tagIcon.svg";
 
 import { theme } from "antd";
 
@@ -119,6 +119,7 @@ const StatTable = ({
             padding: "10px 0",
             zIndex: 1000,
           },
+          showLessItems: true,
         }}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
