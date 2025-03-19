@@ -14,8 +14,13 @@ import {
   Typography,
 } from "antd";
 import React, { useEffect, useRef, useState } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
 import tagIcon from "../../assets/tagIcon.svg";
 import {
+  CheckOutlined,
   CloseOutlined,
   DeleteOutlined,
   DollarOutlined,
@@ -27,7 +32,7 @@ import {
 } from "@ant-design/icons";
 import { theme } from "antd";
 import { useAccountingData } from "../../Hooks/Accounting";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import api from "../../API/api";
 import { useTeamData } from "../../Hooks/Teams";
 
@@ -48,6 +53,7 @@ interface BonusesTableProps {
 }
 
 const AccountingCurrent: React.FC = () => {
+  dayjs.extend(localizedFormat);
   const themes = localStorage.getItem("theme") === "true" ? true : false;
 
   const [open, setOpen] = useState(false);
@@ -57,11 +63,18 @@ const AccountingCurrent: React.FC = () => {
 
   const { Option } = Select;
 
-  const currentMonth = moment().month();
-  const currentYear = moment().year();
-  const today = moment().endOf("day");
+  // const currentMonth = moment().month();
+  // const currentYear = moment().year();
+  // const today = moment().endOf("day");
 
-  const disabledDate = (current: any) => {
+  const currentMonth = dayjs().month(); // Hozirgi oy
+  const currentYear = dayjs().year(); // Hozirgi yil
+  const today = dayjs().endOf("day");
+
+  // const date = dayjs(new Date()); // new Date() ni dayjs bilan o'rnating
+  // const formattedDate = date.locale("en").format("YYYY-MM-DD");
+
+  const disabledDate = (current: dayjs.Dayjs) => {
     return (
       current &&
       (current.month() !== currentMonth ||
@@ -70,9 +83,11 @@ const AccountingCurrent: React.FC = () => {
     );
   };
 
-  const [form] = Form.useForm();
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
+  // const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
+
+  const [form] = Form.useForm();
 
   const [isBonusModalVisible, setIsBonusModalVisible] = useState(false);
   const [isChargeModalVisible, setIsChargeModalVisible] = useState(false);
@@ -104,9 +119,9 @@ const AccountingCurrent: React.FC = () => {
     team: team,
   });
 
-  const handleDateChange = (date: any) => {
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
     setSelectedDate(date);
-    form.setFieldsValue({ date }); // Form.Item ichidagi qiymatni yangilash
+    form.setFieldsValue({ date });
   };
 
   const handleOkCharge = () => {
@@ -115,10 +130,14 @@ const AccountingCurrent: React.FC = () => {
       .then((values) => {
         const { date, amount, notes } = values;
 
+        const formattedDate = selectedDate
+          ? selectedDate.format("YYYY-MM-DD")
+          : null;
+
         if (selectedUserId) {
           api
             .post(`/add-charge/${selectedUserId}/`, {
-              date: date ? date.toISOString().split("T")[0] : null,
+              date: formattedDate,
               amount: amount,
               reason: notes,
             })
@@ -143,10 +162,14 @@ const AccountingCurrent: React.FC = () => {
       .then((values) => {
         const { date, amount, notes } = values;
 
+        const formattedDate = selectedDate
+          ? selectedDate.format("YYYY-MM-DD")
+          : null;
+
         if (selectedUserId) {
           api
             .post(`/add-bonus/${selectedUserId}/`, {
-              date: date ? date.toISOString().split("T")[0] : null,
+              date: formattedDate,
               amount: amount,
               reason: notes,
             })
@@ -199,7 +222,6 @@ const AccountingCurrent: React.FC = () => {
     api
       .get(apiUrl, { params })
       .then((response) => {
-        console.log("API response:", response);
         const formattedData = response.data?.bonuses?.map(
           (bonus: any, index: any) => ({
             no: index + 1,
@@ -225,7 +247,7 @@ const AccountingCurrent: React.FC = () => {
           (charges: any, index: any) => ({
             no: index + 1,
             id: charges.id,
-            // date: charges.date,
+            date: charges.date,
             amount: charges.amount,
             reason: charges.reason || "",
             username: response.data.employee.username,
@@ -260,8 +282,10 @@ const AccountingCurrent: React.FC = () => {
       return;
     }
 
+    const { date, ...fieldsWithoutDate } = record;
+
     setSelectedRecordBonus(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(fieldsWithoutDate);
     setIsEditBonusModalVisible(true);
   };
   const showModal = (record: any) => {
@@ -270,8 +294,11 @@ const AccountingCurrent: React.FC = () => {
       return;
     }
 
+    const { date, ...fieldsWithoutDate } = record;
+
     setSelectedRecord(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(fieldsWithoutDate);
+
     setIsEditModalVisible(true);
   };
 
@@ -281,6 +308,52 @@ const AccountingCurrent: React.FC = () => {
     form.resetFields();
   };
 
+  // const handleOkBonusEdit = async () => {
+  //   try {
+  //     const values = await form.validateFields();
+
+  //     console.log(values);
+
+  //     if (!selectedRecordBonus) {
+  //       throw new Error("No record selected!");
+  //     }
+
+  //     const updatedData = {
+  //       ...(selectedRecordBonus || {}),
+  //       ...values,
+  //     };
+
+  //     const response = await api.put(
+  //       `bonus/${selectedRecordBonus.id}/`,
+  //       updatedData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 202) {
+  //       setBonusesData((prevData: any) =>
+  //         prevData.map((item: any) =>
+  //           item.id === selectedRecordBonus.id
+  //             ? { ...item, ...updatedData }
+  //             : item
+  //         )
+  //       );
+  //       refetch();
+
+  //       setIsEditBonusModalVisible(false);
+  //     } else {
+  //       throw new Error("Server Error");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // EDIT modal Charge
+
   const handleOkBonusEdit = async () => {
     try {
       const values = await form.validateFields();
@@ -289,7 +362,11 @@ const AccountingCurrent: React.FC = () => {
         throw new Error("No record selected!");
       }
 
-      const updatedData = { ...(selectedRecordBonus || {}), ...values };
+      // Faqat kerakli maydonlarni olish
+      const updatedData = {
+        amount: values.amount,
+        reason: values.reason, // Formda `notes` deb saqlanayotgan bo‘lsa
+      };
 
       const response = await api.put(
         `bonus/${selectedRecordBonus.id}/`,
@@ -320,7 +397,46 @@ const AccountingCurrent: React.FC = () => {
     }
   };
 
-  // EDIT modal Charge
+  // const handleOk = async () => {
+  //   try {
+  //     const values = await form.validateFields();
+
+  //     if (!selectedRecord) {
+  //       throw new Error("No record selected!");
+  //     }
+
+  //     const updatedData = {
+  //       ...(selectedRecord || {}),
+  //       ...values,
+  //     };
+
+  //     const response = await api.put(
+  //       `charge/${selectedRecord.id}/`,
+  //       updatedData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 202) {
+  //       setChargesData((prevData: any) =>
+  //         prevData.map((item: any) =>
+  //           item.id === selectedRecord.id ? { ...item, ...updatedData } : item
+  //         )
+  //       );
+  //       refetch();
+
+  //       setIsEditModalVisible(false);
+  //     } else {
+  //       throw new Error("Server Error");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -329,9 +445,10 @@ const AccountingCurrent: React.FC = () => {
         throw new Error("No record selected!");
       }
 
+      // Faqat kerakli maydonlarni olish (masalan, `amount` va `reason`)
       const updatedData = {
-        ...(selectedRecord || {}),
-        ...values,
+        amount: values.amount,
+        reason: values.reason,
       };
 
       const response = await api.put(
@@ -474,6 +591,7 @@ const AccountingCurrent: React.FC = () => {
             title: "Username",
             dataIndex: "username",
             key: "username",
+            sorter: (a, b) => a.username.localeCompare(b.username),
             render: (text, record) => (
               <Tooltip
                 title={
@@ -561,6 +679,8 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Base Salary",
             dataIndex: "salary_base_amount",
+            sorter: (a: any, b: any) =>
+              a.salary_base_amount - b.salary_base_amount,
             render: (text: string, record: any) => (
               <p>${record?.salary_base_amount}</p>
             ),
@@ -568,6 +688,8 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Performance Salary",
             dataIndex: "performance_salary",
+            sorter: (a: any, b: any) =>
+              a.performance_salary - b.performance_salary,
             render: (text: string, record: any) => (
               <p>${record?.performance_salary}</p>
             ),
@@ -575,6 +697,8 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Charges",
             dataIndex: "total_charges",
+            sorter: (a: any, b: any) => a.total_charges - b.total_charges,
+
             render: (text: string, record: any) => (
               <p>${record?.total_charges}</p>
             ),
@@ -582,6 +706,7 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Bonuses",
             dataIndex: "total_bonuses",
+            sorter: (a: any, b: any) => a.total_bonuses - b.total_bonuses,
             render: (text: string, record: any) => (
               <p>${record?.total_bonuses}</p>
             ),
@@ -597,6 +722,7 @@ const AccountingCurrent: React.FC = () => {
             ),
             dataIndex: "salary",
             key: "salary",
+            sorter: (a: any, b: any) => a.salary - b.salary,
             render: (text: string, record: any) => (
               <span>${record.salary}</span>
             ),
@@ -899,7 +1025,7 @@ const AccountingCurrent: React.FC = () => {
               disabledDate={disabledDate}
               format="YYYY MMMM DD"
               onChange={handleDateChange}
-              // value={selectedDate ? dayjs(selectedDate) : null}
+              value={selectedDate ? selectedDate : null}
             />
           </Form.Item>
 
@@ -961,7 +1087,7 @@ const AccountingCurrent: React.FC = () => {
               disabledDate={disabledDate}
               format="YYYY MMMM DD"
               onChange={handleDateChange}
-              // value={selectedDate ? dayjs(selectedDate) : null}
+              value={selectedDate ? selectedDate : null}
             />
           </Form.Item>
 
@@ -1001,7 +1127,7 @@ const AccountingCurrent: React.FC = () => {
         maskClosable={false}
         okText={
           <span>
-            <PlusOutlined style={{ marginRight: 4 }} />
+            <CheckOutlined style={{ marginRight: 4 }} />
             Save
           </span>
         }
@@ -1048,7 +1174,7 @@ const AccountingCurrent: React.FC = () => {
         maskClosable={false}
         okText={
           <span>
-            <PlusOutlined style={{ marginRight: 4 }} />
+            <CheckOutlined style={{ marginRight: 4 }} />
             Save
           </span>
         }

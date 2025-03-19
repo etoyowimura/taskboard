@@ -3,6 +3,7 @@ import {
   Drawer,
   Input,
   Select,
+  Spin,
   Table,
   Tooltip,
   Typography,
@@ -11,6 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 import tagIcon from "../../assets/tagIcon.svg";
 import {
   CloseOutlined,
+  EyeOutlined,
   QuestionCircleOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -31,6 +33,7 @@ interface Salary {
   base_salary: string;
   performance_salary: string;
   total_salary: string;
+  salary_document_path: string;
 }
 
 interface Employee {
@@ -64,6 +67,8 @@ const AccountingHistory: React.FC = () => {
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const handleRowClick = async (record: any, e: any) => {
     setSelectedUser(record);
     setOpen(true);
@@ -80,6 +85,8 @@ const AccountingHistory: React.FC = () => {
       setYears(newYears);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // Loading holatini o'chirish
     }
   };
 
@@ -163,6 +170,7 @@ const AccountingHistory: React.FC = () => {
             title: "Username",
             dataIndex: "username",
             key: "username",
+            sorter: (a, b) => a.username.localeCompare(b.username),
             render: (text, record) => (
               <Tooltip
                 title={
@@ -276,6 +284,8 @@ const AccountingHistory: React.FC = () => {
           {
             title: "Base Salary",
             dataIndex: "total_base_salary",
+            sorter: (a: any, b: any) =>
+              a.total_base_salary - b.total_base_salary,
             render: (text: string, record: any) => (
               <p>${record?.total_base_salary}</p>
             ),
@@ -283,6 +293,8 @@ const AccountingHistory: React.FC = () => {
           {
             title: "Performance Salary",
             dataIndex: "total_performance_salary",
+            sorter: (a: any, b: any) =>
+              a.total_performance_salary - b.total_performance_salary,
             render: (text: string, record: any) => (
               <p>${record?.total_performance_salary}</p>
             ),
@@ -290,6 +302,7 @@ const AccountingHistory: React.FC = () => {
           {
             title: "Total Charges",
             dataIndex: "total_charges",
+            sorter: (a: any, b: any) => a.total_charges - b.total_charges,
             render: (text: string, record: any) => (
               <p>${record?.total_charges}</p>
             ),
@@ -297,6 +310,7 @@ const AccountingHistory: React.FC = () => {
           {
             title: "Total Bonuses",
             dataIndex: "total_bonuses",
+            sorter: (a: any, b: any) => a.total_bonuses - b.total_bonuses,
             render: (text: string, record: any) => (
               <p>${record?.total_bonuses}</p>
             ),
@@ -305,6 +319,8 @@ const AccountingHistory: React.FC = () => {
             title: "Total Salary",
             dataIndex: "total_earned_salary",
             key: "total_earned_salary",
+            sorter: (a: any, b: any) =>
+              a.total_earned_salary - b.total_earned_salary,
             render: (text: string, record: any) => (
               <span>${record.total_earned_salary}</span>
             ),
@@ -449,7 +465,7 @@ const AccountingHistory: React.FC = () => {
 
         <div style={{ marginTop: 24 }}>
           {years.length === 0 ? (
-            <p>No data available for the years.</p>
+            <Spin spinning={loading} />
           ) : (
             years.map((year) => (
               <div key={year} style={{ marginBottom: 32 }}>
@@ -459,6 +475,7 @@ const AccountingHistory: React.FC = () => {
                     .filter((salary) => salary.year === year)
                     .map((filteredSalary) => (
                       <Table
+                        loading={loading}
                         key={filteredSalary.id}
                         dataSource={[filteredSalary]}
                         columns={[
@@ -491,6 +508,33 @@ const AccountingHistory: React.FC = () => {
                             dataIndex: "total_salary",
                             render: (text: string, record: any) => (
                               <span>${record.total_salary}</span>
+                            ),
+                          },
+                          {
+                            title: "Action",
+                            dataIndex: "salary_document_path",
+                            align: "center",
+                            render: (text, record) => (
+                              <Tooltip
+                                title={
+                                  record.salary_document_path
+                                    ? "View Document"
+                                    : "No Document"
+                                }
+                              >
+                                <Button
+                                  type="primary"
+                                  icon={<EyeOutlined />}
+                                  onClick={() =>
+                                    record.salary_document_path &&
+                                    window.open(
+                                      record.salary_document_path,
+                                      "_blank"
+                                    )
+                                  }
+                                  disabled={!record.salary_document_path}
+                                />
+                              </Tooltip>
                             ),
                           },
                         ]}

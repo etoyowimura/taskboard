@@ -17,6 +17,7 @@ import React, { useEffect, useRef, useState } from "react";
 import tagIcon from "../../assets/tagIcon.svg";
 import {
   CheckCircleOutlined,
+  CheckOutlined,
   CloseOutlined,
   DeleteOutlined,
   DollarOutlined,
@@ -32,6 +33,8 @@ import { useAccountingData } from "../../Hooks/Accounting";
 import moment from "moment";
 import api from "../../API/api";
 import dayjs from "dayjs";
+import "dayjs/locale/en";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import { useTeamData } from "../../Hooks/Teams";
 
 type Employee = {
@@ -51,6 +54,7 @@ interface BonusesTableProps {
 }
 
 const AccountingCurrent: React.FC = () => {
+  dayjs.extend(localizedFormat);
   const themes = localStorage.getItem("theme") === "true" ? true : false;
 
   const [open, setOpen] = useState(false);
@@ -63,12 +67,17 @@ const AccountingCurrent: React.FC = () => {
     month: "long",
   });
 
-  const lastMonth = moment().subtract(1, "months").month();
-  const lastMonthYear = moment().subtract(1, "months").year();
-  const lastMonthDefault = dayjs().subtract(1, "month");
-  const today = moment().endOf("day");
+  // const lastMonth = moment().subtract(1, "months").month();
+  // const lastMonthYear = moment().subtract(1, "months").year();
+  // const lastMonthDefault = dayjs().subtract(1, "month");
+  // const today = moment().endOf("day");
 
-  const disabledDate = (current: any) => {
+  const lastMonth = dayjs().subtract(1, "month").month();
+  const lastMonthYear = dayjs().subtract(1, "month").year();
+  const lastMonthDefault = dayjs().subtract(1, "month");
+  const today = dayjs().endOf("day");
+
+  const disabledDate = (current: dayjs.Dayjs) => {
     return (
       current &&
       (current.month() !== lastMonth ||
@@ -77,9 +86,10 @@ const AccountingCurrent: React.FC = () => {
     );
   };
 
-  const [form] = Form.useForm();
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState<moment.Moment | null>(null);
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
+
+  const [form] = Form.useForm();
 
   const [isBonusModalVisible, setIsBonusModalVisible] = useState(false);
   const [isChargeModalVisible, setIsChargeModalVisible] = useState(false);
@@ -111,7 +121,7 @@ const AccountingCurrent: React.FC = () => {
     team: team,
   });
 
-  const handleDateChange = (date: any) => {
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
     setSelectedDate(date);
     form.setFieldsValue({ date });
   };
@@ -122,10 +132,14 @@ const AccountingCurrent: React.FC = () => {
       .then((values) => {
         const { date, amount, notes } = values;
 
+        const formattedDate = selectedDate
+          ? selectedDate.format("YYYY-MM-DD")
+          : null;
+
         if (selectedUserId) {
           api
             .post(`/add-charge/${selectedUserId}/`, {
-              date: date ? date.toISOString().split("T")[0] : null,
+              date: formattedDate,
               amount: amount,
               reason: notes,
             })
@@ -150,10 +164,14 @@ const AccountingCurrent: React.FC = () => {
       .then((values) => {
         const { date, amount, notes } = values;
 
+        const formattedDate = selectedDate
+          ? selectedDate.format("YYYY-MM-DD")
+          : null;
+
         if (selectedUserId) {
           api
             .post(`/add-bonus/${selectedUserId}/`, {
-              date: date ? date.toISOString().split("T")[0] : null,
+              date: formattedDate,
               amount: amount,
               reason: notes,
             })
@@ -210,7 +228,7 @@ const AccountingCurrent: React.FC = () => {
           (bonus: any, index: any) => ({
             no: index + 1,
             id: bonus.id,
-            // date: bonus.date,
+            date: bonus.date,
             amount: bonus.amount,
             reason: bonus.reason || "",
             username: response.data.employee.username,
@@ -231,7 +249,7 @@ const AccountingCurrent: React.FC = () => {
           (charges: any, index: any) => ({
             no: index + 1,
             id: charges.id,
-            // date: charges.date,
+            date: charges.date,
             amount: charges.amount,
             reason: charges.reason || "",
             username: response.data.employee.username,
@@ -266,11 +284,10 @@ const AccountingCurrent: React.FC = () => {
       return;
     }
 
-    // const recordWithoutDate = { ...record };
-    // delete recordWithoutDate.date;
+    const { date, ...fieldsWithoutDate } = record;
 
     setSelectedRecordBonus(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(fieldsWithoutDate);
     setIsEditBonusModalVisible(true);
   };
   const showModal = (record: any) => {
@@ -279,11 +296,11 @@ const AccountingCurrent: React.FC = () => {
       return;
     }
 
-    // const recordWithoutDate = { ...record };
-    // delete recordWithoutDate.date;
+    const { date, ...fieldsWithoutDate } = record;
 
     setSelectedRecord(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(fieldsWithoutDate);
+
     setIsEditModalVisible(true);
   };
 
@@ -293,19 +310,65 @@ const AccountingCurrent: React.FC = () => {
     form.resetFields();
   };
 
+  // const handleOkBonusEdit = async () => {
+  //   try {
+  //     // Formani tekshirish
+  //     const values = await form.validateFields();
+
+  //     if (!selectedRecordBonus) {
+  //       throw new Error("No record selected!");
+  //     }
+
+  //     // Obyektni biriktirish: selectedRecord va formdagi values
+  //     const updatedData = { ...(selectedRecordBonus || {}), ...values };
+
+  //     // Axios so‘rovini yuborish
+  //     const response = await api.put(
+  //       `bonus/${selectedRecordBonus.id}/`,
+  //       updatedData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     // Javobni tekshirish
+  //     if (response.status === 202) {
+  //       setBonusesData((prevData: any) =>
+  //         prevData.map((item: any) =>
+  //           item.id === selectedRecordBonus.id
+  //             ? { ...item, ...updatedData }
+  //             : item
+  //         )
+  //       );
+  //       refetch();
+
+  //       setIsEditBonusModalVisible(false);
+  //     } else {
+  //       throw new Error("Server Error");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // EDIT modal Charge
+
   const handleOkBonusEdit = async () => {
     try {
-      // Formani tekshirish
       const values = await form.validateFields();
 
       if (!selectedRecordBonus) {
         throw new Error("No record selected!");
       }
 
-      // Obyektni biriktirish: selectedRecord va formdagi values
-      const updatedData = { ...(selectedRecordBonus || {}), ...values };
+      // Faqat kerakli maydonlarni olish
+      const updatedData = {
+        amount: values.amount,
+        reason: values.reason, // Formda `notes` deb saqlanayotgan bo‘lsa
+      };
 
-      // Axios so‘rovini yuborish
       const response = await api.put(
         `bonus/${selectedRecordBonus.id}/`,
         updatedData,
@@ -316,7 +379,6 @@ const AccountingCurrent: React.FC = () => {
         }
       );
 
-      // Javobni tekshirish
       if (response.status === 202) {
         setBonusesData((prevData: any) =>
           prevData.map((item: any) =>
@@ -336,7 +398,46 @@ const AccountingCurrent: React.FC = () => {
     }
   };
 
-  // EDIT modal Charge
+  // const handleOk = async () => {
+  //   try {
+  //     const values = await form.validateFields();
+
+  //     if (!selectedRecord) {
+  //       throw new Error("No record selected!");
+  //     }
+
+  //     const updatedData = {
+  //       ...(selectedRecord || {}),
+  //       ...values,
+  //     };
+
+  //     const response = await api.put(
+  //       `charge/${selectedRecord.id}/`,
+  //       updatedData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 202) {
+  //       setChargesData((prevData: any) =>
+  //         prevData.map((item: any) =>
+  //           item.id === selectedRecord.id ? { ...item, ...updatedData } : item
+  //         )
+  //       );
+  //       refetch();
+
+  //       setIsEditModalVisible(false);
+  //     } else {
+  //       throw new Error("Server Error");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -345,9 +446,10 @@ const AccountingCurrent: React.FC = () => {
         throw new Error("No record selected!");
       }
 
+      // Faqat kerakli maydonlarni olish (`amount` va `reason` yoki `notes`)
       const updatedData = {
-        ...(selectedRecord || {}),
-        ...values,
+        amount: values.amount,
+        reason: values.reason, // Agar `reason` bo‘lmasa, `notes`ni ishlatish
       };
 
       const response = await api.put(
@@ -424,7 +526,6 @@ const AccountingCurrent: React.FC = () => {
         if (response.status === 200) {
           setBonusesData((prevData: any) => {
             const updatedData = prevData.filter((item: any) => item.id !== id);
-            console.log("Updated Data:", updatedData);
             return updatedData;
           });
           message.success(response.data.message);
@@ -446,7 +547,6 @@ const AccountingCurrent: React.FC = () => {
         if (response.status === 200) {
           setChargesData((prevData: any) => {
             const updatedData = prevData.filter((item: any) => item.id !== id);
-            console.log("Updated Data:", updatedData);
             return updatedData;
           });
           message.success(response.data.message);
@@ -605,6 +705,7 @@ const AccountingCurrent: React.FC = () => {
             title: "Username",
             dataIndex: "username",
             key: "username",
+            sorter: (a, b) => a.username.localeCompare(b.username),
             render: (text, record) => (
               <Tooltip
                 title={
@@ -692,6 +793,8 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Base Salary",
             dataIndex: "salary_base_amount",
+            sorter: (a: any, b: any) =>
+              a.salary_base_amount - b.salary_base_amount,
             render: (text: string, record: any) => (
               <p>${record?.salary_base_amount}</p>
             ),
@@ -699,6 +802,8 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Performance Salary",
             dataIndex: "performance_salary",
+            sorter: (a: any, b: any) =>
+              a.performance_salary - b.performance_salary,
             render: (text: string, record: any) => (
               <p>${record?.performance_salary}</p>
             ),
@@ -706,6 +811,7 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Charges",
             dataIndex: "total_charges",
+            sorter: (a: any, b: any) => a.total_charges - b.total_charges,
             render: (text: string, record: any) => (
               <p>${record?.total_charges}</p>
             ),
@@ -713,6 +819,7 @@ const AccountingCurrent: React.FC = () => {
           {
             title: "Bonuses",
             dataIndex: "total_bonuses",
+            sorter: (a: any, b: any) => a.total_bonuses - b.total_bonuses,
             render: (text: string, record: any) => (
               <p>${record?.total_bonuses}</p>
             ),
@@ -721,6 +828,7 @@ const AccountingCurrent: React.FC = () => {
             title: "Salary",
             dataIndex: "salary",
             key: "salary",
+            sorter: (a: any, b: any) => a.salary - b.salary,
             render: (text: string, record: any) => (
               <span>${record.salary}</span>
             ),
@@ -1141,8 +1249,7 @@ const AccountingCurrent: React.FC = () => {
               format="YYYY MMMM DD"
               defaultPickerValue={lastMonthDefault}
               onChange={handleDateChange}
-
-              // value={lastMonthDefault}
+              value={selectedDate ? selectedDate : null}
             />
           </Form.Item>
 
@@ -1206,7 +1313,7 @@ const AccountingCurrent: React.FC = () => {
               defaultPickerValue={lastMonthDefault}
               format="YYYY MMMM DD"
               onChange={handleDateChange}
-              // value={selectedDate}
+              value={selectedDate ? selectedDate : null}
             />
           </Form.Item>
 
@@ -1246,7 +1353,7 @@ const AccountingCurrent: React.FC = () => {
         maskClosable={false}
         okText={
           <span>
-            <PlusOutlined style={{ marginRight: 4 }} />
+            <CheckOutlined style={{ marginRight: 4 }} />
             Save
           </span>
         }
@@ -1293,7 +1400,7 @@ const AccountingCurrent: React.FC = () => {
         maskClosable={false}
         okText={
           <span>
-            <PlusOutlined style={{ marginRight: 4 }} />
+            <CheckOutlined style={{ marginRight: 4 }} />
             Save
           </span>
         }
