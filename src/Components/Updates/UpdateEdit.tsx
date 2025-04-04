@@ -219,7 +219,7 @@ const UpdateEdit = () => {
                                 </Form.Item>
                               </Col>
                             )}
-                            {customerId !== null && (
+                            {/* {customerId !== null && (
                               <Col span={8}>
                                 <Form.Item
                                   wrapperCol={{ span: "100%" }}
@@ -227,10 +227,23 @@ const UpdateEdit = () => {
                                 >
                                   {data?.customer.id !== undefined && (
                                     <Input
-                                      defaultValue={data?.customer.name}
+                                      defaultValue={data?.customer?.name}
                                       readOnly
                                     />
                                   )}
+                                </Form.Item>
+                              </Col>
+                            )} */}
+                            {customerId !== null && (
+                              <Col span={8}>
+                                <Form.Item
+                                  wrapperCol={{ span: "100%" }}
+                                  label="Driver"
+                                >
+                                  <Input
+                                    defaultValue={data?.customer?.name || ""}
+                                    readOnly
+                                  />
                                 </Form.Item>
                               </Col>
                             )}

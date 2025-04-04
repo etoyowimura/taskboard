@@ -58,7 +58,7 @@ const AccountingDetails = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const API_URL = `https://api.tteld.co/api/v1/user-salaries/${id}`;
+      const API_URL = `https://board-api.ontime-logs.com/api/v1/user-salaries/${id}`;
       const AUTH_TOKEN = localStorage.getItem("access");
 
       try {

@@ -1,3 +1,4 @@
+import { TAccountingConfirmedMonths } from "./../../types/Accounting/TAccounting";
 import {
   TAccounting,
   TAccountingHistory,
@@ -25,6 +26,14 @@ export const AccountingController = {
     });
     return data;
   },
+
+  async confirmedMonths() {
+    const { data } = await instance.get<TAccountingConfirmedMonths[]>(
+      `/salaries-group/`
+    );
+    return data;
+  },
+
   async history(filterObject: TAccountingHistoryGetParams) {
     const params = { ...filterObject };
     if (!!filterObject.search) params.search = filterObject.search;

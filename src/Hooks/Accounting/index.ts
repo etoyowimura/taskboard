@@ -34,3 +34,13 @@ export const useAccountingHistory = ({
     }
   );
 };
+
+export const useConfirmedMonths = () => {
+  return useQuery(
+    [`/salaries-group`],
+    () => AccountingController.confirmedMonths(),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+};

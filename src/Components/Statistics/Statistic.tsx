@@ -33,6 +33,7 @@ import {
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import TabPane from "antd/es/tabs/TabPane";
+import api from "../../API/api";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
 import {
@@ -274,7 +275,6 @@ const Stat = () => {
     null
   );
 
-  const token = localStorage.getItem("access");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -289,13 +289,9 @@ const Stat = () => {
         }
         const formattedEndDate = finalEndDate.format("YYYY-MM-DD HH:mm:ss");
 
-        const response = await axios.get(
-          "https://api.tteld.co/api/v1/stats/general-stats",
-          {
-            params: { start_date: startDate, end_date: formattedEndDate },
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const response = await api.get("stats/general-stats", {
+          params: { start_date: startDate, end_date: formattedEndDate },
+        });
         if (response.data.daily_stats) {
           setChartData(response.data.daily_stats);
         }
@@ -310,7 +306,7 @@ const Stat = () => {
     };
 
     fetchData();
-  }, [token, startDate, endDate]);
+  }, [startDate, endDate]);
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);

@@ -1,5 +1,9 @@
 import { Button, DatePicker, Tabs, Typography } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CheckSquareOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import { theme } from "antd";
 
 import currentMonthActive from "../../assets/currentMonthActive.svg";
@@ -19,13 +23,14 @@ import AccountingLast from "./AccountingLast";
 import AccountingHistory from "./AccountingHistory";
 import dayjs from "dayjs";
 import { useAccountingData } from "../../Hooks/Accounting";
+import ConfirmedMonths from "./ConfirmedMonths";
 
 const Accounting: React.FC = () => {
   const { token } = theme.useToken();
 
   const [activeTab, setActiveTab] = useState("1");
 
-  const month = activeTab === "1" ? "current" : "last";
+  const month = activeTab === "" ? "current" : "last";
 
   const { data, isLoading, refetch } = useAccountingData({
     month: month,
@@ -143,15 +148,32 @@ const Accounting: React.FC = () => {
         <TabPane
           tab={
             <span style={{ display: "flex", alignItems: "center" }}>
+              <CheckCircleOutlined
+                style={{
+                  fontSize: 16,
+                  marginRight: 5,
+                  color: activeTab === "3" ? "#F99E2C" : "#A1A2AB",
+                }}
+              />
+              Confirmed Months
+            </span>
+          }
+          key="3"
+        >
+          <ConfirmedMonths />
+        </TabPane>
+        <TabPane
+          tab={
+            <span style={{ display: "flex", alignItems: "center" }}>
               <img
                 style={{ marginRight: 5 }}
-                src={activeTab === "3" ? historyActive : history}
+                src={activeTab === "4" ? historyActive : history}
                 alt="icon"
               />
               History
             </span>
           }
-          key="3"
+          key="4"
         >
           <AccountingHistory />
         </TabPane>

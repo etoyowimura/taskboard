@@ -13,6 +13,14 @@ export type TAccounting = {
   username: string;
 };
 
+export type TAccountingConfirmedMonths = {
+  id: number;
+  month: string;
+  year: number;
+  salary_document_path: string;
+  created_at: string;
+};
+
 export type TAccountingHistory = {
   id: number;
   full_name: string;

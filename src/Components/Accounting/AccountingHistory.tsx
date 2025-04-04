@@ -527,10 +527,7 @@ const AccountingHistory: React.FC = () => {
                                   icon={<EyeOutlined />}
                                   onClick={() =>
                                     record.salary_document_path &&
-                                    window.open(
-                                      record.salary_document_path,
-                                      "_blank"
-                                    )
+                                    window.open(record.salary_document_path)
                                   }
                                   disabled={!record.salary_document_path}
                                 />
