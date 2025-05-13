@@ -286,8 +286,8 @@ const App: React.FC = () => {
         // );
         // taskSocket = new WebSocket(`wss://api.tteld.co/global/?user_id=${admin_id}`);
         taskSocket = new WebSocket(
-          // `wss://board-socket.ontime-logs.com/global/?user_id=${admin_id}`
-          `wss://ontime-socket.tteld.co/global/?user_id=${admin_id}`
+          `wss://board-api.ontime-logs.com/global/?user_id=${admin_id}`
+          // `wss://ontime-socket.tteld.co/global/?user_id=${admin_id}`
           // `ws://10.10.10.64:8000/global/?user_id=${admin_id}`
         );
 

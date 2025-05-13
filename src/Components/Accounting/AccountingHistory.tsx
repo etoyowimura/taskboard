@@ -467,81 +467,80 @@ const AccountingHistory: React.FC = () => {
           {years.length === 0 ? (
             <Spin spinning={loading} />
           ) : (
-            years.map((year) => (
-              <div key={year} style={{ marginBottom: 32 }}>
-                <Title level={3}>{year}</Title>
-                {userData &&
-                  userData.salaries
-                    .filter((salary) => salary.year === year)
-                    .map((filteredSalary) => (
-                      <Table
-                        loading={loading}
-                        key={filteredSalary.id}
-                        dataSource={[filteredSalary]}
-                        columns={[
-                          {
-                            title: <img src={tagIcon} alt="" />,
-                            dataIndex: "no",
-                            width: "5%",
-                            align: "center",
-                            render: (text, record, index) => index + 1,
-                          },
-                          { title: "Year", dataIndex: "year" },
-                          { title: "Month", dataIndex: "month" },
+            years.map((year) => {
+              const salariesForYear =
+                userData?.salaries?.filter((salary) => salary.year === year) ||
+                [];
 
-                          {
-                            title: "Total Charges",
-                            dataIndex: "total_charges",
-                            render: (text: string, record: any) => (
-                              <span>${record.total_charges}</span>
-                            ),
-                          },
-                          {
-                            title: "Total Bonus",
-                            dataIndex: "total_bonuses",
-                            render: (text: string, record: any) => (
-                              <span>${record.total_bonuses}</span>
-                            ),
-                          },
-                          {
-                            title: "Total Salary",
-                            dataIndex: "total_salary",
-                            render: (text: string, record: any) => (
-                              <span>${record.total_salary}</span>
-                            ),
-                          },
-                          {
-                            title: "Action",
-                            dataIndex: "salary_document_path",
-                            align: "center",
-                            render: (text, record) => (
-                              <Tooltip
-                                title={
-                                  record.salary_document_path
-                                    ? "View Document"
-                                    : "No Document"
-                                }
-                              >
-                                <Button
-                                  type="primary"
-                                  icon={<EyeOutlined />}
-                                  onClick={() =>
-                                    record.salary_document_path &&
-                                    window.open(record.salary_document_path)
-                                  }
-                                  disabled={!record.salary_document_path}
-                                />
-                              </Tooltip>
-                            ),
-                          },
-                        ]}
-                        rowKey="id"
-                        pagination={false}
-                        bordered
-                      />
-                    ))}
-              </div>
-            ))
+              return (
+                <div key={year} style={{ marginBottom: 32 }}>
+                  <Title level={3}>{year}</Title>
+                  <Table
+                    loading={loading}
+                    dataSource={salariesForYear}
+                    columns={[
+                      {
+                        title: <img src={tagIcon} alt="" />,
+                        dataIndex: "no",
+                        width: "5%",
+                        align: "center",
+                        render: (text, record, index) => index + 1,
+                      },
+                      { title: "Year", dataIndex: "year" },
+                      { title: "Month", dataIndex: "month" },
+                      {
+                        title: "Total Charges",
+                        dataIndex: "total_charges",
+                        render: (text: string, record: any) => (
+                          <span>${record.total_charges}</span>
+                        ),
+                      },
+                      {
+                        title: "Total Bonus",
+                        dataIndex: "total_bonuses",
+                        render: (text: string, record: any) => (
+                          <span>${record.total_bonuses}</span>
+                        ),
+                      },
+                      {
+                        title: "Total Salary",
+                        dataIndex: "total_salary",
+                        render: (text: string, record: any) => (
+                          <span>${record.total_salary}</span>
+                        ),
+                      },
+                      {
+                        title: "Action",
+                        dataIndex: "salary_document_path",
+                        align: "center",
+                        render: (text, record) => (
+                          <Tooltip
+                            title={
+                              record.salary_document_path
+                                ? "View Document"
+                                : "No Document"
+                            }
+                          >
+                            <Button
+                              type="primary"
+                              icon={<EyeOutlined />}
+                              onClick={() =>
+                                record.salary_document_path &&
+                                window.open(record.salary_document_path)
+                              }
+                              disabled={!record.salary_document_path}
+                            />
+                          </Tooltip>
+                        ),
+                      },
+                    ]}
+                    rowKey="id"
+                    pagination={false}
+                    bordered
+                  />
+                </div>
+              );
+            })
           )}
         </div>
       </Drawer>

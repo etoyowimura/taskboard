@@ -210,9 +210,9 @@ const UpdateEdit = () => {
                                     //   readOnly
                                     // />
                                   )} */}
-                                  {data?.company.id !== undefined && (
+                                  {data?.company?.id !== null && (
                                     <Input
-                                      defaultValue={data?.company?.name}
+                                      defaultValue={data?.company?.name || " "}
                                       readOnly
                                     />
                                   )}

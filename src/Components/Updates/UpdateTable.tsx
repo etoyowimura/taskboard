@@ -192,8 +192,8 @@ const UpdateTable = ({
             render: (status: string) => (
               <span>
                 {status === "Done" && <p className="status-done">Done</p>}
-                {status === "Checking" && (
-                  <p className="status-in-progress">Checking</p>
+                {status === "In Progress" && (
+                  <p className="status-in-progress">In Progress</p>
                 )}
                 {status === "New" && <p className="status-new">New</p>}
                 {status === "Setup" && <p className="status-new">Setup</p>}
