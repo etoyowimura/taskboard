@@ -12,6 +12,7 @@ import {
   Input,
   Radio,
   RadioChangeEvent,
+  Select,
   Space,
   Typography,
   theme,
@@ -29,12 +30,20 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
   const [requestData, setRequestData] = useState<TRequests | undefined>();
   const [status, setStatus] = useState("Pending");
   const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   const { data, refetch, isLoading } = useRequestsData({
     search: search,
     status: status,
     page: page,
-    page_size: 10,
+    page_size: pageSize,
   });
   const [mainData, setMainData] = useState<TRequests[]>();
 
@@ -149,6 +158,16 @@ const Requests = ({ socketData }: { socketData: TSocket | undefined }) => {
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
           <Button
             onClick={Previos}
             disabled={data?.previous ? false : true}

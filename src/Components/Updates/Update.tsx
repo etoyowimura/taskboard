@@ -35,10 +35,16 @@ const Update = () => {
   const { Option } = Select;
 
   const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const page_size: number = 10;
+  const pageSizeOptions = [10, 20, 30, 40, 50];
 
-  const { data, refetch, isLoading } = useUpdateData(status, page, page_size);
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1); // Odatda pageSize o'zgarganda sahifani 1 ga qaytaramiz
+  };
+
+  const { data, refetch, isLoading } = useUpdateData(status, page, pageSize);
 
   const showModal = () => {
     setOpen(true);
@@ -141,6 +147,15 @@ const Update = () => {
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
           <Button
             onClick={Previos}
             disabled={data?.previous ? false : true}

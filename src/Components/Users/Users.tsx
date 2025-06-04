@@ -8,7 +8,7 @@ import {
   RightOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { theme } from "antd";
+import { Select, theme } from "antd";
 // @ts-ignore
 import IconSearch from "../../assets/searchIcon.png";
 //@ts-ignore
@@ -17,6 +17,7 @@ import { Button, Input, Pagination, Space, Typography } from "antd";
 
 const User = () => {
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showModal = () => {
@@ -39,8 +40,15 @@ const User = () => {
     name: search,
     team: "",
     page: page,
-    page_size: 10,
+    page_size: pageSize,
   });
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +126,16 @@ const User = () => {
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
           <Button
             onClick={Previos}
             disabled={data?.previous ? false : true}

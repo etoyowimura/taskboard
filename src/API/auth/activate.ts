@@ -28,7 +28,6 @@ export const registryVerify = async (value: activateInterface) => {
       role: data?.data.role,
     };
     console.log(data);
-    
 
     const userJSON = JSON.stringify(userObject);
     localStorage.setItem("user", userJSON);

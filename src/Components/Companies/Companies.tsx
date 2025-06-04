@@ -10,7 +10,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useCompanyPaginated } from "../../Hooks/Companies";
-import { Button, Input, Space, Typography } from "antd";
+import { Button, Input, Select, Space, Typography } from "antd";
 import { theme } from "antd";
 
 import { role } from "../../App";
@@ -23,12 +23,20 @@ const Company = () => {
 
   const [search, setSearch] = useState<string>();
   const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState(10);
   const { data, isLoading, refetch } = useCompanyPaginated({
     name: search,
     is_active: undefined,
     page: page,
-    page_size: 10,
+    page_size: pageSize,
   });
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,6 +131,16 @@ const Company = () => {
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
           <Button
             onClick={Previos}
             disabled={data?.previous ? false : true}

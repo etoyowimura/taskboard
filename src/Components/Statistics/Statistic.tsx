@@ -28,10 +28,12 @@ import {
   DatePickerProps,
   Input,
   Select,
+  Space,
   Tabs,
   Typography,
+  theme,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { LeftOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons";
 import TabPane from "antd/es/tabs/TabPane";
 import api from "../../API/api";
 // @ts-ignore
@@ -58,7 +60,6 @@ import teamsIconActive from "../../assets/teamsIconActive.svg";
 import techSupports from "../../assets/techsupportIcon.svg";
 import techSupportsActive from "../../assets/techsupportIconActive.svg";
 
-import axios from "axios";
 import StatisticsSupportTable from "./StatisticsSupportTable";
 
 const Stat = () => {
@@ -73,17 +74,40 @@ const Stat = () => {
     .endOf("month")
     .format("YYYY-MM-DD")} 23:59:59`;
 
+  const { token } = theme.useToken();
+
   const [search, setSearch] = useState<string>("");
   const [SupportSearch, setSupportSearch] = useState<string>("");
   const [team, setTeam] = useState<any>("");
   const [startDate, setStartDate] = useState(start_date);
   const [endDate, setEndDate] = useState(end_date);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [forSalary, setForSalary] = useState(true);
 
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
+
   const teamData = useTeamData({});
   const teamOptions: { label: string; value: any }[] | undefined =
-    teamData?.data?.map((item) => ({
+    teamData?.data?.map((item: any) => ({
       label: item?.name,
       value: item?.name,
     }));
@@ -145,29 +169,21 @@ const Stat = () => {
     start_date: startDate,
     end_date: endDate,
     for_salary: forSalary,
+    page: page,
+    page_size: pageSize,
   });
-  interface DataType {
-    data?: TStatTeam[];
-    refetch: <TPageData>(
-      options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-    ) => Promise<QueryObserverResult<TStatTeam[], unknown>>;
-    isLoading: boolean;
-  }
-  const TeamData: DataType = useStatTeamData({
+
+  const TeamData = useStatTeamData({
+    page: page,
+    page_size: pageSize,
     search: "",
     start_date: startDate,
     end_date: endDate,
   });
 
-  interface TaskCreatorsType {
-    data?: TStatCreators[];
-    refetch: <TPageData>(
-      options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-    ) => Promise<QueryObserverResult<TStatCreators[], unknown>>;
-    isLoading: boolean;
-  }
-
-  const CreatorsData: TaskCreatorsType = useCreatorsData({
+  const CreatorsData = useCreatorsData({
+    page: page,
+    page_size: pageSize,
     search: SupportSearch,
     start_date: startDate,
     end_date: endDate,
@@ -220,7 +236,7 @@ const Stat = () => {
     }, 1000);
   };
 
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  // const theme = localStorage.getItem("theme") === "true" ? true : false;
 
   const [activeTab, setActiveTab] = useState("1");
 
@@ -498,6 +514,73 @@ const Stat = () => {
             isLoading={CreatorsData?.isLoading}
             refetch={CreatorsData?.refetch}
           />
+          <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
+            <Space
+              style={{
+                justifyContent: "end",
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                backgroundColor: token.colorBgContainer,
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+                padding: "10px 0",
+                zIndex: 1000,
+              }}
+              wrap
+            >
+              <Select
+                value={pageSize}
+                onChange={handlePageSizeChange}
+                style={{ width: 65, marginRight: 16 }}
+                options={pageSizeOptions.map((size) => ({
+                  label: `${size}`,
+                  value: size,
+                }))}
+              />
+
+              <Button
+                onClick={Previos}
+                disabled={CreatorsData?.data?.previous ? false : true}
+                style={{
+                  backgroundColor: token.colorBgContainer,
+                  color: token.colorText,
+                  border: "none",
+                }}
+              >
+                <LeftOutlined />
+              </Button>
+              <Input
+                disabled
+                style={{
+                  width: 40,
+                  textAlign: "center",
+                  background: token.colorBgContainer,
+                  border: "1px solid",
+                  borderColor: token.colorText,
+                  color: token.colorText,
+                }}
+                value={page}
+                onChange={(e) => {
+                  let num = e.target.value;
+                  if (Number(num) && num !== "0") {
+                    setPage(Number(num));
+                  }
+                }}
+              />
+              <Button
+                onClick={Next}
+                disabled={CreatorsData?.data?.next ? false : true}
+                style={{
+                  backgroundColor: token.colorBgContainer,
+                  color: token.colorText,
+                  border: "none",
+                }}
+              >
+                <RightOutlined />
+              </Button>
+            </Space>
+          </Space>
         </TabPane>
 
         <TabPane
@@ -544,7 +627,7 @@ const Stat = () => {
             />
           </span>
           <StatTable
-            data={{ data: data }}
+            data={data?.data}
             isLoading={isLoading}
             refetch={refetch}
           />
@@ -555,6 +638,74 @@ const Stat = () => {
           >
             Save as file
           </Button>
+
+          <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
+            <Space
+              style={{
+                justifyContent: "end",
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                backgroundColor: token.colorBgContainer,
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+                padding: "10px 0",
+                zIndex: 1000,
+              }}
+              wrap
+            >
+              <Select
+                value={pageSize}
+                onChange={handlePageSizeChange}
+                style={{ width: 65, marginRight: 16 }}
+                options={pageSizeOptions.map((size) => ({
+                  label: `${size}`,
+                  value: size,
+                }))}
+              />
+
+              <Button
+                onClick={Previos}
+                disabled={data?.previous ? false : true}
+                style={{
+                  backgroundColor: token.colorBgContainer,
+                  color: token.colorText,
+                  border: "none",
+                }}
+              >
+                <LeftOutlined />
+              </Button>
+              <Input
+                disabled
+                style={{
+                  width: 40,
+                  textAlign: "center",
+                  background: token.colorBgContainer,
+                  border: "1px solid",
+                  borderColor: token.colorText,
+                  color: token.colorText,
+                }}
+                value={page}
+                onChange={(e) => {
+                  let num = e.target.value;
+                  if (Number(num) && num !== "0") {
+                    setPage(Number(num));
+                  }
+                }}
+              />
+              <Button
+                onClick={Next}
+                disabled={data?.next ? false : true}
+                style={{
+                  backgroundColor: token.colorBgContainer,
+                  color: token.colorText,
+                  border: "none",
+                }}
+              >
+                <RightOutlined />
+              </Button>
+            </Space>
+          </Space>
         </TabPane>
         <TabPane
           tab={
@@ -570,7 +721,7 @@ const Stat = () => {
           key="4"
         >
           <StatTeamTable
-            data={TeamData?.data}
+            data={TeamData?.data?.data}
             isLoading={TeamData?.isLoading}
             refetch={TeamData?.refetch}
           />
@@ -631,6 +782,73 @@ const Stat = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
+            <Space
+              style={{
+                justifyContent: "end",
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                backgroundColor: token.colorBgContainer,
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+                padding: "10px 0",
+                zIndex: 1000,
+              }}
+              wrap
+            >
+              <Select
+                value={pageSize}
+                onChange={handlePageSizeChange}
+                style={{ width: 65, marginRight: 16 }}
+                options={pageSizeOptions.map((size) => ({
+                  label: `${size}`,
+                  value: size,
+                }))}
+              />
+
+              <Button
+                onClick={Previos}
+                disabled={TeamData?.data?.previous ? false : true}
+                style={{
+                  backgroundColor: token.colorBgContainer,
+                  color: token.colorText,
+                  border: "none",
+                }}
+              >
+                <LeftOutlined />
+              </Button>
+              <Input
+                disabled
+                style={{
+                  width: 40,
+                  textAlign: "center",
+                  background: token.colorBgContainer,
+                  border: "1px solid",
+                  borderColor: token.colorText,
+                  color: token.colorText,
+                }}
+                value={page}
+                onChange={(e) => {
+                  let num = e.target.value;
+                  if (Number(num) && num !== "0") {
+                    setPage(Number(num));
+                  }
+                }}
+              />
+              <Button
+                onClick={Next}
+                disabled={TeamData?.data?.next ? false : true}
+                style={{
+                  backgroundColor: token.colorBgContainer,
+                  color: token.colorText,
+                  border: "none",
+                }}
+              >
+                <RightOutlined />
+              </Button>
+            </Space>
+          </Space>
         </TabPane>
       </Tabs>
     </div>

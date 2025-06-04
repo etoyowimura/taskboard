@@ -4,20 +4,40 @@ import AddService from "./AddService";
 import ServiceTable from "./ServiceTable";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
-import { PlusOutlined } from "@ant-design/icons";
+import { LeftOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { role } from "../../App";
-import { Button, Pagination, Space, Typography } from "antd";
+import { Button, Input, Pagination, Select, Space, Typography } from "antd";
 import { theme } from "antd";
 
 const Service = () => {
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   const { token } = theme.useToken();
 
-  const { data, isLoading, refetch } = useServiceData();
+  const { data, isLoading, refetch } = useServiceData(page, pageSize);
   const [open, setOpen] = useState(false);
   const showModal = () => {
     setOpen(true);
+  };
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
   };
 
   return (
@@ -45,9 +65,9 @@ const Service = () => {
           </Button>
         )}
       </div>
-      <ServiceTable data={data} isLoading={isLoading} refetch={refetch} />
+      <ServiceTable data={data?.data} isLoading={isLoading} refetch={refetch} />
 
-      {/* <Space style={{ width: "100%", marginTop: 10 }} direction="vertical">
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{
             justifyContent: "end",
@@ -62,12 +82,37 @@ const Service = () => {
           }}
           wrap
         >
-          <Button onClick={Previos} disabled={data?.previous ? false : true}>
-            ＜
-          </Button>
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
 
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
+          </Button>
           <Input
-            style={{ width: 30, textAlign: "center" }}
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
             value={page}
             onChange={(e) => {
               let num = e.target.value;
@@ -76,18 +121,19 @@ const Service = () => {
               }
             }}
           />
-
-          <Button onClick={Next} disabled={data?.next ? false : true}>
-            ＞
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
           </Button>
-          <Pagination
-          // current={page}
-          // total={10}
-          // pageSize={2}
-          // onChange={handlePageChange}
-          />
         </Space>
-      </Space> */}
+      </Space>
     </div>
   );
 };

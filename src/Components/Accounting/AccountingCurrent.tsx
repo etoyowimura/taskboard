@@ -9,6 +9,7 @@ import {
   message,
   Modal,
   Select,
+  Space,
   Table,
   Tooltip,
   Typography,
@@ -26,8 +27,10 @@ import {
   DollarOutlined,
   EditOutlined,
   EllipsisOutlined,
+  LeftOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
+  RightOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { theme } from "antd";
@@ -35,6 +38,7 @@ import { useAccountingData } from "../../Hooks/Accounting";
 import moment from "moment";
 import api from "../../API/api";
 import { useTeamData } from "../../Hooks/Teams";
+import { useRoleData } from "../../Hooks/Role";
 
 type Employee = {
   id: number;
@@ -60,6 +64,28 @@ const AccountingCurrent: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const currentInfo = new Date().toLocaleString("default", { month: "long" });
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
 
   const { Option } = Select;
 
@@ -97,6 +123,8 @@ const AccountingCurrent: React.FC = () => {
 
   const [search, setSearch] = useState<string>("");
   const [team, setTeam] = useState<any>("");
+  const [role, setRole] = useState<any>("");
+  const [salaryType, setSalaryType] = useState<any>("");
 
   const showBonusModal = (userId: any) => {
     setSelectedUserId(userId); // Tanlangan user_id ni saqlash
@@ -117,6 +145,10 @@ const AccountingCurrent: React.FC = () => {
     month: "current",
     search: search,
     team: team,
+    page: page,
+    page_size: pageSize,
+    role: role,
+    salary_type: salaryType,
   });
 
   const handleDateChange = (date: dayjs.Dayjs | null) => {
@@ -308,52 +340,6 @@ const AccountingCurrent: React.FC = () => {
     form.resetFields();
   };
 
-  // const handleOkBonusEdit = async () => {
-  //   try {
-  //     const values = await form.validateFields();
-
-  //     console.log(values);
-
-  //     if (!selectedRecordBonus) {
-  //       throw new Error("No record selected!");
-  //     }
-
-  //     const updatedData = {
-  //       ...(selectedRecordBonus || {}),
-  //       ...values,
-  //     };
-
-  //     const response = await api.put(
-  //       `bonus/${selectedRecordBonus.id}/`,
-  //       updatedData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 202) {
-  //       setBonusesData((prevData: any) =>
-  //         prevData.map((item: any) =>
-  //           item.id === selectedRecordBonus.id
-  //             ? { ...item, ...updatedData }
-  //             : item
-  //         )
-  //       );
-  //       refetch();
-
-  //       setIsEditBonusModalVisible(false);
-  //     } else {
-  //       throw new Error("Server Error");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // EDIT modal Charge
-
   const handleOkBonusEdit = async () => {
     try {
       const values = await form.validateFields();
@@ -362,10 +348,9 @@ const AccountingCurrent: React.FC = () => {
         throw new Error("No record selected!");
       }
 
-      // Faqat kerakli maydonlarni olish
       const updatedData = {
         amount: values.amount,
-        reason: values.reason, // Formda `notes` deb saqlanayotgan bo‘lsa
+        reason: values.reason,
       };
 
       const response = await api.put(
@@ -494,17 +479,24 @@ const AccountingCurrent: React.FC = () => {
 
   const teamData = useTeamData({});
   const teamOptions: { label: string; value: any }[] | undefined =
-    teamData?.data?.map((item) => ({
+    teamData?.data?.map((item: any) => ({
       label: item?.name,
       value: item?.name,
     }));
-  const additionalOption = {
-    label: "all",
-    value: "",
-  };
-  if (teamOptions) {
-    teamOptions.unshift(additionalOption);
-  }
+
+  const roleData = useRoleData();
+
+  const roleOptions: { label: string; value: any }[] | undefined =
+    roleData?.data?.map((item: any) => ({
+      label: item?.name,
+      value: item?.id,
+    }));
+
+  const salaryTypeOptions = [
+    { label: "Hybrid", value: "hybrid" },
+    { label: "Task Based", value: "task_based" },
+    { label: "Fixed", value: "fixed" },
+  ];
 
   const deleteFunctionBonus = (record: any) => {
     const { id } = record;
@@ -555,10 +547,11 @@ const AccountingCurrent: React.FC = () => {
         style={{
           display: "flex",
           alignItems: "center",
+          gap: 12,
           marginBottom: 10,
         }}
       >
-        <div style={{ marginRight: 12 }}>
+        <div>
           <Input
             placeholder="Search"
             prefix={<SearchOutlined />}
@@ -570,12 +563,27 @@ const AccountingCurrent: React.FC = () => {
           placeholder="Team"
           onChange={(value: any) => setTeam(value)}
           options={teamOptions}
+          allowClear
+        />
+        <Select
+          style={{ width: 260 }}
+          placeholder="Role"
+          onChange={(value: any) => setRole(value)}
+          options={roleOptions}
+          allowClear
+        />
+        <Select
+          style={{ width: 260 }}
+          placeholder="Salary Type"
+          onChange={(value: string) => setSalaryType(value)}
+          options={salaryTypeOptions}
+          allowClear
         />
       </span>
       <Table
         size="small"
         loading={isLoading}
-        dataSource={data?.map((u, i) => ({
+        dataSource={data?.data?.map((u: any, i: any) => ({
           no: i + 1,
           ...u,
         }))}
@@ -608,24 +616,6 @@ const AccountingCurrent: React.FC = () => {
             title: "Role",
             dataIndex: "role",
             key: "role",
-            filters: [
-              {
-                text: "Tech Support",
-                value: "Tech Support",
-              },
-              {
-                text: "Checker",
-                value: "Checker",
-              },
-              {
-                text: "Accountant",
-                value: "Accountant",
-              },
-            ],
-            filterMultiple: false,
-            onFilter: (value: any, record: any) => {
-              return record.role === value;
-            },
           },
           {
             title: "Team",
@@ -655,25 +645,6 @@ const AccountingCurrent: React.FC = () => {
               } else {
                 return <p>{record.salary_type}</p>;
               }
-            },
-            filters: [
-              {
-                text: "Hybrid",
-                value: "hybrid",
-              },
-              {
-                text: "Task Based",
-                value: "task_based",
-              },
-              {
-                text: "Fixed",
-                value: "fixed",
-              },
-            ],
-            filterMultiple: false,
-            // defaultFilteredValue: ["hybrid"],
-            onFilter: (value: any, record: any) => {
-              return record.salary_type === value;
             },
           },
           {
@@ -745,23 +716,24 @@ const AccountingCurrent: React.FC = () => {
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         bordered
-        pagination={{
-          pageSize: 10,
-          size: "default",
-          style: {
-            margin: 0,
-            justifyContent: "end",
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            backgroundColor: token.colorBgContainer,
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-            padding: "10px 0",
-            zIndex: 1000,
-          },
-          showLessItems: true,
-        }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        //   showLessItems: true,
+        // }}
+        pagination={false}
         onRow={(record) => ({
           onClick: (e) => handleRowClick(record, e),
         })}
@@ -1209,6 +1181,73 @@ const AccountingCurrent: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
+          </Button>
+          <Input
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
+            value={page}
+            onChange={(e) => {
+              let num = e.target.value;
+              if (Number(num) && num !== "0") {
+                setPage(Number(num));
+              }
+            }}
+          />
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
+          </Button>
+        </Space>
+      </Space>
     </div>
   );
 };

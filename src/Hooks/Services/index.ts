@@ -1,10 +1,10 @@
 import { useQuery } from "react-query";
 import { serviceController } from "../../API/LayoutApi/services";
 
-export const useServiceData = () => {
+export const useServiceData = (page?: number, page_size?: number) => {
   return useQuery(
-    [`services/`],
-    () => serviceController.read(),
+    [`services/`, page, page_size],
+    () => serviceController.read(page, page_size),
     { refetchOnWindowFocus: false }
   );
 };
@@ -16,4 +16,3 @@ export const useServiceOne = (serviceId: number | undefined) => {
     { refetchOnWindowFocus: false }
   );
 };
-

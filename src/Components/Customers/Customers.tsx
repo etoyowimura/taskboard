@@ -14,12 +14,13 @@ import addicon from "../../assets/addiconpng.png";
 
 import IconSearch from "../../assets/searchIcon.png";
 
-import { Button, Input, Pagination, Space, Typography } from "antd";
+import { Button, Input, Pagination, Select, Space, Typography } from "antd";
 import { theme } from "antd";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const showModal = () => {
     setOpen(true);
   };
@@ -30,9 +31,16 @@ const Customer = () => {
   const { data, isLoading, refetch } = useCustomerData({
     name: search,
     is_active: undefined,
-    page_size: 10,
+    page_size: pageSize,
     page: page,
   });
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   const Next = () => {
     const a = Number(page) + 1;
@@ -116,6 +124,16 @@ const Customer = () => {
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
           <Button
             type="primary"
             onClick={Previos}

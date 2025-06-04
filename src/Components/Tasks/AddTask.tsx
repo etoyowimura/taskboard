@@ -105,7 +105,7 @@ const AddTask = ({
   }, [companyId, customerName]);
 
   // service select
-  const serviceOptions = ServiceData?.data?.map((item) => ({
+  const serviceOptions = ServiceData?.data?.map((item: any) => ({
     label: item?.title,
     value: item?.id,
   }));
@@ -332,7 +332,7 @@ const AddTask = ({
               >
                 <Select
                   placeholder="Teams"
-                  options={TeamData?.data?.map((item) => ({
+                  options={TeamData?.data?.map((item: any) => ({
                     label: item?.name,
                     value: item?.id,
                   }))}

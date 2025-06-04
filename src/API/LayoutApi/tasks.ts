@@ -53,7 +53,7 @@ export const taskController = {
 
     if (!!filterObject.page && filterObject.page !== 0)
       params.page = filterObject.page;
-    params.page_size = isMobile ? 10 : 15;
+    params.page_size = filterObject.page_size;
     if (!!filterObject.search) params.search = filterObject.search;
     if (Array.isArray(filterObject.status)) {
       params.status = filterObject.status.join(",");

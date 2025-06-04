@@ -4,17 +4,43 @@ import TeamTable from "./TeamTable";
 //@ts-ignore
 import addicon from "../../assets/addiconpng.png";
 import AddTeam from "./AddTeam";
-import { Button, Typography } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Button, Input, Select, Space, Typography, theme } from "antd";
+import { LeftOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons";
 
 const Team = () => {
-  const { data, isLoading, refetch } = useTeamData({});
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const { data, isLoading, refetch } = useTeamData({
+    page: page,
+    page_size: pageSize,
+  });
+
   const [open, setOpen] = useState(false);
   const showModal = () => {
     setOpen(true);
   };
 
-  const theme = localStorage.getItem("theme") === "true" ? true : false;
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
+
+  const { token } = theme.useToken();
 
   return (
     <div>
@@ -43,7 +69,74 @@ const Team = () => {
           Add Team
         </Button>
       </div>
-      <TeamTable data={data} isLoading={isLoading} refetch={refetch} />
+      <TeamTable data={data?.data} isLoading={isLoading} refetch={refetch} />
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
+          </Button>
+          <Input
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
+            value={page}
+            onChange={(e) => {
+              let num = e.target.value;
+              if (Number(num) && num !== "0") {
+                setPage(Number(num));
+              }
+            }}
+          />
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
+          </Button>
+        </Space>
+      </Space>
     </div>
   );
 };

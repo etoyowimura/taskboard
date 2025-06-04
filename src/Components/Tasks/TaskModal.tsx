@@ -119,42 +119,44 @@ const TaskModal = ({
 
   const teamData = useTeamData({});
   // const teamData = useCustomerData({name: "", page: 1, page_size: 100});
-  const teams: MenuProps["items"] = teamData?.data?.map((item, index) => ({
-    key: item?.id,
-    label: (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            background: `rgb(${index * (255 / teamData?.data.length)}, ${
-              255 - index * (255 / teamData?.data.length)
-            }, 0)`,
-            padding: 5,
-            borderRadius: 5,
-            marginRight: 10,
-          }}
-        ></div>
+  const teams: MenuProps["items"] = teamData?.data?.map(
+    (item: any, index: number) => ({
+      key: item?.id,
+      label: (
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            width: "100%",
           }}
         >
-          <p>{item?.name}</p>
-          <p style={{ marginLeft: 30 }}>{item?.task_count_percentage}%</p>
+          <div
+            style={{
+              width: 10,
+              height: 10,
+              background: `rgb(${index * (255 / teamData?.data.length)}, ${
+                255 - index * (255 / teamData?.data.length)
+              }, 0)`,
+              padding: 5,
+              borderRadius: 5,
+              marginRight: 10,
+            }}
+          ></div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <p>{item?.name}</p>
+            <p style={{ marginLeft: 30 }}>{item?.task_count_percentage}%</p>
+          </div>
         </div>
-      </div>
-    ),
-    onClick: () => teampatch(item),
-  }));
+      ),
+      onClick: () => teampatch(item),
+    })
+  );
   const items: MenuProps["items"] = [
     {
       key: "1",

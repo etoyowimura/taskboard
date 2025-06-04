@@ -3,6 +3,7 @@ import {
   Drawer,
   Input,
   Select,
+  Space,
   Spin,
   Table,
   Tooltip,
@@ -13,13 +14,16 @@ import tagIcon from "../../assets/tagIcon.svg";
 import {
   CloseOutlined,
   EyeOutlined,
+  LeftOutlined,
   QuestionCircleOutlined,
+  RightOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { theme } from "antd";
 import api from "../../API/api";
 import { useAccountingHistory } from "../../Hooks/Accounting";
 import { useTeamData } from "../../Hooks/Teams";
+import { useRoleData } from "../../Hooks/Role";
 
 const { Title } = Typography;
 
@@ -50,6 +54,8 @@ interface SalaryData {
 }
 
 const AccountingHistory: React.FC = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [open, setOpen] = useState(false);
 
   const [userData, setUserData] = useState<SalaryData | null>(null);
@@ -58,16 +64,41 @@ const AccountingHistory: React.FC = () => {
 
   const [search, setSearch] = useState<string>("");
   const [team, setTeam] = useState<any>("");
+  const [role, setRole] = useState<any>("");
+  const [salaryType, setSalaryType] = useState<any>("");
 
   const themes = localStorage.getItem("theme") === "true" ? true : false;
   const { data, refetch, isLoading } = useAccountingHistory({
     search: search,
     team: team,
+    page: page,
+    page_size: pageSize,
+    role: role,
+    salary_type: salaryType,
   });
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const [loading, setLoading] = useState(false);
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
+
+  const Next = () => {
+    const a = Number(page) + 1;
+    setPage(a);
+  };
+  const Previos = () => {
+    Number(page);
+    if (page > 1) {
+      const a = Number(page) - 1;
+      setPage(a);
+    }
+  };
 
   const handleRowClick = async (record: any, e: any) => {
     setSelectedUser(record);
@@ -116,17 +147,24 @@ const AccountingHistory: React.FC = () => {
 
   const teamData = useTeamData({});
   const teamOptions: { label: string; value: any }[] | undefined =
-    teamData?.data?.map((item) => ({
+    teamData?.data?.map((item: any) => ({
       label: item?.name,
       value: item?.name,
     }));
-  const additionalOption = {
-    label: "all",
-    value: "",
-  };
-  if (teamOptions) {
-    teamOptions.unshift(additionalOption);
-  }
+
+  const roleData = useRoleData();
+
+  const roleOptions: { label: string; value: any }[] | undefined =
+    roleData?.data?.map((item: any) => ({
+      label: item?.name,
+      value: item?.id,
+    }));
+
+  const salaryTypeOptions = [
+    { label: "Hybrid", value: "hybrid" },
+    { label: "Task Based", value: "task_based" },
+    { label: "Fixed", value: "fixed" },
+  ];
 
   return (
     <div style={{ paddingBottom: 40 }}>
@@ -134,10 +172,11 @@ const AccountingHistory: React.FC = () => {
         style={{
           display: "flex",
           alignItems: "center",
+          gap: 12,
           marginBottom: 10,
         }}
       >
-        <div style={{ marginRight: 12 }}>
+        <div>
           <Input
             placeholder="Search"
             prefix={<SearchOutlined />}
@@ -149,12 +188,27 @@ const AccountingHistory: React.FC = () => {
           placeholder="Team"
           onChange={(value: any) => setTeam(value)}
           options={teamOptions}
+          allowClear
+        />
+        <Select
+          style={{ width: 260 }}
+          placeholder="Role"
+          onChange={(value: any) => setRole(value)}
+          options={roleOptions}
+          allowClear
+        />
+        <Select
+          style={{ width: 260 }}
+          placeholder="Salary Type"
+          onChange={(value: string) => setSalaryType(value)}
+          options={salaryTypeOptions}
+          allowClear
         />
       </span>
       <Table
         size="small"
         loading={isLoading}
-        dataSource={data?.map((u, i) => ({
+        dataSource={data?.data?.map((u: any, i: any) => ({
           no: i + 1,
           ...u,
         }))}
@@ -187,24 +241,6 @@ const AccountingHistory: React.FC = () => {
             title: "Role",
             dataIndex: "role",
             key: "role",
-            filters: [
-              {
-                text: "Tech Support",
-                value: "Tech Support",
-              },
-              {
-                text: "Checker",
-                value: "Checker",
-              },
-              {
-                text: "Accountant",
-                value: "Accountant",
-              },
-            ],
-            filterMultiple: false,
-            onFilter: (value: any, record: any) => {
-              return record.role === value;
-            },
           },
           {
             title: "Team",
@@ -261,25 +297,6 @@ const AccountingHistory: React.FC = () => {
                 return <p>{record.salary_type}</p>; // Agar boshqa qiymat bo'lsa, oddiy qilib chiqariladi
               }
             },
-            filters: [
-              {
-                text: "Hybrid",
-                value: "hybrid",
-              },
-              {
-                text: "Task Based",
-                value: "task_based",
-              },
-              {
-                text: "Fixed",
-                value: "fixed",
-              },
-            ],
-            filterMultiple: false,
-            // defaultFilteredValue: ["hybrid"],
-            onFilter: (value: any, record: any) => {
-              return record.salary_type === value;
-            },
           },
           {
             title: "Base Salary",
@@ -330,23 +347,7 @@ const AccountingHistory: React.FC = () => {
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         bordered
-        pagination={{
-          pageSize: 10,
-          size: "default",
-          style: {
-            margin: 0,
-            justifyContent: "end",
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            backgroundColor: token.colorBgContainer,
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-            padding: "10px 0",
-            zIndex: 1000,
-          },
-          showLessItems: true,
-        }}
+        pagination={false}
         // onRow={(record) => ({
         //   onClick: () => {
         //     if (record.user && record.user.id) {
@@ -544,6 +545,74 @@ const AccountingHistory: React.FC = () => {
           )}
         </div>
       </Drawer>
+
+      <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
+        <Space
+          style={{
+            justifyContent: "end",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: token.colorBgContainer,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+            padding: "10px 0",
+            zIndex: 1000,
+          }}
+          wrap
+        >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
+          <Button
+            onClick={Previos}
+            disabled={data?.previous ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <LeftOutlined />
+          </Button>
+          <Input
+            disabled
+            style={{
+              width: 40,
+              textAlign: "center",
+              background: token.colorBgContainer,
+              border: "1px solid",
+              borderColor: token.colorText,
+              color: token.colorText,
+            }}
+            value={page}
+            onChange={(e) => {
+              let num = e.target.value;
+              if (Number(num) && num !== "0") {
+                setPage(Number(num));
+              }
+            }}
+          />
+          <Button
+            onClick={Next}
+            disabled={data?.next ? false : true}
+            style={{
+              backgroundColor: token.colorBgContainer,
+              color: token.colorText,
+              border: "none",
+            }}
+          >
+            <RightOutlined />
+          </Button>
+        </Space>
+      </Space>
     </div>
   );
 };

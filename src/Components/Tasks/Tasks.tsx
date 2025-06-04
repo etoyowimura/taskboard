@@ -43,9 +43,17 @@ const Task = ({
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState<any>();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [uncomletedData, setUncomletedData] = useState<TTask[]>();
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   useEffect(() => {
     if (
@@ -57,7 +65,7 @@ const Task = ({
       // &&(!status || status.includes(socketData?.task?.status))
     ) {
       setCharacters((prev: any) => {
-        if (prev && prev?.length >= 15) {
+        if (prev && prev?.length >= 10) {
           prev?.pop();
         }
         if (socketData.type === "task_create" && socketData.task) {
@@ -128,7 +136,7 @@ const Task = ({
   const teamData = useTeamData({});
 
   const teamOptions: { label: string; value: any }[] | undefined =
-    teamData?.data?.map((item) => ({
+    teamData?.data?.map((item: any) => ({
       label: item?.name,
       value: item?.id,
     }));
@@ -137,7 +145,7 @@ const Task = ({
     status,
     team,
     page,
-    page_size: 10,
+    page_size: pageSize,
   });
   useEffect(() => {
     if (data) {
@@ -352,6 +360,15 @@ const Task = ({
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
           <Button
             onClick={Previos}
             disabled={data?.previous ? false : true}

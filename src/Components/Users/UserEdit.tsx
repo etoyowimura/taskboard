@@ -64,7 +64,7 @@ const UserEdit = () => {
   const TeamData = useTeamData({});
   const noTeamOption = { label: " - - - - - -", value: "" };
   const TeamOption: { label: string; value: any }[] | undefined =
-    TeamData?.data?.map((item) => ({
+    TeamData?.data?.map((item: any) => ({
       label: item?.name,
       value: item?.id,
     }));

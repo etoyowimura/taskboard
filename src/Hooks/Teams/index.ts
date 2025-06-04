@@ -1,10 +1,15 @@
 import { useQuery } from "react-query";
 import { TTeamGetParams, teamController } from "../../API/LayoutApi/teams";
 
-export const useTeamData = ({ name, company_id }: TTeamGetParams) => {
+export const useTeamData = ({
+  name,
+  company_id,
+  page,
+  page_size,
+}: TTeamGetParams) => {
   return useQuery(
-    [`teams`, name, company_id],
-    () => teamController.read({ name, company_id }),
+    [`teams`, name, company_id, page, page_size],
+    () => teamController.read({ name, company_id, page, page_size }),
     {
       refetchOnWindowFocus: false,
     }

@@ -61,22 +61,23 @@ const TeamTable = ({
           dataIndex: "created",
         },
       ]}
-      pagination={{
-        pageSize: 10,
-        size: "default",
-        style: {
-          margin: 0,
-          justifyContent: "end",
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          backgroundColor: token.colorBgContainer,
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-          padding: "10px 0",
-          zIndex: 1000,
-        },
-      }}
+      // pagination={{
+      //   pageSize: 10,
+      //   size: "default",
+      //   style: {
+      //     margin: 0,
+      //     justifyContent: "end",
+      //     position: "fixed",
+      //     bottom: 0,
+      //     left: 0,
+      //     width: "100%",
+      //     backgroundColor: token.colorBgContainer,
+      //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+      //     padding: "10px 0",
+      //     zIndex: 1000,
+      //   },
+      // }}
+      pagination={false}
       bordered
     />
   );

@@ -12,8 +12,13 @@ export type TServicePostParams = {
 };
 
 export const serviceController = {
-  async read() {
-    const { data } = await instance.get<TService[]>(`services/`);
+  async read(page?: number, page_size?: number) {
+    const params: Record<string, number> = {};
+    if (page !== undefined) params.page = page;
+    if (page_size !== undefined) params.page_size = page_size;
+    const { data } = await instance.get(`services/`, {
+      params: { page, page_size },
+    });
     return data;
   },
 

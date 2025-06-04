@@ -14,15 +14,21 @@ export type TStatGetParams = {
   start_date?: string;
   end_date?: string;
   for_salary?: boolean;
+  page?: number;
+  page_size?: number;
 };
 
 export type TStatTeamGetParams = {
   search?: string;
   start_date?: string;
   end_date?: string;
+  page?: number;
+  page_size?: number;
 };
 
 export type TStatCreatorsGetParams = {
+  page?: number;
+  page_size?: number;
   start_date?: string;
   end_date?: string;
   search?: string;
@@ -45,7 +51,7 @@ export const statController = {
     if (!!filterObject.start_date) params.start_date = filterObject.start_date;
     if (!!filterObject.end_date) params.end_date = filterObject.end_date;
 
-    const { data } = await instance.get<TStat[]>(`stats/all-users/`, {
+    const { data } = await instance.get(`stats/all-users/`, {
       params,
     });
     return data;
@@ -58,7 +64,7 @@ export const statController = {
     if (!!filterObject.start_date) params.start_date = filterObject.start_date;
     if (!!filterObject.end_date) params.end_date = filterObject.end_date;
 
-    const { data } = await instance.get<TStatTeam[]>(`stats/all-teams/`, {
+    const { data } = await instance.get(`stats/all-teams/`, {
       params,
     });
     return data;
@@ -70,15 +76,15 @@ export const statController = {
     if (!!filterObject.start_date) params.start_date = filterObject.start_date;
     if (!!filterObject.end_date) params.end_date = filterObject.end_date;
     if (!!filterObject.search) params.search = filterObject.search;
+    if (!!filterObject.page) params.page = filterObject.page;
+    if (!!filterObject.page_size) params.page_size = filterObject.page_size;
 
-    const { data } = await instance.get<TStatCreators[]>(
-      `stats/task-creators/`,
-      {
-        params,
-      }
-    );
+    const { data } = await instance.get(`stats/task-creators/`, {
+      params,
+    });
     return data;
   },
+
   async cards(filterObject: TStatCreatorsGetParams) {
     const params = { ...filterObject };
 
@@ -90,6 +96,7 @@ export const statController = {
     });
     return data;
   },
+
   async teamChart(filterObject: TteamChartGetParams) {
     const params = { ...filterObject };
 

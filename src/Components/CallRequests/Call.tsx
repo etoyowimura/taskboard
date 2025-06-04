@@ -6,6 +6,7 @@ import {
   Input,
   Radio,
   RadioChangeEvent,
+  Select,
   Space,
   Typography,
 } from "antd";
@@ -17,12 +18,21 @@ import { theme } from "antd";
 const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
   const [status, setStatus] = useState("Awaiting");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const [tableData, setTableData] = useState<TCall[]>();
   const { data, isLoading, refetch } = useCallData({
     status: status,
     page: page,
-    page_size: 10,
+    page_size: pageSize,
   });
+
+  const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value);
+    setPage(1);
+  };
 
   // const theme = localStorage.getItem("theme") === "true" ? true : false;
   const { token } = theme.useToken();
@@ -116,6 +126,16 @@ const Call = ({ socketData }: { socketData: TSocket | undefined }) => {
           }}
           wrap
         >
+          <Select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 65, marginRight: 16 }}
+            options={pageSizeOptions.map((size) => ({
+              label: `${size}`,
+              value: size,
+            }))}
+          />
+
           <Button
             onClick={Previos}
             disabled={data?.previous ? false : true}

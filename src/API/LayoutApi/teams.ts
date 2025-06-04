@@ -3,6 +3,8 @@ import instance from "../api";
 import { message } from "antd";
 
 export type TTeamGetParams = {
+  page?: number;
+  page_size?: number;
   name?: string;
   company_id?: string | number;
 };
@@ -23,8 +25,10 @@ export const teamController = {
 
     if (!!obj.company_id) params.company_id = obj.company_id;
     if (!!obj.name) params.name = obj.name;
+    if (!!obj.page) params.page = obj.page;
+    if (!!obj.page_size) params.page_size = obj.page_size;
 
-    const { data } = await instance.get<TTeam[]>(`teams/`, {
+    const { data } = await instance.get(`teams/`, {
       params,
     });
     return data;

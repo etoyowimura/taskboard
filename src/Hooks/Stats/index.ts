@@ -12,11 +12,30 @@ export const useStatsData = ({
   start_date,
   end_date,
   for_salary,
+  page,
+  page_size,
 }: TStatGetParams) => {
   return useQuery(
-    [`stats/all-users/`, search, team, start_date, end_date, for_salary],
+    [
+      `stats/all-users/`,
+      page,
+      page_size,
+      search,
+      team,
+      start_date,
+      end_date,
+      for_salary,
+    ],
     () =>
-      statController.read({ search, team, start_date, end_date, for_salary }),
+      statController.read({
+        search,
+        team,
+        start_date,
+        end_date,
+        for_salary,
+        page,
+        page_size,
+      }),
     { refetchOnWindowFocus: false }
   );
 };
@@ -24,22 +43,34 @@ export const useStatTeamData = ({
   search,
   start_date,
   end_date,
+  page,
+  page_size,
 }: TStatGetParams) => {
   return useQuery(
-    [`stats/all-teams/`, search, start_date, end_date],
-    () => statController.team({ search, start_date, end_date }),
+    [`stats/all-teams/`, search, start_date, end_date, page_size, page],
+    () =>
+      statController.team({ search, start_date, end_date, page, page_size }),
     { refetchOnWindowFocus: false }
   );
 };
 
 export const useCreatorsData = ({
+  page,
+  page_size,
   start_date,
   end_date,
   search,
 }: TStatCreatorsGetParams) => {
   return useQuery(
-    [`stats/task-creators/`, search, start_date, end_date],
-    () => statController.creators({ start_date, end_date, search }),
+    [`stats/task-creators/`, search, start_date, end_date, page, page_size],
+    () =>
+      statController.creators({
+        start_date,
+        end_date,
+        search,
+        page,
+        page_size,
+      }),
     { refetchOnWindowFocus: false }
   );
 };

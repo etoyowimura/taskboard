@@ -17,7 +17,7 @@ const StatisticsSupportTable = ({
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TStatCreators[], unknown>>;
-  data: TStatCreators[] | undefined;
+  data: any;
   isLoading: boolean;
 }) => {
   const { token } = theme.useToken();
@@ -26,7 +26,7 @@ const StatisticsSupportTable = ({
       <Table
         loading={isLoading}
         size="small"
-        dataSource={data?.map((u, i) => ({
+        dataSource={data?.data?.map((u: any, i: any) => ({
           no: i + 1,
           ...u,
         }))}
@@ -51,23 +51,24 @@ const StatisticsSupportTable = ({
             dataIndex: "number_of_tasks",
           },
         ]}
-        pagination={{
-          pageSize: 10,
-          size: "default",
-          style: {
-            margin: 0,
-            justifyContent: "end",
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            backgroundColor: token.colorBgContainer,
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-            padding: "10px 0",
-            zIndex: 1000,
-          },
-          showLessItems: true,
-        }}
+        // pagination={{
+        //   pageSize: 10,
+        //   size: "default",
+        //   style: {
+        //     margin: 0,
+        //     justifyContent: "end",
+        //     position: "fixed",
+        //     bottom: 0,
+        //     left: 0,
+        //     width: "100%",
+        //     backgroundColor: token.colorBgContainer,
+        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
+        //     padding: "10px 0",
+        //     zIndex: 1000,
+        //   },
+        //   showLessItems: true,
+        // }}
+        pagination={false}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
