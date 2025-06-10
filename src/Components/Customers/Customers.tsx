@@ -20,7 +20,7 @@ import { theme } from "antd";
 const Customer = () => {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const showModal = () => {
     setOpen(true);
   };
@@ -35,7 +35,7 @@ const Customer = () => {
     page: page,
   });
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);

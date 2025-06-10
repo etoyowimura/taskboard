@@ -81,14 +81,39 @@ const AddTask = ({
   // console.log(customerData.data);
 
   // team select
+  // useEffect(() => {
+  //   if (companyId) {
+  //     const selectedCompany = companyData?.find(
+  //       (item) => item.id === companyId
+  //     );
+  //     form.setFieldsValue({
+  //       assigned_to_id: selectedCompany?.team?.id,
+  //     });
+  //     customerController
+  //       .customerByCompany(
+  //         {
+  //           name: customerName,
+  //           page: 1,
+  //           page_size: 5,
+  //         },
+  //         companyId
+  //       )
+  //       .then((data) => {
+  //         setCustomerData(data.data);
+  //       });
+  //   }
+  // }, [companyId, customerName]);
+
   useEffect(() => {
-    if (companyId) {
-      const selectedCompany = companyData?.find(
-        (item) => item.id === companyId
-      );
-      form.setFieldsValue({
-        assigned_to_id: selectedCompany?.team?.id || undefined,
-      });
+    if (companyId && companyData?.length) {
+      const selectedCompany = companyData.find((item) => item.id === companyId);
+
+      if (selectedCompany?.team?.id) {
+        form.setFieldsValue({
+          assigned_to_id: selectedCompany.team.id,
+        });
+      }
+
       customerController
         .customerByCompany(
           {
@@ -100,9 +125,13 @@ const AddTask = ({
         )
         .then((data) => {
           setCustomerData(data.data);
+        })
+        .catch((error) => {
+          console.error("Customer fetch error:", error);
+          setCustomerData([]);
         });
     }
-  }, [companyId, customerName]);
+  }, [companyId, customerName, companyData]);
 
   // service select
   const serviceOptions = ServiceData?.data?.map((item: any) => ({
@@ -158,7 +187,9 @@ const AddTask = ({
             ];
             form.setFieldsValue(updatedValues);
           })
-          .catch((error) => {});
+          .catch((error) => {
+            console.log(error);
+          });
       }
     }
   }
@@ -331,7 +362,7 @@ const AddTask = ({
                 ]}
               >
                 <Select
-                  placeholder="Teams"
+                  placeholder="Team"
                   options={TeamData?.data?.map((item: any) => ({
                     label: item?.name,
                     value: item?.id,

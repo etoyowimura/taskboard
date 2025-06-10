@@ -35,9 +35,9 @@ const Update = () => {
   const { Option } = Select;
 
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);

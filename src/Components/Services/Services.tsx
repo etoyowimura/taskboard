@@ -11,9 +11,9 @@ import { theme } from "antd";
 
 const Service = () => {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);

@@ -43,12 +43,12 @@ const Task = ({
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState<any>();
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [uncomletedData, setUncomletedData] = useState<TTask[]>();
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);
@@ -65,7 +65,7 @@ const Task = ({
       // &&(!status || status.includes(socketData?.task?.status))
     ) {
       setCharacters((prev: any) => {
-        if (prev && prev?.length >= 10) {
+        if (prev && prev?.length >= pageSize) {
           prev?.pop();
         }
         if (socketData.type === "task_create" && socketData.task) {

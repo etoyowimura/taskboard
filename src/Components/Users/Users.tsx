@@ -17,7 +17,7 @@ import { Button, Input, Pagination, Space, Typography } from "antd";
 
 const User = () => {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showModal = () => {
@@ -43,7 +43,7 @@ const User = () => {
     page_size: pageSize,
   });
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);

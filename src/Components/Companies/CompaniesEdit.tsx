@@ -359,7 +359,7 @@ const CompanyEdit = () => {
                           bottom: 0,
                           left: 0,
                           width: "100%",
-                          // backgroundColor: token.colorBgContainer,
+                          backgroundColor: token.colorBgContainer,
                           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
                           padding: "10px 0",
                           zIndex: 1000,

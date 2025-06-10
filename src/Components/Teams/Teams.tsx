@@ -9,7 +9,7 @@ import { LeftOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons";
 
 const Team = () => {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
 
   const { data, isLoading, refetch } = useTeamData({
     page: page,
@@ -21,7 +21,7 @@ const Team = () => {
     setOpen(true);
   };
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);

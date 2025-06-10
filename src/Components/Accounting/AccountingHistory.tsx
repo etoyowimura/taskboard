@@ -55,7 +55,7 @@ interface SalaryData {
 
 const AccountingHistory: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [open, setOpen] = useState(false);
 
   const [userData, setUserData] = useState<SalaryData | null>(null);
@@ -81,7 +81,7 @@ const AccountingHistory: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const pageSizeOptions = [10, 20, 30, 40, 50];
+  const pageSizeOptions = [15, 20, 30, 40, 50];
 
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);
