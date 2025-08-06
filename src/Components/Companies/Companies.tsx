@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddCompany from "./AddCompanies";
 import CompanyTable from "./CompaniesTable";
 import {
@@ -23,7 +23,10 @@ const Company = () => {
 
   const [search, setSearch] = useState<string>();
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState<number>(() => {
+    const saved = localStorage.getItem("general_pageSize");
+    return saved ? Number(saved) : 15;
+  });
   const { data, isLoading, refetch } = useCompanyPaginated({
     name: search,
     is_active: undefined,
@@ -49,6 +52,10 @@ const Company = () => {
       setSearch(searchText);
     }, 1000);
   };
+
+  useEffect(() => {
+    localStorage.setItem("general_pageSize", String(pageSize));
+  }, [pageSize]);
 
   const Next = () => {
     const a = Number(page) + 1;

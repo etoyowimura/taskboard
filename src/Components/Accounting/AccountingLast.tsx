@@ -91,7 +91,10 @@ const AccountingCurrent: React.FC = () => {
   };
 
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState<number>(() => {
+    const saved = localStorage.getItem("general_pageSize");
+    return saved ? Number(saved) : 15;
+  });
 
   const pageSizeOptions = [15, 20, 30, 40, 50];
 
@@ -99,6 +102,10 @@ const AccountingCurrent: React.FC = () => {
     setPageSize(value);
     setPage(1);
   };
+
+  useEffect(() => {
+    localStorage.setItem("general_pageSize", String(pageSize));
+  }, [pageSize]);
 
   const Next = () => {
     const a = Number(page) + 1;

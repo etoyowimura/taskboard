@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddUpdate from "./AddUpdate";
 import { Button, Input, Select, Space, Typography, theme } from "antd";
 import {
@@ -35,7 +35,10 @@ const Update = () => {
   const { Option } = Select;
 
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState<number>(() => {
+    const saved = localStorage.getItem("general_pageSize");
+    return saved ? Number(saved) : 15;
+  });
 
   const pageSizeOptions = [15, 20, 30, 40, 50];
 
@@ -51,6 +54,10 @@ const Update = () => {
   };
 
   const { token } = theme.useToken();
+
+  useEffect(() => {
+    localStorage.setItem("general_pageSize", String(pageSize));
+  }, [pageSize]);
 
   const Next = () => {
     const a = Number(page) + 1;

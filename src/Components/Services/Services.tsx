@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServiceData } from "../../Hooks/Services";
 import AddService from "./AddService";
 import ServiceTable from "./ServiceTable";
@@ -11,7 +11,10 @@ import { theme } from "antd";
 
 const Service = () => {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState<number>(() => {
+    const saved = localStorage.getItem("general_pageSize");
+    return saved ? Number(saved) : 15;
+  });
 
   const pageSizeOptions = [15, 20, 30, 40, 50];
 
@@ -27,6 +30,10 @@ const Service = () => {
   const showModal = () => {
     setOpen(true);
   };
+
+  useEffect(() => {
+    localStorage.setItem("general_pageSize", String(pageSize));
+  }, [pageSize]);
 
   const Next = () => {
     const a = Number(page) + 1;
