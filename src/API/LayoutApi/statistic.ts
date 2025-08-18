@@ -114,15 +114,14 @@ export const statController = {
   async generalChart(filterObject: TGeneralChartGetParams) {
     const params = { ...filterObject };
 
-    if (!!filterObject.start_date) params.start_date = filterObject.start_date;
-    if (!!filterObject.end_date) params.end_date = filterObject.end_date;
+    if (filterObject.start_date) params.start_date = filterObject.start_date;
+    if (filterObject.end_date) params.end_date = filterObject.end_date;
 
-    const { data } = await instance.get<TGeneralChartData[]>(
-      `stats/general-stats/`,
-      {
-        params,
-      }
+    const { data } = await instance.get<TGeneralChartData>(
+      "stats/general-stats",
+      { params }
     );
+
     return data;
   },
 

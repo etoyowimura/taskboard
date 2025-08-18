@@ -39,9 +39,6 @@ export type TGeneralDailyStat = {
 export type TGeneralWrapper = {
   daily_stats: TGeneralDailyStat[];
 };
-export type TGeneralChartData = {
-  daily_stats: TGeneralWrapper[];
-};
 
 export type TCard = {
   all_tasks: number;
@@ -49,4 +46,27 @@ export type TCard = {
   active_tasks_percentage: number;
   inactive_tasks: number;
   inactive_tasks_percentage: number;
+};
+
+export type TGeneralChartGetParams = {
+  start_date: string;
+  end_date: string;
+};
+
+export type TDailyStat = {
+  task_date: string;
+  total_tasks: number;
+  completed_tasks: number;
+  incomplete_tasks: number;
+};
+
+export type TSummaryData = {
+  total: number;
+  total_completed: number;
+  total_incomplete: number;
+};
+
+export type TGeneralChartData = {
+  daily_stats: TDailyStat[];
+  summary: TSummaryData;
 };

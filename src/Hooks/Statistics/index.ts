@@ -5,6 +5,7 @@ import {
 } from "./../../API/LayoutApi/statistic";
 import { useQuery } from "react-query";
 import { TStatGetParams, statController } from "../../API/LayoutApi/statistic";
+import { TGeneralChartData } from "../../types/Statistic/TStat";
 
 export const useStatsData = ({
   search,
@@ -84,16 +85,16 @@ export const useTeamChartData = ({
     { refetchOnWindowFocus: false }
   );
 };
-export const useGeneralChartData = ({
-  start_date,
-  end_date,
-}: TGeneralChartGetParams) => {
-  return useQuery(
-    [`stats/general-stats/`, start_date, end_date],
-    () => statController.generalChart({ start_date, end_date }),
-    { refetchOnWindowFocus: false }
-  );
-};
+// export const useGeneralChartData = ({
+//   start_date,
+//   end_date,
+// }: TGeneralChartGetParams) => {
+//   return useQuery(
+//     [`stats/general-stats/`, start_date, end_date],
+//     () => statController.generalChart({ start_date, end_date }),
+//     { refetchOnWindowFocus: false }
+//   );
+// };
 
 export const useCardData = ({ start_date, end_date }: TStatGetParams) => {
   return useQuery(
@@ -108,5 +109,16 @@ export const useStatOne = (statId: number | string | undefined): any => {
     [`stat/${statId || "all"}`, statId],
     () => statController.statOne(statId),
     { refetchOnWindowFocus: false }
+  );
+};
+
+export const useGeneralStats = (filterObject: TGeneralChartGetParams) => {
+  return useQuery<TGeneralChartData, Error>(
+    ["stats/general-stats", filterObject],
+    () => statController.generalChart(filterObject),
+    {
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
   );
 };
