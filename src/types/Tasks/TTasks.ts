@@ -17,6 +17,7 @@ export type TTask = {
   in_charge: InCharge;
   forwarded_from: { id: number; name: string };
   attachment_set?: TAttachment[];
+  needs_extra_info: boolean;
 };
 
 export type TAttachment = {
@@ -40,6 +41,7 @@ export interface Company {
   id: number;
   name: string;
   source: string;
+  needs_extra_info?: boolean;
 }
 
 export interface Service {

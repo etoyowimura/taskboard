@@ -16,6 +16,7 @@ import {
   RadioChangeEvent,
   Select,
   theme,
+  Switch,
 } from "antd";
 import { companyController } from "../../API/LayoutApi/companies";
 import {
@@ -157,7 +158,7 @@ const CompanyEdit = () => {
                         onFinish={onSubmit}
                         autoComplete="off"
                       >
-                        <Row gutter={[16, 10]}>
+                        <Row gutter={[16, 16]}>
                           <Col span={6}>
                             <Form.Item
                               wrapperCol={{ span: "100%" }}
@@ -188,8 +189,6 @@ const CompanyEdit = () => {
                               />
                             </Form.Item>
                           </Col>
-                        </Row>
-                        <Row gutter={[16, 10]}>
                           <Col span={6}>
                             <Form.Item
                               wrapperCol={{ span: "100%" }}
@@ -197,6 +196,18 @@ const CompanyEdit = () => {
                               name="api_key"
                             >
                               <Input />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        <Row gutter={[16, 16]}>
+                          <Col span={6}>
+                            <Form.Item
+                              wrapperCol={{ span: "100%" }}
+                              label="Additional Task Data"
+                              name="needs_extra_info"
+                              valuePropName="checked"
+                            >
+                              <Switch />
                             </Form.Item>
                           </Col>
                           <Col span={12}>

@@ -29,17 +29,6 @@ export type TteamChartData = {
   [category: string]: TaskPerformance | string;
 };
 
-export type TGeneralDailyStat = {
-  task_date: string;
-  total_tasks: number;
-  completed_tasks: number;
-  incomplete_tasks: number;
-};
-
-export type TGeneralWrapper = {
-  daily_stats: TGeneralDailyStat[];
-};
-
 export type TCard = {
   all_tasks: number;
   active_tasks: number;

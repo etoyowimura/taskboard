@@ -21,6 +21,8 @@ import {
   ArrowRightOutlined,
   CaretRightOutlined,
   CloseOutlined,
+  CopyOutlined,
+  DatabaseOutlined,
   EditOutlined,
   ForwardOutlined,
   RotateRightOutlined,
@@ -62,6 +64,9 @@ import driverIcon from "../../assets/drivericon.png";
 // @ts-ignore
 import userIcon from "../../assets/userIcon.png";
 
+import ShiftAndCoDriverModal from "./ShiftAndCoDriverModal";
+import CopyCard from "./shiftInfoTab";
+
 const TaskModal = ({
   modalOpen,
   setModalOpen,
@@ -86,6 +91,8 @@ const TaskModal = ({
   const [status, setStatus] = useState(recordTask?.status);
   const [teamName, setTeamName] = useState(recordTask?.assigned_to?.name);
   const { data, isLoading } = useTaskHistory(recordTask?.id);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { token } = theme.useToken();
 
@@ -171,7 +178,27 @@ const TaskModal = ({
     {
       key: "3",
       label: <p>Done</p>,
-      onClick: () => statuspatch("Done"),
+      onClick: () => {
+        if (status === "Done") {
+          statuspatch("Done");
+          return;
+        }
+
+        if (
+          recordTask?.service.title === "Break" ||
+          recordTask?.service.title === "PTI"
+        ) {
+          statuspatch("Done");
+          return;
+        }
+
+        if (recordTask?.company?.needs_extra_info === false) {
+          statuspatch("Done");
+          return;
+        }
+
+        setIsModalOpen(true);
+      },
     },
   ];
   const getImageSource = (source: string) => {
@@ -185,9 +212,20 @@ const TaskModal = ({
     }
   };
 
-  const statuspatch = (status: string) => {
+  const statuspatch = async (status: string, extraData?: any) => {
     setStatus(status);
-    taskController.taskPatch({ status: status }, recordTask?.id);
+    try {
+      const response = await taskController.taskPatch(
+        { status: status, ...extraData },
+        recordTask?.id
+      );
+
+      if (response.status === 400) {
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const teampatch = (item: TTeam) => {
@@ -395,21 +433,9 @@ const TaskModal = ({
                   <p className={!themes ? "info" : "info-dark"}>
                     {pti === false ? "Do" : "No need"}
                   </p>
-                  {/* <button
-                    style={{
-                      marginLeft: 10,
-                      background: "#cecece",
-                      outline: "none",
-                      border: "1px solid rgba(246, 137, 0, 1)",
-                      padding: 4,
-                      borderRadius: 4,
-                    }}
-                    onClick={(e) => setPti(!pti)}
-                  >
-                    change
-                  </button> */}
+
                   <Button
-                    type="primary" // Maxsus bir stil bilan
+                    type="primary"
                     size="small"
                     onClick={(e) => setPti(!pti)}
                     style={{
@@ -418,7 +444,6 @@ const TaskModal = ({
                       color: "#f68900",
                       outline: "none",
                       border: "1px solid #f68900",
-                      // padding: 4,
                       borderRadius: 4,
                     }}
                   >
@@ -470,6 +495,26 @@ const TaskModal = ({
               </Button>
             </div>
           </TabPane>
+
+          <TabPane
+            tab={
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <span>
+                  <DatabaseOutlined />
+                </span>
+                Shift & Driver Data
+              </span>
+            }
+            key="2"
+          >
+            <CopyCard recordTask={recordTask} />
+          </TabPane>
+
           <TabPane
             tab={
               <span style={{ display: "flex", alignItems: "center" }}>
@@ -477,7 +522,7 @@ const TaskModal = ({
                 Attachments
               </span>
             }
-            key="2"
+            key="3"
           >
             <div className="info-div">
               <p
@@ -622,7 +667,7 @@ const TaskModal = ({
                 History
               </span>
             }
-            key="3"
+            key="4"
           >
             <div className="info-div">
               <p
@@ -736,6 +781,16 @@ const TaskModal = ({
           </TabPane>
         </Tabs>
       </div>
+
+      <ShiftAndCoDriverModal
+        recordTask={recordTask}
+        open={isModalOpen}
+        onOk={(values) => {
+          statuspatch("Done", values);
+          setIsModalOpen(false);
+        }}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </Modal>
   );
 };

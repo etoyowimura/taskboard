@@ -1,11 +1,13 @@
 import {
-  TGeneralChartGetParams,
   TStatCreatorsGetParams,
   TteamChartGetParams,
 } from "./../../API/LayoutApi/statistic";
 import { useQuery } from "react-query";
 import { TStatGetParams, statController } from "../../API/LayoutApi/statistic";
-import { TGeneralChartData } from "../../types/Statistic/TStat";
+import {
+  TGeneralChartData,
+  TGeneralChartGetParams,
+} from "../../types/Statistic/TStat";
 
 export const useStatsData = ({
   search,
@@ -85,16 +87,6 @@ export const useTeamChartData = ({
     { refetchOnWindowFocus: false }
   );
 };
-// export const useGeneralChartData = ({
-//   start_date,
-//   end_date,
-// }: TGeneralChartGetParams) => {
-//   return useQuery(
-//     [`stats/general-stats/`, start_date, end_date],
-//     () => statController.generalChart({ start_date, end_date }),
-//     { refetchOnWindowFocus: false }
-//   );
-// };
 
 export const useCardData = ({ start_date, end_date }: TStatGetParams) => {
   return useQuery(

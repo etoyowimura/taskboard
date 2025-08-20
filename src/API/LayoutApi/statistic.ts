@@ -1,9 +1,8 @@
 import {
   TCard,
   TGeneralChartData,
+  TGeneralChartGetParams,
   TStat,
-  TStatCreators,
-  TStatTeam,
   TteamChartData,
 } from "../../types/Statistic/TStat";
 import instance from "../api";
@@ -34,10 +33,6 @@ export type TStatCreatorsGetParams = {
   search?: string;
 };
 export type TteamChartGetParams = {
-  start_date?: string;
-  end_date?: string;
-};
-export type TGeneralChartGetParams = {
   start_date?: string;
   end_date?: string;
 };
