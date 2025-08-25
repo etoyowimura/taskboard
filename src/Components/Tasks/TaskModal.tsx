@@ -28,6 +28,9 @@ import {
   RotateRightOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+
+import ShiftAndCoDriverCreateModal from "./ShiftInfo/ShiftAndCoDriverCreateModal";
+
 import { TSocket } from "../../types/common/TSocket";
 // @ts-ignore
 import closeIcon from "../../assets/closeIcon.png";
@@ -64,8 +67,7 @@ import driverIcon from "../../assets/drivericon.png";
 // @ts-ignore
 import userIcon from "../../assets/userIcon.png";
 
-import ShiftAndCoDriverModal from "./ShiftAndCoDriverModal";
-import CopyCard from "./shiftInfoTab";
+import ShiftDataTab from "./ShiftInfo/ShiftDataTab";
 
 const TaskModal = ({
   modalOpen,
@@ -495,25 +497,26 @@ const TaskModal = ({
               </Button>
             </div>
           </TabPane>
-
-          <TabPane
-            tab={
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <span>
-                  <DatabaseOutlined />
+          {recordTask?.company?.needs_extra_info && (
+            <TabPane
+              tab={
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <span>
+                    <DatabaseOutlined />
+                  </span>
+                  Shift & Driver Data
                 </span>
-                Shift & Driver Data
-              </span>
-            }
-            key="2"
-          >
-            <CopyCard recordTask={recordTask} />
-          </TabPane>
+              }
+              key="2"
+            >
+              <ShiftDataTab recordTask={recordTask} />
+            </TabPane>
+          )}
 
           <TabPane
             tab={
@@ -782,7 +785,7 @@ const TaskModal = ({
         </Tabs>
       </div>
 
-      <ShiftAndCoDriverModal
+      <ShiftAndCoDriverCreateModal
         recordTask={recordTask}
         open={isModalOpen}
         onOk={(values) => {

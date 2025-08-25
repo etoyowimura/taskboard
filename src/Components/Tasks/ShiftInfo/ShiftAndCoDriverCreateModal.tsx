@@ -1,23 +1,19 @@
 import { Modal, Form, Input, DatePicker, Switch } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
-import { TTask } from "../../types/Tasks/TTasks";
+import { TTask } from "../../../types/Tasks/TTasks";
 
-interface ShiftAndCoDriverModalProps {
+interface ShiftAndCoDriverCreateModalProps {
   open: boolean;
   onOk: (values: any) => void;
   onCancel: () => void;
-  recordTask?: TTask;
+  recordTask?: TTask | any;
 }
 
-const ShiftAndCoDriverModal: React.FC<ShiftAndCoDriverModalProps> = ({
-  open,
-  onOk,
-  onCancel,
-  recordTask,
-}) => {
+const ShiftAndCoDriverCreateModal: React.FC<
+  ShiftAndCoDriverCreateModalProps
+> = ({ open, onOk, onCancel, recordTask }) => {
   const [form] = Form.useForm();
-  const [needsCycle, setNeedsCycle] = useState(false);
   const [needsDriver, setNeedsDriver] = useState(false);
   const [needsPickUp, setNeedsPickUp] = useState(false);
 
@@ -62,14 +58,36 @@ const ShiftAndCoDriverModal: React.FC<ShiftAndCoDriverModalProps> = ({
         >
           <DatePicker
             style={{ width: "100%" }}
-            format="DD MMM YYYY HH:mm:ss"
-            showTime={{ format: "HH:mm:ss" }}
+            format="MM-DD-YYYY hh:mm:ss A"
+            showTime={{ format: "hh:mm:ss A" }}
           />
         </Form.Item>
 
         <Form.Item
           label="Shift Location"
           name="shift_location"
+          rules={[{ required: true, message: "Please enter location" }]}
+        >
+          <Input placeholder="Enter location" />
+        </Form.Item>
+
+        {/* Cycle info */}
+
+        <Form.Item
+          label="Cycle Date"
+          name="cycle_date"
+          rules={[{ required: true, message: "Please select date" }]}
+        >
+          <DatePicker
+            style={{ width: "100%" }}
+            format="MM-DD-YYYY hh:mm:ss A"
+            showTime={{ format: "hh:mm:ss A" }}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Cycle Location"
+          name="cycle_location"
           rules={[{ required: true, message: "Please enter location" }]}
         >
           <Input placeholder="Enter location" />
@@ -98,51 +116,13 @@ const ShiftAndCoDriverModal: React.FC<ShiftAndCoDriverModalProps> = ({
             >
               <DatePicker
                 style={{ width: "100%" }}
-                format="DD MMM YYYY HH:mm:ss"
-                showTime={{ format: "HH:mm:ss" }}
+                format="MM-DD-YYYY hh:mm:ss A"
+                showTime={{ format: "hh:mm:ss A" }}
               />
             </Form.Item>
 
             <Form.Item
               label="Pick Up Location"
-              name="cycle_location"
-              rules={[{ required: true, message: "Please enter location" }]}
-            >
-              <Input placeholder="Enter location" />
-            </Form.Item>
-          </>
-        )}
-
-        {/* Cycle info */}
-
-        <Form.Item label="Cycle Info">
-          <Switch
-            checked={needsCycle}
-            onChange={(checked) => {
-              setNeedsCycle(checked);
-              if (!checked) {
-                form.resetFields(["cycle_date", "cycle_location"]);
-              }
-            }}
-          />
-        </Form.Item>
-
-        {needsCycle && (
-          <>
-            <Form.Item
-              label="Cycle Date"
-              name="cycle_date"
-              rules={[{ required: true, message: "Please select date" }]}
-            >
-              <DatePicker
-                style={{ width: "100%" }}
-                format="DD MMM YYYY HH:mm:ss"
-                showTime={{ format: "HH:mm:ss" }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Cycle Location"
               name="cycle_location"
               rules={[{ required: true, message: "Please enter location" }]}
             >
@@ -189,8 +169,8 @@ const ShiftAndCoDriverModal: React.FC<ShiftAndCoDriverModalProps> = ({
             >
               <DatePicker
                 style={{ width: "100%" }}
-                format="DD MMM YYYY HH:mm:ss"
-                showTime={{ format: "HH:mm:ss" }}
+                format="MM-DD-YYYY hh:mm:ss A"
+                showTime={{ format: "hh:mm:ss A" }}
               />
             </Form.Item>
 
@@ -211,8 +191,8 @@ const ShiftAndCoDriverModal: React.FC<ShiftAndCoDriverModalProps> = ({
             >
               <DatePicker
                 style={{ width: "100%" }}
-                format="DD MMM YYYY HH:mm:ss"
-                showTime={{ format: "HH:mm:ss" }}
+                format="MM-DD-YYYY hh:mm:ss A"
+                showTime={{ format: "hh:mm:ss A" }}
               />
             </Form.Item>
             <Form.Item
@@ -229,4 +209,4 @@ const ShiftAndCoDriverModal: React.FC<ShiftAndCoDriverModalProps> = ({
   );
 };
 
-export default ShiftAndCoDriverModal;
+export default ShiftAndCoDriverCreateModal;

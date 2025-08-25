@@ -1,4 +1,4 @@
-import { Button, Modal, Space, Table, Tooltip } from "antd";
+import { Button, message, Modal, Space, Table, Tooltip } from "antd";
 import "../../App.css";
 import { useEffect, useMemo, useState } from "react";
 import { taskController } from "../../API/LayoutApi/tasks";
@@ -24,6 +24,8 @@ import webIcon from "../../assets/web.png";
 import { isMobile, role } from "../../App";
 
 import { theme } from "antd";
+import dayjs from "dayjs";
+import ShiftAndCoDriverCreateModal from "./ShiftInfo/ShiftAndCoDriverCreateModal";
 
 const admin_id = localStorage.getItem("admin_id");
 const TaskTable = ({
@@ -42,7 +44,11 @@ const TaskTable = ({
   setErrorModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const moment = require("moment");
-  const statusClick = (record: any) => {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recordTask, setRecordTask] = useState<TTask | null>(null);
+
+  const statusClick = async (record: any) => {
     if (record.status === "New") {
       Modal.confirm({
         title: "Confirmation",
@@ -59,19 +65,54 @@ const TaskTable = ({
         },
       });
     }
+    // if (record.status === "Checking") {
+    //   Modal.confirm({
+    //     title: "Confirmation",
+    //     content: `Are you sure you want to finish this task?`,
+    //     onOk: () => {
+    //       const value = {
+    //         status: "Done",
+    //       };
+    //       taskController.taskPatch(value, record.id).then(() => {
+    //         setErrorModal(false);
+    //       });
+    //     },
+    //   });
+    // }
+
     if (record.status === "Checking") {
-      Modal.confirm({
-        title: "Confirmation",
-        content: `Are you sure you want to finish this task?`,
-        onOk: () => {
-          const value = {
-            status: "Done",
-          };
-          taskController.taskPatch(value, record.id).then(() => {
-            setErrorModal(false);
-          });
-        },
-      });
+      // 1) Break / PTI holati
+      if (
+        record?.service?.title === "Break" ||
+        record?.service?.title === "PTI"
+      ) {
+        const response = await taskController.taskPatch(
+          { status: "Done" },
+          record.id
+        );
+        if (response?.status === 400) {
+          setRecordTask(record);
+          setIsModalOpen(true); // ❌ error qaytsa modal ochiladi
+        }
+        return;
+      }
+
+      // 2) needs_extra_info false bo‘lsa
+      if (record?.company?.needs_extra_info === false) {
+        const response = await taskController.taskPatch(
+          { status: "Done" },
+          record.id
+        );
+        if (response?.status === 400) {
+          setRecordTask(record);
+          setIsModalOpen(true); // ❌ error qaytsa modal ochiladi
+        }
+        return;
+      }
+
+      // 3) boshqa hollarda -> bevosita modal
+      setRecordTask(record);
+      setIsModalOpen(true);
     }
   };
   const ptiPatch = (record: TTask) => {
@@ -137,6 +178,90 @@ const TaskTable = ({
       return "new-status-row";
     }
     return "";
+  };
+
+  const formatDateTime = (date?: string) =>
+    date ? dayjs(date).format("MM-DD-YYYY hh:mm:ss A") : null;
+
+  const handleCopy = (record: any, lang: "en" | "ru") => {
+    const shiftInfo = {
+      pickUpDate: formatDateTime(record?.pickup_date),
+      pickUpLocation: record?.pickup_location ?? null,
+      shiftDate: formatDateTime(record?.shift_date),
+      shiftLocation: record?.shift_location ?? null,
+      cycleDate: formatDateTime(record?.cycle_date),
+      cycleLocation: record?.cycle_location ?? null,
+    };
+
+    const coDriverInfo = {
+      driverName: record?.driver_name ?? null,
+      coDriverName: record?.co_driver_name ?? null,
+      coDriverPickUpLocation: record?.co_driver_pickup_location ?? null,
+      coDriverPickUpDate: formatDateTime(record?.co_driver_pickup_date),
+      coDriverDropLocation: record?.co_driver_drop_location ?? null,
+      coDriverDropDate: formatDateTime(record?.co_driver_drop_date),
+    };
+
+    const buildTextBlock = (
+      title: string,
+      items: [string, string | null][]
+    ) => {
+      const lines = items
+        .filter(([, value]) => value)
+        .map(([label, value]) => `${label}: ${value}`);
+      return lines.length ? `${title}\n${lines.join("\n")}` : "";
+    };
+
+    let text = "";
+
+    if (lang === "en") {
+      text = [
+        buildTextBlock("SHIFT INFO", [
+          ["Shift Date", shiftInfo.shiftDate],
+          ["Shift Location", shiftInfo.shiftLocation],
+          ["Pick up Date", shiftInfo.pickUpDate],
+          ["Pick Up Location", shiftInfo.pickUpLocation],
+          ["Cycle Date", shiftInfo.cycleDate],
+          ["Cycle Location", shiftInfo.cycleLocation],
+        ]),
+        buildTextBlock("CO DRIVER INFO", [
+          ["Driver's name", coDriverInfo.driverName],
+          ["Co-Driver's name", coDriverInfo.coDriverName],
+          ["Co-driver pickup date", coDriverInfo.coDriverPickUpDate],
+          ["Co-driver pickup location", coDriverInfo.coDriverPickUpLocation],
+          ["Co-driver drop date", coDriverInfo.coDriverDropDate],
+          ["Co-driver drop location", coDriverInfo.coDriverDropLocation],
+        ]),
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+    } else {
+      text = [
+        buildTextBlock("ИНФОРМАЦИЯ О СМЕНЕ", [
+          ["Дата пикапа", shiftInfo.pickUpDate],
+          ["Место пикапа", shiftInfo.pickUpLocation],
+          ["Дата шифта", shiftInfo.shiftDate],
+          ["Место шифта", shiftInfo.shiftLocation],
+          ["Дата сайкла", shiftInfo.cycleDate],
+          ["Место сайкла", shiftInfo.cycleLocation],
+        ]),
+        buildTextBlock("ИНФОРМАЦИЯ О СО-ВОДИТЕЛЕ", [
+          ["Имя драйвера", coDriverInfo.driverName],
+          ["Имя ко-драйвера", coDriverInfo.coDriverName],
+          ["Время пикапа ко-драйвера", coDriverInfo.coDriverPickUpDate],
+          ["Место пикапа ко-драйвера", coDriverInfo.coDriverPickUpLocation],
+          ["Время высадки ко-драйвера", coDriverInfo.coDriverDropDate],
+          ["Место высадки ко-драйвера", coDriverInfo.coDriverDropLocation],
+        ]),
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+    }
+
+    navigator.clipboard
+      .writeText(text)
+      .then(() => message.success("Data copied successfully!"))
+      .catch(() => message.error("Failed to copy!"));
   };
 
   const columns = useMemo(() => {
@@ -371,6 +496,38 @@ const TaskTable = ({
         ),
       },
       {
+        title: (
+          <Tooltip placement="topLeft" title={"Copy shift data"}>
+            Copy
+          </Tooltip>
+        ),
+        width: "8%",
+        render: (text: any, record: TTask) => (
+          <>
+            {record?.company?.needs_extra_info && record?.status === "Done" && (
+              <>
+                <Button onClick={() => handleCopy(record, "en")} type="text">
+                  <Tooltip
+                    placement="topLeft"
+                    title={"Copy shift data in English"}
+                  >
+                    🇬🇧
+                  </Tooltip>
+                </Button>
+                <Button onClick={() => handleCopy(record, "ru")} type="text">
+                  <Tooltip
+                    placement="topLeft"
+                    title={"Copy shift data in Russian"}
+                  >
+                    🇷🇺
+                  </Tooltip>
+                </Button>
+              </>
+            )}
+          </>
+        ),
+      },
+      {
         title: "Actions",
         dataIndex: "action",
         width: "10%",
@@ -379,47 +536,49 @@ const TaskTable = ({
         render: (text: string, record: TTask) => {
           return (
             <div style={{ zIndex: 1000 }}>
-              {role === "Checker" ? (
-                <Space>
-                  {record.status === "New" && (
-                    <Button
-                      type="primary"
-                      style={{ background: "#595959" }}
-                      onClick={() => statusClick(record)}
-                    >
-                      Assign
-                    </Button>
-                  )}
-                  {record.status === "Checking" &&
-                    !!admin_id &&
-                    record?.in_charge?.id === +admin_id && (
+              <Space>
+                {role === "Checker" ? (
+                  <>
+                    {record.status === "New" && (
                       <Button
                         type="primary"
                         style={{ background: "#595959" }}
                         onClick={() => statusClick(record)}
                       >
-                        Finish
+                        Assign
                       </Button>
                     )}
-                </Space>
-              ) : (
-                <Space>
-                  <Button
-                    type="primary"
-                    danger
-                    onClick={(e) => {
-                      const shouldDelete = window.confirm(
-                        "Are you sure, you want to delete this task?"
-                      );
-                      if (shouldDelete && record.id !== undefined) {
-                        taskController.deleteTaskController(record.id);
-                      }
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Space>
-              )}
+                    {record.status === "Checking" &&
+                      !!admin_id &&
+                      record?.in_charge?.id === +admin_id && (
+                        <Button
+                          type="primary"
+                          style={{ background: "#595959" }}
+                          onClick={() => statusClick(record)}
+                        >
+                          Finish
+                        </Button>
+                      )}
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={() => {
+                        const shouldDelete = window.confirm(
+                          "Are you sure, you want to delete this task?"
+                        );
+                        if (shouldDelete && record.id !== undefined) {
+                          taskController.deleteTaskController(record.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
+              </Space>
             </div>
           );
         },
@@ -462,23 +621,27 @@ const TaskTable = ({
         rowClassName={rowClassName}
         scroll={{ x: "800px" }}
         bordered
-        // pagination={{
-        //   pageSize: 10,
-        //   size: "default",
-        //   style: {
-        //     margin: 0,
-        //     justifyContent: "end",
-        //     position: "fixed",
-        //     bottom: 0,
-        //     left: 0,
-        //     width: "100%",
-        //     backgroundColor: token.colorBgContainer,
-        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-        //     padding: "10px 0",
-        //     zIndex: 1000,
-        //   },
-        // }}
         pagination={false}
+      />
+
+      <ShiftAndCoDriverCreateModal
+        recordTask={recordTask}
+        open={isModalOpen}
+        onOk={(values) => {
+          if (recordTask?.id) {
+            const payload = { status: "Done", ...values };
+            taskController
+              .taskPatch(payload, recordTask.id)
+              .then((response: any) => {
+                if (response?.status == 403) {
+                  showErrorModal(response);
+                } else {
+                  setIsModalOpen(false);
+                }
+              });
+          }
+        }}
+        onCancel={() => setIsModalOpen(false)}
       />
     </div>
   );
