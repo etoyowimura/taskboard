@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, DatePicker } from "antd";
-import dayjs from "dayjs";
+import { Modal, Form, Input, Row, Col } from "antd";
+
 import { taskController } from "../../../API/LayoutApi/tasks";
 
 interface ShiftAndCoDriverEditModalProps {
@@ -19,26 +19,23 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
   useEffect(() => {
     if (recordTask) {
       form.setFieldsValue({
-        shift_date: recordTask.shift_date ? dayjs(recordTask.shift_date) : null,
+        shift_date: recordTask.shift_date,
         shift_location: recordTask.shift_location,
 
-        cycle_date: recordTask.cycle_date ? dayjs(recordTask.cycle_date) : null,
+        cycle_date: recordTask.cycle_date,
         cycle_location: recordTask.cycle_location,
 
-        pickup_date: recordTask.pickup_date
-          ? dayjs(recordTask.pickup_date)
-          : null,
+        pickup_date: recordTask.pickup_date,
+        pickup_time: recordTask.pickup_time,
         pickup_location: recordTask.pickup_location,
 
         driver_name: recordTask.driver_name,
         co_driver_name: recordTask.co_driver_name,
+        co_driver_pickup_date: recordTask.co_driver_pickup_date,
+        co_driver_pickup_time: recordTask.co_driver_pickup_time,
         co_driver_pickup_location: recordTask.co_driver_pickup_location,
-        co_driver_pickup_date: recordTask.co_driver_pickup_date
-          ? dayjs(recordTask.co_driver_pickup_date)
-          : null,
-        co_driver_drop_date: recordTask.co_driver_drop_date
-          ? dayjs(recordTask.co_driver_drop_date)
-          : null,
+        co_driver_drop_date: recordTask.co_driver_drop_date,
+        co_driver_drop_time: recordTask.co_driver_drop_time,
         co_driver_drop_location: recordTask.co_driver_drop_location,
       });
     }
@@ -47,22 +44,7 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      // Date fieldlarni string formatga o'tkazib yuboramiz
-      const formattedValues = {
-        ...values,
-        shift_date: values.shift_date ? values.shift_date.toISOString() : null,
-        pickup_date: values.pickup_date
-          ? values.pickup_date.toISOString()
-          : null,
-        cycle_date: values.cycle_date ? values.cycle_date.toISOString() : null,
-        co_driver_pickup_date: values.co_driver_pickup_date
-          ? values.co_driver_pickup_date.toISOString()
-          : null,
-        co_driver_drop_date: values.co_driver_drop_date
-          ? values.co_driver_drop_date.toISOString()
-          : null,
-      };
-      taskController.taskPatch(formattedValues, recordTask.id);
+      taskController.taskPatch(values, recordTask.id);
       onCancel();
       form.resetFields();
     } catch (error) {
@@ -83,11 +65,7 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
       <Form form={form} layout="vertical">
         {/* shift */}
         <Form.Item label="Shift Date" name="shift_date">
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
+          <Input placeholder="Date and Time" />
         </Form.Item>
 
         <Form.Item label="Shift Location" name="shift_location">
@@ -97,11 +75,7 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
         {/* cycle */}
 
         <Form.Item label="Cycle Date" name="cycle_date">
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
+          <Input placeholder="Date and Time" />
         </Form.Item>
 
         <Form.Item label="Cycle Location" name="cycle_location">
@@ -110,15 +84,20 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
 
         {/* pick up */}
 
-        <Form.Item label="Pick Up Date" name="pickup_date">
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
-        </Form.Item>
+        <Row gutter={8}>
+          <Col span={12}>
+            <Form.Item label="Pick Up Date" name="pickup_date">
+              <Input placeholder="Date" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Pick Up Time" name="pickup_time">
+              <Input placeholder="Time" />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item label="Pick Up Location" name="cycle_location">
+        <Form.Item label="Pick Up Location" name="pickup_location">
           <Input placeholder="Enter location" />
         </Form.Item>
 
@@ -132,13 +111,24 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
           <Input placeholder="Co-driver name" />
         </Form.Item>
 
-        <Form.Item label="Co-Driver Pick Up Date" name="co_driver_pickup_date">
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
-        </Form.Item>
+        <Row gutter={8}>
+          <Col span={12}>
+            <Form.Item
+              label="Co-Driver Pick Up Date"
+              name="co_driver_pickup_date"
+            >
+              <Input placeholder="Date" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Co-Driver Pick Up Time"
+              name="co_driver_pickup_time"
+            >
+              <Input placeholder="Time" />
+            </Form.Item>
+          </Col>
+        </Row>
 
         <Form.Item
           label="Co-Driver Pick Up Location"
@@ -147,13 +137,19 @@ const ShiftAndCoDriverEditModal: React.FC<ShiftAndCoDriverEditModalProps> = ({
           <Input placeholder="Enter pickup location" />
         </Form.Item>
 
-        <Form.Item label="Co-Driver Drop Date" name="co_driver_drop_date">
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
-        </Form.Item>
+        <Row gutter={8}>
+          <Col span={12}>
+            <Form.Item label="Co-Driver Drop Date" name="co_driver_drop_date">
+              <Input placeholder="Date" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Co-Driver Drop Date" name="co_driver_drop_time">
+              <Input placeholder="Time" />
+            </Form.Item>
+          </Col>
+        </Row>
+
         <Form.Item
           label="Co-Driver Drop Location"
           name="co_driver_drop_location"

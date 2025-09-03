@@ -19,52 +19,40 @@ import { useTeamData } from "../../Hooks/Teams";
 import { TTeam } from "../../types/Team/TTeam";
 import {
   ArrowRightOutlined,
-  CaretRightOutlined,
   CloseOutlined,
-  CopyOutlined,
   DatabaseOutlined,
   EditOutlined,
-  ForwardOutlined,
-  RotateRightOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 
 import ShiftAndCoDriverCreateModal from "./ShiftInfo/ShiftAndCoDriverCreateModal";
 
 import { TSocket } from "../../types/common/TSocket";
-// @ts-ignore
-import closeIcon from "../../assets/closeIcon.png";
-// @ts-ignore
-import editIcon from "../../assets/editIcon.png";
-// @ts-ignore
+
 import historyIcon from "../../assets/hisoryIcon.png";
-// @ts-ignore
+
 import attachmentIcon from "../../assets/attachmentIcon.png";
-// @ts-ignore
+
 import infoIcon from "../../assets/infoIcon.png";
-// @ts-ignore
-import uploadIcon from "../../assets/uploadIcon.png";
-// @ts-ignore
+
 import pdficon from "../../assets/pdficon.png";
-// @ts-ignore
+
 import letssee from "../../assets/letssee.png";
-// @ts-ignore
+
 import svgicon from "../../assets/svgicon.png";
-// @ts-ignore
+
 import pngicon from "../../assets/pngicon.png";
-// @ts-ignore
+
 import jpgicon from "../../assets/jpgicon.png";
-// @ts-ignore
+
 import jpegicon from "../../assets/jpegicon.png";
-// @ts-ignore
+
 import xlsicon from "../../assets/xlsicon.png";
-// @ts-ignore
+
 import docicon from "../../assets/docicon.png";
-// @ts-ignore
-import forwardIcon from "../../assets/forward.png";
-// @ts-ignore
+
 import driverIcon from "../../assets/drivericon.png";
-// @ts-ignore
+
 import userIcon from "../../assets/userIcon.png";
 
 import ShiftDataTab from "./ShiftInfo/ShiftDataTab";

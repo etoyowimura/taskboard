@@ -638,6 +638,7 @@ const AccountingCurrent: React.FC = () => {
               placeholder="Team"
               onChange={(value: any) => setTeam(value)}
               options={teamOptions}
+              allowClear
             />
             <Select
               style={{ width: 260 }}

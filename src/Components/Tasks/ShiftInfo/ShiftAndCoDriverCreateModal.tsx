@@ -1,6 +1,6 @@
-import { Modal, Form, Input, DatePicker, Switch } from "antd";
+import { Modal, Form, Input, Switch, Row, Col } from "antd";
 import { useState } from "react";
-import dayjs from "dayjs";
+
 import { TTask } from "../../../types/Tasks/TTasks";
 
 interface ShiftAndCoDriverCreateModalProps {
@@ -21,14 +21,7 @@ const ShiftAndCoDriverCreateModal: React.FC<
     try {
       const values = await form.validateFields();
 
-      const formattedValues = Object.fromEntries(
-        Object.entries(values).map(([key, value]) => [
-          key,
-          dayjs.isDayjs(value) ? value.format("YYYY-MM-DD HH:mm:ss") : value,
-        ])
-      );
-
-      onOk(formattedValues);
+      onOk(values);
       form.resetFields();
     } catch (err) {
       console.log("Validation error:", err);
@@ -56,11 +49,7 @@ const ShiftAndCoDriverCreateModal: React.FC<
           name="shift_date"
           rules={[{ required: true, message: "Please select date" }]}
         >
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
+          <Input placeholder="Date and Time" />
         </Form.Item>
 
         <Form.Item
@@ -78,11 +67,7 @@ const ShiftAndCoDriverCreateModal: React.FC<
           name="cycle_date"
           rules={[{ required: true, message: "Please select date" }]}
         >
-          <DatePicker
-            style={{ width: "100%" }}
-            format="MM-DD-YYYY hh:mm:ss A"
-            showTime={{ format: "hh:mm:ss A" }}
-          />
+          <Input placeholder="Date and Time" />
         </Form.Item>
 
         <Form.Item
@@ -101,7 +86,11 @@ const ShiftAndCoDriverCreateModal: React.FC<
             onChange={(checked) => {
               setNeedsPickUp(checked);
               if (!checked) {
-                form.resetFields(["pickup_date", "cycle_location"]);
+                form.resetFields([
+                  "pickup_date",
+                  "pickup_location",
+                  "pickup_time",
+                ]);
               }
             }}
           />
@@ -109,21 +98,30 @@ const ShiftAndCoDriverCreateModal: React.FC<
 
         {needsPickUp && (
           <>
-            <Form.Item
-              label="Pick Up Date"
-              name="pickup_date"
-              rules={[{ required: true, message: "Please select date" }]}
-            >
-              <DatePicker
-                style={{ width: "100%" }}
-                format="MM-DD-YYYY hh:mm:ss A"
-                showTime={{ format: "hh:mm:ss A" }}
-              />
-            </Form.Item>
+            <Row gutter={8}>
+              <Col span={12}>
+                <Form.Item
+                  label="Pick Up Date"
+                  name="pickup_date"
+                  rules={[{ required: true, message: "Please select date" }]}
+                >
+                  <Input placeholder="Date" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Pick Up Time"
+                  name="pickup_time"
+                  rules={[{ required: true, message: "Please select time" }]}
+                >
+                  <Input placeholder="Time" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item
               label="Pick Up Location"
-              name="cycle_location"
+              name="pickup_location"
               rules={[{ required: true, message: "Please enter location" }]}
             >
               <Input placeholder="Enter location" />
@@ -133,7 +131,7 @@ const ShiftAndCoDriverCreateModal: React.FC<
 
         {/* DRIVER INFO */}
 
-        <Form.Item label="CO-Driver Info">
+        <Form.Item label="Co-Driver Info">
           <Switch
             checked={needsDriver}
             onChange={(checked) => {
@@ -143,8 +141,10 @@ const ShiftAndCoDriverCreateModal: React.FC<
                   "driver_name",
                   "co_driver_name",
                   "co_driver_pickup_date",
+                  "co_driver_pickup_time",
                   "co_driver_pickup_location",
                   "co_driver_drop_date",
+                  "co_driver_drop_time",
                   "co_driver_drop_location",
                 ]);
               }
@@ -154,25 +154,44 @@ const ShiftAndCoDriverCreateModal: React.FC<
 
         {needsDriver && (
           <>
-            <Form.Item label="Driver Name" name="driver_name">
+            <Form.Item
+              label="Driver Name"
+              name="driver_name"
+              rules={[{ required: true, message: "Please enter driver name" }]}
+            >
               <Input placeholder="Driver name" />
             </Form.Item>
 
-            <Form.Item label="Co-Driver Name" name="co_driver_name">
+            <Form.Item
+              label="Co-Driver Name"
+              name="co_driver_name"
+              rules={[
+                { required: true, message: "Please enter co driver name" },
+              ]}
+            >
               <Input placeholder="Co-driver name" />
             </Form.Item>
 
-            <Form.Item
-              label="Co-Driver Pick Up Date"
-              name="co_driver_pickup_date"
-              rules={[{ required: true, message: "Please select pickup date" }]}
-            >
-              <DatePicker
-                style={{ width: "100%" }}
-                format="MM-DD-YYYY hh:mm:ss A"
-                showTime={{ format: "hh:mm:ss A" }}
-              />
-            </Form.Item>
+            <Row gutter={8}>
+              <Col span={12}>
+                <Form.Item
+                  label="Co-Driver Pick Up Date"
+                  name="co_driver_pickup_date"
+                  rules={[{ required: true, message: "Please select date" }]}
+                >
+                  <Input placeholder="Date" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Co-Driver Pick Up Time"
+                  name="co_driver_pickup_time"
+                  rules={[{ required: true, message: "Please select time" }]}
+                >
+                  <Input placeholder="Time" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item
               label="Co-Driver Pick Up Location"
@@ -184,17 +203,27 @@ const ShiftAndCoDriverCreateModal: React.FC<
               <Input placeholder="Enter pickup location" />
             </Form.Item>
 
-            <Form.Item
-              label="Co-Driver Drop Date"
-              name="co_driver_drop_date"
-              rules={[{ required: true, message: "Please select date" }]}
-            >
-              <DatePicker
-                style={{ width: "100%" }}
-                format="MM-DD-YYYY hh:mm:ss A"
-                showTime={{ format: "hh:mm:ss A" }}
-              />
-            </Form.Item>
+            <Row gutter={8}>
+              <Col span={12}>
+                <Form.Item
+                  label="Co-Driver Drop Date"
+                  name="co_driver_drop_date"
+                  rules={[{ required: true, message: "Please select date" }]}
+                >
+                  <Input placeholder="Date" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Co-Driver Drop Time"
+                  name="co_driver_drop_time"
+                  rules={[{ required: true, message: "Please select time" }]}
+                >
+                  <Input placeholder="Time" />
+                </Form.Item>
+              </Col>
+            </Row>
+
             <Form.Item
               label="Co-Driver Drop Location"
               name="co_driver_drop_location"

@@ -1,6 +1,5 @@
 import { Button, Card, message } from "antd";
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
 import { useState } from "react";
 import ShiftAndCoDriverEditModal from "./ShiftAndCoDriverEditModal";
 
@@ -11,17 +10,12 @@ interface ShiftDataTabProps {
 const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const formatDateTime = (date?: string) =>
-    date ? dayjs(date).format("MM-DD-YYYY hh:mm:ss A") : null;
-
-  const displayValue = (val?: string | null) => val ?? "—";
-
   const shiftInfo = {
-    pickUpDate: formatDateTime(recordTask?.pickup_date),
+    pickUpDate: recordTask?.pickup_date,
     pickUpLocation: recordTask?.pickup_location ?? null,
-    shiftDate: formatDateTime(recordTask?.shift_date),
+    shiftDate: recordTask?.shift_date,
     shiftLocation: recordTask?.shift_location ?? null,
-    cycleDate: formatDateTime(recordTask?.cycle_date),
+    cycleDate: recordTask?.cycle_date,
     cycleLocation: recordTask?.cycle_location ?? null,
   };
 
@@ -29,9 +23,9 @@ const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
     driverName: recordTask?.driver_name ?? null,
     coDriverName: recordTask?.co_driver_name ?? null,
     coDriverPickUpLocation: recordTask?.co_driver_pickup_location ?? null,
-    coDriverPickUpDate: formatDateTime(recordTask?.co_driver_pickup_date),
+    coDriverPickUpDate: recordTask?.co_driver_pickup_date,
     coDriverDropLocation: recordTask?.co_driver_drop_location ?? null,
-    coDriverDropDate: formatDateTime(recordTask?.co_driver_drop_date),
+    coDriverDropDate: recordTask?.co_driver_drop_date,
   };
 
   const buildTextBlock = (title: string, items: [string, string | null][]) => {
@@ -75,7 +69,7 @@ const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
           ["Дата сайкла", shiftInfo.cycleDate],
           ["Место сайкла", shiftInfo.cycleLocation],
         ]),
-        buildTextBlock("ИНФОРМАЦИЯ О СО-ВОДИТЕЛЕ", [
+        buildTextBlock("ИНФОРМАЦИЯ О КО-ДРАЙВЕРЕ", [
           ["Имя драйвера", coDriverInfo.driverName],
           ["Имя ко-драйвера", coDriverInfo.coDriverName],
           ["Время пикапа ко-драйвера", coDriverInfo.coDriverPickUpDate],
@@ -154,7 +148,7 @@ const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
         <p>Дата пикапа: {shiftInfo.pickUpDate}</p>
         <p>Место пикапа: {shiftInfo.pickUpLocation}</p>
 
-        <h4>ИНФОРМАЦИЯ О СО-ВОДИТЕЛЕ</h4>
+        <h4>ИНФОРМАЦИЯ О КО-ДРАЙВЕРЕ</h4>
         <p>Имя драйвера: {coDriverInfo.driverName}</p>
         <p>Имя ко-драйвера: {coDriverInfo.coDriverName}</p>
         <p>Место пикапа ко-драйвера: {coDriverInfo.coDriverPickUpLocation}</p>

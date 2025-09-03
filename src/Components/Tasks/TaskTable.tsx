@@ -1,4 +1,5 @@
 import { Button, message, Modal, Space, Table, Tooltip } from "antd";
+import ReactCountryFlag from "react-country-flag";
 import "../../App.css";
 import { useEffect, useMemo, useState } from "react";
 import { taskController } from "../../API/LayoutApi/tasks";
@@ -18,13 +19,13 @@ import tt from "../../assets/tticon.svg";
 import tagIcon from "../../assets/tagIcon.svg";
 // @ts-ignore
 import tgIcon from "../../assets/telegram.png";
-//
+
 import webIcon from "../../assets/web.png";
-//
+
 import { isMobile, role } from "../../App";
 
 import { theme } from "antd";
-import dayjs from "dayjs";
+
 import ShiftAndCoDriverCreateModal from "./ShiftInfo/ShiftAndCoDriverCreateModal";
 
 const admin_id = localStorage.getItem("admin_id");
@@ -58,7 +59,7 @@ const TaskTable = ({
             status: "Checking",
           };
           taskController.taskPatch(value, record?.id).then((response: any) => {
-            if (response?.status == 403) {
+            if (response?.status === 403) {
               showErrorModal(response);
             }
           });
@@ -81,7 +82,7 @@ const TaskTable = ({
     // }
 
     if (record.status === "Checking") {
-      // 1) Break / PTI holati
+      // 1) Break / PTI
       if (
         record?.service?.title === "Break" ||
         record?.service?.title === "PTI"
@@ -92,12 +93,12 @@ const TaskTable = ({
         );
         if (response?.status === 400) {
           setRecordTask(record);
-          setIsModalOpen(true); // ❌ error qaytsa modal ochiladi
+          setIsModalOpen(true);
         }
         return;
       }
 
-      // 2) needs_extra_info false bo‘lsa
+      // 2) needs_extra_info false
       if (record?.company?.needs_extra_info === false) {
         const response = await taskController.taskPatch(
           { status: "Done" },
@@ -105,12 +106,11 @@ const TaskTable = ({
         );
         if (response?.status === 400) {
           setRecordTask(record);
-          setIsModalOpen(true); // ❌ error qaytsa modal ochiladi
+          setIsModalOpen(true);
         }
         return;
       }
 
-      // 3) boshqa hollarda -> bevosita modal
       setRecordTask(record);
       setIsModalOpen(true);
     }
@@ -180,16 +180,13 @@ const TaskTable = ({
     return "";
   };
 
-  const formatDateTime = (date?: string) =>
-    date ? dayjs(date).format("MM-DD-YYYY hh:mm:ss A") : null;
-
   const handleCopy = (record: any, lang: "en" | "ru") => {
     const shiftInfo = {
-      pickUpDate: formatDateTime(record?.pickup_date),
+      pickUpDate: record?.pickup_date,
       pickUpLocation: record?.pickup_location ?? null,
-      shiftDate: formatDateTime(record?.shift_date),
+      shiftDate: record?.shift_date,
       shiftLocation: record?.shift_location ?? null,
-      cycleDate: formatDateTime(record?.cycle_date),
+      cycleDate: record?.cycle_date,
       cycleLocation: record?.cycle_location ?? null,
     };
 
@@ -197,9 +194,9 @@ const TaskTable = ({
       driverName: record?.driver_name ?? null,
       coDriverName: record?.co_driver_name ?? null,
       coDriverPickUpLocation: record?.co_driver_pickup_location ?? null,
-      coDriverPickUpDate: formatDateTime(record?.co_driver_pickup_date),
+      coDriverPickUpDate: record?.co_driver_pickup_date,
       coDriverDropLocation: record?.co_driver_drop_location ?? null,
-      coDriverDropDate: formatDateTime(record?.co_driver_drop_date),
+      coDriverDropDate: record?.co_driver_drop_date,
     };
 
     const buildTextBlock = (
@@ -245,7 +242,7 @@ const TaskTable = ({
           ["Дата сайкла", shiftInfo.cycleDate],
           ["Место сайкла", shiftInfo.cycleLocation],
         ]),
-        buildTextBlock("ИНФОРМАЦИЯ О СО-ВОДИТЕЛЕ", [
+        buildTextBlock("ИНФОРМАЦИЯ О КО-ДРАЙВЕРЕ", [
           ["Имя драйвера", coDriverInfo.driverName],
           ["Имя ко-драйвера", coDriverInfo.coDriverName],
           ["Время пикапа ко-драйвера", coDriverInfo.coDriverPickUpDate],
@@ -511,7 +508,14 @@ const TaskTable = ({
                     placement="topLeft"
                     title={"Copy shift data in English"}
                   >
-                    🇬🇧
+                    <ReactCountryFlag
+                      countryCode="GB"
+                      svg
+                      style={{
+                        width: "1.2em",
+                        height: "1.2em",
+                      }}
+                    />
                   </Tooltip>
                 </Button>
                 <Button onClick={() => handleCopy(record, "ru")} type="text">
@@ -519,7 +523,14 @@ const TaskTable = ({
                     placement="topLeft"
                     title={"Copy shift data in Russian"}
                   >
-                    🇷🇺
+                    <ReactCountryFlag
+                      countryCode="RU"
+                      svg
+                      style={{
+                        width: "1.2em",
+                        height: "1.2em",
+                      }}
+                    />
                   </Tooltip>
                 </Button>
               </>
@@ -633,7 +644,7 @@ const TaskTable = ({
             taskController
               .taskPatch(payload, recordTask.id)
               .then((response: any) => {
-                if (response?.status == 403) {
+                if (response?.status === 403) {
                   showErrorModal(response);
                 } else {
                   setIsModalOpen(false);
