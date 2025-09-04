@@ -182,21 +182,24 @@ const TaskTable = ({
 
   const handleCopy = (record: any, lang: "en" | "ru") => {
     const shiftInfo = {
-      pickUpDate: record?.pickup_date,
-      pickUpLocation: record?.pickup_location ?? null,
       shiftDate: record?.shift_date,
       shiftLocation: record?.shift_location ?? null,
       cycleDate: record?.cycle_date,
       cycleLocation: record?.cycle_location ?? null,
+      pickUpDate: record?.pickup_date,
+      pickUpTime: record?.pickup_time,
+      pickUpLocation: record?.pickup_location ?? null,
     };
 
     const coDriverInfo = {
       driverName: record?.driver_name ?? null,
       coDriverName: record?.co_driver_name ?? null,
-      coDriverPickUpLocation: record?.co_driver_pickup_location ?? null,
       coDriverPickUpDate: record?.co_driver_pickup_date,
-      coDriverDropLocation: record?.co_driver_drop_location ?? null,
+      coDriverPickUpTime: record?.co_driver_pickup_time,
+      coDriverPickUpLocation: record?.co_driver_pickup_location ?? null,
       coDriverDropDate: record?.co_driver_drop_date,
+      coDriverDropTime: record?.co_driver_drop_time,
+      coDriverDropLocation: record?.co_driver_drop_location ?? null,
     };
 
     const buildTextBlock = (
@@ -213,20 +216,23 @@ const TaskTable = ({
 
     if (lang === "en") {
       text = [
-        buildTextBlock("SHIFT INFO", [
+        buildTextBlock("SHIFT INFO ❗️❗️❗️", [
           ["Shift Date", shiftInfo.shiftDate],
           ["Shift Location", shiftInfo.shiftLocation],
-          ["Pick up Date", shiftInfo.pickUpDate],
-          ["Pick Up Location", shiftInfo.pickUpLocation],
           ["Cycle Date", shiftInfo.cycleDate],
           ["Cycle Location", shiftInfo.cycleLocation],
+          ["Pick up Date", shiftInfo.pickUpDate],
+          ["Pick up Time", shiftInfo.pickUpTime],
+          ["Pick Up Location", shiftInfo.pickUpLocation],
         ]),
         buildTextBlock("CO DRIVER INFO", [
           ["Driver's name", coDriverInfo.driverName],
           ["Co-Driver's name", coDriverInfo.coDriverName],
           ["Co-driver pickup date", coDriverInfo.coDriverPickUpDate],
+          ["Co-driver pickup time", coDriverInfo.coDriverPickUpTime],
           ["Co-driver pickup location", coDriverInfo.coDriverPickUpLocation],
           ["Co-driver drop date", coDriverInfo.coDriverDropDate],
+          ["Co-driver drop time", coDriverInfo.coDriverDropTime],
           ["Co-driver drop location", coDriverInfo.coDriverDropLocation],
         ]),
       ]
@@ -234,20 +240,23 @@ const TaskTable = ({
         .join("\n\n");
     } else {
       text = [
-        buildTextBlock("ИНФОРМАЦИЯ О СМЕНЕ", [
-          ["Дата пикапа", shiftInfo.pickUpDate],
-          ["Место пикапа", shiftInfo.pickUpLocation],
+        buildTextBlock("ИНФОРМАЦИЯ О СМЕНЕ ❗️❗️❗️", [
           ["Дата шифта", shiftInfo.shiftDate],
           ["Место шифта", shiftInfo.shiftLocation],
           ["Дата сайкла", shiftInfo.cycleDate],
           ["Место сайкла", shiftInfo.cycleLocation],
+          ["Дата пикапа", shiftInfo.pickUpDate],
+          ["Время пикапа", shiftInfo.pickUpTime],
+          ["Место пикапа", shiftInfo.pickUpLocation],
         ]),
         buildTextBlock("ИНФОРМАЦИЯ О КО-ДРАЙВЕРЕ", [
           ["Имя драйвера", coDriverInfo.driverName],
           ["Имя ко-драйвера", coDriverInfo.coDriverName],
-          ["Время пикапа ко-драйвера", coDriverInfo.coDriverPickUpDate],
+          ["Дата пикапа ко-драйвера", coDriverInfo.coDriverPickUpDate],
+          ["Время пикапа ко-драйвера", coDriverInfo.coDriverPickUpTime],
           ["Место пикапа ко-драйвера", coDriverInfo.coDriverPickUpLocation],
-          ["Время высадки ко-драйвера", coDriverInfo.coDriverDropDate],
+          ["Дата высадки ко-драйвера", coDriverInfo.coDriverDropDate],
+          ["Время высадки ко-драйвера", coDriverInfo.coDriverDropTime],
           ["Место высадки ко-драйвера", coDriverInfo.coDriverDropLocation],
         ]),
       ]

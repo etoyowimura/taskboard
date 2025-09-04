@@ -36,13 +36,7 @@ const ShiftAndCoDriverCreateModal: React.FC<
       onCancel={onCancel}
       width={700}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          driver_name: recordTask?.customer?.name,
-        }}
-      >
+      <Form form={form} layout="vertical">
         {/* SHIFT INFO */}
         <Form.Item
           label="Shift Date"
