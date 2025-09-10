@@ -32,8 +32,11 @@ import ontime from "../../assets/ontimeicon.svg";
 // @ts-ignore
 import tt from "../../assets/tticon.svg";
 import { useCompanyData } from "../../Hooks/Companies";
+import ReactCountryFlag from "react-country-flag";
 
 const TabPane = Tabs.TabPane;
+
+const { Option } = Select;
 
 type params = {
   readonly id: any;
@@ -41,12 +44,13 @@ type params = {
 
 const CustomerEdit = () => {
   const { id } = useParams<params>();
-  const { data, status } = useCustomerOne(id);
+  const { data, status, refetch } = useCustomerOne(id);
   let navigate = useNavigate();
   const onSubmit = async (value: any) => {
     value.company_id = companyVal;
     await customerController.customerPatch(value, id);
     window.location.replace("/#/customers/");
+    refetch();
   };
 
   const ClickDelete = () => {
@@ -173,6 +177,42 @@ const CustomerEdit = () => {
                               name="name"
                             >
                               <Input />
+                            </Form.Item>
+                          </Col>
+
+                          <Col span={6}>
+                            <Form.Item
+                              wrapperCol={{ span: "100%" }}
+                              label="Group Chat ID"
+                              name="telegram_group_id"
+                            >
+                              <Input placeholder="Enter Group ID" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={6}>
+                            <Form.Item
+                              wrapperCol={{ span: "100%" }}
+                              label="Chat Language"
+                              name="language"
+                            >
+                              <Select allowClear placeholder="Select Language">
+                                <Option value="ru">
+                                  <ReactCountryFlag
+                                    countryCode="RU"
+                                    svg
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  Russian
+                                </Option>
+                                <Option value="en">
+                                  <ReactCountryFlag
+                                    countryCode="GB"
+                                    svg
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  English
+                                </Option>
+                              </Select>
                             </Form.Item>
                           </Col>
                         </Row>
