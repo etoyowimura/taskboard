@@ -1,5 +1,6 @@
 import { message } from "antd";
 import {
+  MySalaryResponse,
   TMyTaskHistory,
   TMystats,
   TProfile,
@@ -71,7 +72,7 @@ export const prof = {
       if (params.username) {
         localStorage.setItem("username", params.username);
       }
-      window.location.reload()
+      window.location.reload();
       return data;
     } catch (error: any) {
       setTimeout(() => {
@@ -104,5 +105,10 @@ export const prof = {
       }
       throw error;
     }
+  },
+
+  async mySalary() {
+    const { data } = await instance.get<MySalaryResponse>("users/my-salary/");
+    return data;
   },
 };

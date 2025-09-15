@@ -1,7 +1,8 @@
-import { Button, Card, message } from "antd";
-import { CopyOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Card, message, notification } from "antd";
+import { CopyOutlined, EditOutlined, SendOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import ShiftAndCoDriverEditModal from "./ShiftAndCoDriverEditModal";
+import { taskController } from "../../../API/LayoutApi/tasks";
 
 interface ShiftDataTabProps {
   recordTask?: any;
@@ -102,12 +103,38 @@ const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
       .catch(() => message.error("Failed to copy!"));
   };
 
+  const handleSendTelegram = async () => {
+    if (!recordTask?.id) return;
+
+    try {
+      await taskController.sendTelegram(recordTask.id);
+      notification.success({
+        message: "Success",
+        description: "Message sent to Telegram successfully!",
+        placement: "topRight",
+      });
+    } catch (error: any) {
+      notification.error({
+        message: "Error",
+        description: error?.message || "Failed to send message to Telegram.",
+        placement: "topRight",
+      });
+    }
+  };
+
   return (
     <>
       <Card
         title="Shift & Co-Driver Information"
         extra={
           <>
+            <Button
+              style={{ marginRight: 5 }}
+              icon={<SendOutlined />}
+              onClick={handleSendTelegram}
+            >
+              Send to Telegram
+            </Button>
             <Button
               style={{ marginRight: 5 }}
               icon={<EditOutlined />}

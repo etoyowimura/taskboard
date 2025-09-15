@@ -146,6 +146,12 @@
   text-align: right;
 }
 
+.profile-my-salary {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .dot-true {
   width: 10px;
   height: 10px;

@@ -34,10 +34,10 @@ import {
   useMystatsData,
   useProfData,
 } from "../../Hooks/Profile";
-// @ts-ignore
 import tagIcon from "../../assets/tagIcon.svg";
 import { role } from "../../App";
 import ChangePassword from "./ChangePassword";
+import MySalary from "./MySalary";
 const { Option } = Select;
 
 const Profile = () => {
@@ -373,6 +373,9 @@ const Profile = () => {
               </TabPane>
               <TabPane tab={<span>Change Password</span>} key="3">
                 <ChangePassword />
+              </TabPane>
+              <TabPane tab={<span>My Salary</span>} key="4">
+                <MySalary />
               </TabPane>
             </Tabs>
           </Space>
