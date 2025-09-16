@@ -20,29 +20,20 @@ import {
   Form,
   Input,
   Row,
-  Select,
   Space,
   Spin,
-  Table,
   Tabs,
   Watermark,
 } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
-import { Link } from "react-router-dom";
-import {
-  useMyHistoryData,
-  useMystatsData,
-  useProfData,
-} from "../../Hooks/Profile";
-import tagIcon from "../../assets/tagIcon.svg";
+import { useMystatsData, useProfData } from "../../Hooks/Profile";
 import { role } from "../../App";
 import ChangePassword from "./ChangePassword";
 import MySalary from "./MySalary";
-const { Option } = Select;
+import MyHistory from "./HIstory";
 
 const Profile = () => {
   const { data, refetch } = useProfData();
-  const [range, setRange] = useState<any>(1);
 
   const onSubmit = async (value: TProfilePutParams) => {
     await prof.profPatch(value);
@@ -50,14 +41,6 @@ const Profile = () => {
   };
 
   const moment = require("moment-timezone");
-  const nowUtcPlus5 = moment.tz("Asia/Tashkent");
-  const formattedTimeMinusFiveSeconds = nowUtcPlus5
-    .subtract(range, "days")
-    .format("YYYY-MM-DDTHH:mm:ss");
-
-  const historyData = useMyHistoryData({
-    start_date: formattedTimeMinusFiveSeconds,
-  });
 
   const { RangePicker } = DatePicker;
   const currentDate = moment();
@@ -308,74 +291,19 @@ const Profile = () => {
                 </Space>
               </TabPane>
 
-              <TabPane tab={<span>History</span>} key="2">
-                <Select
-                  style={{ width: "20%", marginBottom: 10 }}
-                  placeholder="1 day"
-                  onChange={(value: any) =>
-                    value ? setRange(value) : setRange("1")
-                  }
-                  allowClear
-                >
-                  <Option value="3">3 days</Option>
-                  <Option value="7">a week</Option>
-                  <Option value="30">a month</Option>
-                </Select>
-                <Table
-                  dataSource={historyData?.data?.map((u, i) => ({
-                    no: i + 1,
-                    task: { id: u.task },
-                    action: u?.action,
-                    description:
-                      role !== "Owner"
-                        ? "You finished this task and earned another 5 points!"
-                        : `You ${u?.description.slice(
-                            u?.description.indexOf(" ") + 1
-                          )}`,
-                    timestamp: u.timestamp
-                      ? moment(u.timestamp).format("DD.MM.YYYY, HH:mm")
-                      : "",
-                    key: u.id,
-                  }))}
-                  columns={[
-                    {
-                      title: <img alt="" src={tagIcon} />,
-                      dataIndex: "no",
-                      key: "no",
-                      width: "5%",
-                    },
-                    {
-                      title: "Task",
-                      dataIndex: "task",
-                      key: "task",
-                      render: ({ id }: { id: number }) => (
-                        <Link to={`/${id}`}>{id}</Link>
-                      ),
-                    },
-                    {
-                      title: "Action",
-                      dataIndex: "action",
-                      key: "action",
-                    },
-                    {
-                      title: "Description",
-                      dataIndex: "description",
-                      key: "description",
-                    },
-                    {
-                      title: "Timestamp",
-                      dataIndex: "timestamp",
-                      key: "timestamp",
-                    },
-                  ]}
-                  scroll={{ x: "768px" }}
-                />
-              </TabPane>
-              <TabPane tab={<span>Change Password</span>} key="3">
+              {(role === "Checker" || role === "Tech Support") && (
+                <TabPane tab={<span>My Salary</span>} key="2">
+                  <MySalary />
+                </TabPane>
+              )}
+
+              {role === "Tech Support" && (
+                <TabPane tab={<span>History</span>} key="3">
+                  <MyHistory role={role} />
+                </TabPane>
+              )}
+              <TabPane tab={<span>Change Password</span>} key="4">
                 <ChangePassword />
-              </TabPane>
-              <TabPane tab={<span>My Salary</span>} key="4">
-                <MySalary />
               </TabPane>
             </Tabs>
           </Space>

@@ -2,7 +2,6 @@ import { message } from "antd";
 import { TTask, TTaskHistory } from "../../types/Tasks/TTasks";
 import { TPagination } from "../../types/common/TPagination";
 import instance from "../api";
-import { isMobile } from "../../App";
 
 export type TTasksGetParams = {
   search?: string;
@@ -190,17 +189,7 @@ export const taskController = {
   },
 
   async sendTelegram(id: string) {
-    try {
-      const { data } = await instance.post(`task-send-to-telegram-bot/${id}/`);
-      return data;
-    } catch (error: any) {
-      if (error.response) {
-        console.error("Telegram API error:", error.response.data);
-      } else if (error.request) {
-        console.error("No response from server:", error.request);
-      } else {
-        console.error("Unexpected error:", error.message);
-      }
-    }
+    const { data } = await instance.post(`task-send-to-telegram-bot/${id}/`);
+    return data;
   },
 };

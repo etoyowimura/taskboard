@@ -108,17 +108,11 @@ const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
 
     try {
       await taskController.sendTelegram(recordTask.id);
-      notification.success({
-        message: "Success",
-        description: "Message sent to Telegram successfully!",
-        placement: "topRight",
-      });
+      message.success("Message sent to Telegram successfully!");
     } catch (error: any) {
-      notification.error({
-        message: "Error",
-        description: error?.message || "Failed to send message to Telegram.",
-        placement: "topRight",
-      });
+      message.error(
+        error?.response?.data?.message || "Failed to send message to Telegram."
+      );
     }
   };
 
