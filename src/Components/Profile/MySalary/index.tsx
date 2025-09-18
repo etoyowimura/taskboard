@@ -89,13 +89,17 @@ const MySalary: React.FC = () => {
       </div>
 
       <div>
-        {years.map((year) => (
-          <SalaryHistoryTable
-            key={year}
-            year={year}
-            salaries={data.salary_history.filter((s) => s.year === year)}
-          />
-        ))}
+        {years.length > 0 ? (
+          years.map((year) => (
+            <SalaryHistoryTable
+              key={year}
+              year={year}
+              salaries={data.salary_history.filter((s) => s.year === year)}
+            />
+          ))
+        ) : (
+          <SalaryHistoryTable year={new Date().getFullYear()} salaries={[]} />
+        )}
       </div>
     </div>
   );

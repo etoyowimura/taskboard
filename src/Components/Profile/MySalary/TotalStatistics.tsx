@@ -1,156 +1,58 @@
-import { Row, Col, Statistic } from "antd";
+import { Row, Col } from "antd";
 import { Total } from "../../../types/Profile/TProfile";
 
 type Props = {
   total: Total;
 };
 
+const Item = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div style={{ display: "flex", flexDirection: "column", rowGap: 4 }}>
+    <span
+      style={{
+        fontFamily: "Geist Mono",
+        fontSize: "12px",
+        fontWeight: 400,
+        lineHeight: "16px",
+        color: "#9B9DAA",
+      }}
+    >
+      {label}
+    </span>
+    <span
+      style={{
+        fontFamily: "Inter",
+        fontSize: "14px",
+        fontWeight: 600,
+        lineHeight: "20px",
+        letterSpacing: "-0.14px",
+      }}
+    >
+      {value}
+    </span>
+  </div>
+);
+
 const TotalStatistics: React.FC<Props> = ({ total }) => {
   return (
-    <Row gutter={16}>
-      <Col span={4}>
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 4 }}>
-          <span
-            style={{
-              fontFamily: "Geist Mono",
-              fontSize: "12px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "16px",
-              color: "#9B9DAA",
-            }}
-          >
-            Total salary
-          </span>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "20px",
-              letterSpacing: "-0.14px",
-            }}
-          >
-            ${total.total_earned_salary}
-          </span>
-        </div>
+    <Row gutter={[16, 16]}>
+      <Col xs={12} sm={12} md={8} lg={4}>
+        <Item label="Total salary" value={`$${total.total_earned_salary}`} />
       </Col>
 
-      <Col span={4}>
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 4 }}>
-          <span
-            style={{
-              fontFamily: "Geist Mono",
-              fontSize: "12px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "16px",
-              color: " #9B9DAA",
-            }}
-          >
-            Total bonuses
-          </span>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "20px",
-              letterSpacing: "-0.14px",
-            }}
-          >
-            +${total.total_bonuses}
-          </span>
-        </div>
+      <Col xs={12} sm={12} md={8} lg={4}>
+        <Item label="Total bonuses" value={`+$${total.total_bonuses}`} />
       </Col>
 
-      <Col span={4}>
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 4 }}>
-          <span
-            style={{
-              fontFamily: "Geist Mono",
-              fontSize: "12px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "16px",
-              color: "#9B9DAA",
-            }}
-          >
-            Total charges
-          </span>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "20px",
-              letterSpacing: "-0.14px",
-            }}
-          >
-            -${total.total_charges}
-          </span>
-        </div>
+      <Col xs={12} sm={12} md={8} lg={4}>
+        <Item label="Total charges" value={`-$${total.total_charges}`} />
       </Col>
 
-      <Col span={4}>
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 4 }}>
-          <span
-            style={{
-              fontFamily: "Geist Mono",
-              fontSize: "12px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "16px",
-              color: "#9B9DAA",
-            }}
-          >
-            Total tasks
-          </span>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "20px",
-              letterSpacing: "-0.14px",
-            }}
-          >
-            {total.total_number_of_tasks}
-          </span>
-        </div>
+      <Col xs={12} sm={12} md={8} lg={4}>
+        <Item label="Total tasks" value={total.total_number_of_tasks} />
       </Col>
 
-      <Col span={4}>
-        <div style={{ display: "flex", flexDirection: "column", rowGap: 4 }}>
-          <span
-            style={{
-              fontFamily: "Geist Mono",
-              fontSize: "12px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "16px",
-              color: "#9B9DAA",
-            }}
-          >
-            Total points
-          </span>
-          <span
-            style={{
-              fontFamily: "Inter",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "20px",
-              letterSpacing: "-0.14px",
-            }}
-          >
-            {total.total_earned_points}
-          </span>
-        </div>
+      <Col xs={12} sm={12} md={8} lg={4}>
+        <Item label="Total points" value={total.total_earned_points} />
       </Col>
     </Row>
   );

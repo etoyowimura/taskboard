@@ -6,6 +6,45 @@ type Props = {
   current: CurrentMonth;
 };
 
+const InfoItem = ({
+  label,
+  value,
+  prefix,
+}: {
+  label: string;
+  value: number;
+  prefix?: string;
+}) => (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+    }}
+  >
+    <span
+      style={{
+        color: "#9b9daa",
+        fontFamily: "Inter",
+        fontSize: "14px",
+        fontWeight: 500,
+        lineHeight: "20px",
+      }}
+    >
+      {label}
+    </span>
+    <Statistic
+      value={value}
+      prefix={prefix}
+      valueStyle={{
+        fontFamily: "Inter",
+        fontSize: "14px",
+        fontWeight: 500,
+      }}
+    />
+  </div>
+);
+
 const CurrentMonthCard: React.FC<Props> = ({ current }) => {
   return (
     <Card>
@@ -15,9 +54,9 @@ const CurrentMonthCard: React.FC<Props> = ({ current }) => {
             style={{
               fontFamily: "Geist Mono",
               fontSize: "12px",
-              fontStyle: "normal",
               fontWeight: 400,
               lineHeight: "16px",
+              color: "#9b9daa",
             }}
           >
             {`Current month / ${dayjs().format("MMMM")}`}
@@ -29,109 +68,27 @@ const CurrentMonthCard: React.FC<Props> = ({ current }) => {
         valueStyle={{
           fontFamily: "Inter",
           fontSize: "24px",
-          fontStyle: "normal",
           fontWeight: 700,
           lineHeight: "28px",
           letterSpacing: "-0.96px",
         }}
       />
-      <Row gutter={12} style={{ marginTop: 12 }}>
-        <Col span={4}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span
-              style={{
-                color: "#9b9daa",
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-                lineHeight: "20px",
-              }}
-            >
-              Bonuses:
-            </span>
-            <Statistic
-              value={current.total_bonuses}
-              prefix="+$"
-              valueStyle={{
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
-            />
-          </div>
+
+      <Row gutter={[16, 16]} style={{ marginTop: 12 }}>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <InfoItem label="Bonuses" value={current.total_bonuses} prefix="+$" />
         </Col>
 
-        <Col span={4}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              style={{
-                color: "#9b9daa",
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-                lineHeight: "20px",
-              }}
-            >
-              Charges:
-            </span>
-            <Statistic
-              value={current.total_charges}
-              prefix="-$"
-              valueStyle={{
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
-            />
-          </div>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <InfoItem label="Charges" value={current.total_charges} prefix="-$" />
         </Col>
 
-        <Col span={4}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              style={{
-                color: "#9b9daa",
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-                lineHeight: "20px",
-              }}
-            >
-              Tasks:
-            </span>
-            <Statistic
-              value={current.number_of_tasks}
-              valueStyle={{
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
-            />
-          </div>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <InfoItem label="Tasks" value={current.number_of_tasks} />
         </Col>
 
-        <Col span={4}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              style={{
-                color: "#9b9daa",
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-                lineHeight: "20px",
-              }}
-            >
-              Points:
-            </span>
-            <Statistic
-              value={current.total_points}
-              valueStyle={{
-                fontFamily: "Inter",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
-            />
-          </div>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <InfoItem label="Points" value={current.total_points} />
         </Col>
       </Row>
     </Card>
