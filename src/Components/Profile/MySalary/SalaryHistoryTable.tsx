@@ -26,6 +26,8 @@ const SalaryHistoryTable: React.FC<Props> = ({ year, salaries }) => {
       <Table<SalaryHistory>
         dataSource={salaries}
         rowKey="id"
+        scroll={{ x: 800 }}
+        locale={{ emptyText: "No data" }}
         pagination={false}
         size="large"
         columns={[
