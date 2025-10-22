@@ -20,11 +20,11 @@ const ChangePassword = () => {
         initialValues={{ modifier: "public" }}
       >
         <FormAnt.Item
-          label="Old Password"
+          label="Previous Password"
           name="old_password"
-          rules={[{ required: true, message: "Your old password!" }]}
+          rules={[{ required: true, message: "Your previous password!" }]}
         >
-          <Input.Password />
+          <Input.Password placeholder="Enter your previous password" />
         </FormAnt.Item>
         <FormAnt.Item
           name="new_password"
@@ -32,7 +32,7 @@ const ChangePassword = () => {
           rules={[
             {
               required: true,
-              message: "Please input your password!",
+              message: "Please enter your password!",
             },
             {
               min: 8,
@@ -41,7 +41,7 @@ const ChangePassword = () => {
           ]}
           hasFeedback
         >
-          <Input.Password />
+          <Input.Password placeholder="Please enter your new password" />
         </FormAnt.Item>
         <FormAnt.Item
           name="password_confirm"
@@ -65,7 +65,7 @@ const ChangePassword = () => {
             }),
           ]}
         >
-          <Input.Password />
+          <Input.Password placeholder="Please confirm your new password" />
         </FormAnt.Item>
       </FormAnt>
       <Button onClick={submit} type="primary">

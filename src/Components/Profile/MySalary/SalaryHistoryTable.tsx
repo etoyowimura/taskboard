@@ -47,11 +47,11 @@ const SalaryHistoryTable: React.FC<Props> = ({ year, salaries }) => {
             dataIndex: "total_salary",
             render: (_, record) => <span>${record.total_salary}</span>,
           },
-          {
-            title: "Total Bonuses",
-            dataIndex: "total_bonuses",
-            render: (_, record) => <span>${record.total_bonuses}</span>,
-          },
+          // {
+          //   title: "Total Bonuses",
+          //   dataIndex: "total_bonuses",
+          //   render: (_, record) => <span>${record.total_bonuses}</span>,
+          // },
           {
             title: "Total Charges",
             dataIndex: "total_charges",

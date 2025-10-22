@@ -39,9 +39,9 @@ const TotalStatistics: React.FC<Props> = ({ total }) => {
         <Item label="Total salary" value={`$${total.total_earned_salary}`} />
       </Col>
 
-      <Col xs={12} sm={12} md={8} lg={4}>
+      {/* <Col xs={12} sm={12} md={8} lg={4}>
         <Item label="Total bonuses" value={`+$${total.total_bonuses}`} />
-      </Col>
+      </Col> */}
 
       <Col xs={12} sm={12} md={8} lg={4}>
         <Item label="Total charges" value={`-$${total.total_charges}`} />

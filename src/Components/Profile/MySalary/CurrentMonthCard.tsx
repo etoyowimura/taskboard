@@ -75,9 +75,9 @@ const CurrentMonthCard: React.FC<Props> = ({ current }) => {
       />
 
       <Row gutter={[16, 16]} style={{ marginTop: 12 }}>
-        <Col xs={12} sm={12} md={6} lg={6}>
+        {/* <Col xs={12} sm={12} md={6} lg={6}>
           <InfoItem label="Bonuses" value={current.total_bonuses} prefix="+$" />
-        </Col>
+        </Col> */}
 
         <Col xs={12} sm={12} md={6} lg={6}>
           <InfoItem label="Charges" value={current.total_charges} prefix="-$" />
