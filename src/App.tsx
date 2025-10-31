@@ -273,6 +273,7 @@ const App: React.FC = () => {
   //   };
   // }, [isOnline]);
   let taskSocket: WebSocket;
+  let reconnectTimer: any;
   const [isLive, setIslive] = useState(false);
   const [socketData, setSocketData] = useState<any>();
   const connect = async () => {
@@ -301,8 +302,8 @@ const App: React.FC = () => {
         taskSocket.addEventListener("error", (errorEvent) => {
           console.error("WebSocket error:", errorEvent);
         });
-        taskSocket.addEventListener("close", (event) => {
-          console.log("WebSocket: clocse");
+        taskSocket.addEventListener("close", () => {
+          console.log("Socket closed → reconnecting…");
           setIslive(false);
         });
       }
