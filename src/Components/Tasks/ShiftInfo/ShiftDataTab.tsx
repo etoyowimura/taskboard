@@ -60,7 +60,7 @@ const ShiftDataTab: React.FC<ShiftDataTabProps> = ({ recordTask }) => {
           ["Co-driver pickup time", coDriverInfo.coDriverPickUpTime],
           ["Co-driver pickup location", coDriverInfo.coDriverPickUpLocation],
           ["Co-driver drop date", coDriverInfo.coDriverDropDate],
-          ["Co-driver drop time", coDriverInfo.coDriverDropDate],
+          ["Co-driver drop time", coDriverInfo.coDriverDropTime],
           ["Co-driver drop location", coDriverInfo.coDriverDropLocation],
         ]),
       ]
