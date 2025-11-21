@@ -303,7 +303,6 @@ const App: React.FC = () => {
           console.error("WebSocket error:", errorEvent);
         });
         taskSocket.addEventListener("close", () => {
-          console.log("Socket closed → reconnecting…");
           setIslive(false);
         });
       }

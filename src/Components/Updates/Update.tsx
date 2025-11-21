@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AddUpdate from "./AddUpdate";
 import { Button, Input, Select, Space, Typography, theme } from "antd";
 import {
@@ -6,48 +6,72 @@ import {
   PlusOutlined,
   ReloadOutlined,
   RightOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import UpdateTable from "./UpdateTable";
 import { useUpdateData } from "../../Hooks/Update";
+import { useCompanyData } from "../../Hooks/Companies";
+import { debounce } from "lodash";
+const { Option } = Select;
 
 const Update = () => {
   const [open, setOpen] = useState(false);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleSelectChange = (value: any) => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    timerRef.current = setTimeout(() => {
-      setStatus(value);
-    }, 1000);
-  };
-
   const [status, setStatus] = useState<any>([
     "New",
     "In Progress",
     "Paper",
     "Setup",
   ]);
-
-  const { Option } = Select;
-
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(() => {
     const saved = localStorage.getItem("general_pageSize");
     return saved ? Number(saved) : 15;
   });
+  const [companyName, setCompanyName] = useState<string>("");
+  const [company, setCompany] = useState<string>("");
+  const [driverName, setDriverName] = useState<string>("");
 
   const pageSizeOptions = [15, 20, 30, 40, 50];
-
   const handlePageSizeChange = (value: number) => {
     setPageSize(value);
-    setPage(1); // Odatda pageSize o'zgarganda sahifani 1 ga qaytaramiz
+    setPage(1);
   };
 
-  const { data, refetch, isLoading } = useUpdateData(status, page, pageSize);
+  const { data, refetch, isLoading } = useUpdateData(
+    status,
+    page,
+    pageSize,
+    company,
+    driverName
+  );
+
+  const companyData = useCompanyData({
+    name: companyName,
+  });
+
+  const debouncedSearch = useCallback(
+    debounce((val: string, setCompany, setCompanyName) => {
+      if (val === "") {
+        setCompany("");
+      }
+      setCompanyName(val);
+    }, 500),
+    []
+  );
+
+  const handleSelectChange = useCallback(
+    debounce((value) => {
+      setStatus(value);
+    }, 1000),
+    []
+  );
+
+  const handleSearchChange = useCallback(
+    debounce((value: string) => {
+      setDriverName(value);
+    }, 1000),
+    []
+  );
 
   const showModal = () => {
     setOpen(true);
@@ -77,10 +101,6 @@ const Update = () => {
       <div className="header d-flex" style={{ marginBottom: 16 }}>
         <Typography className="title">Updates</Typography>
         <div className="d-flex">
-          {/* <button className="btn-add d-flex" onClick={showModal}>
-            <img style={{ marginRight: 8 }} src={addicon} alt="" />
-            Add
-          </button> */}
           <Button
             style={{
               marginRight: 10,
@@ -90,23 +110,10 @@ const Update = () => {
             }}
             className="d-flex"
             onClick={showModal}
-            icon={<PlusOutlined />} // Ant-design ikonkasi
+            icon={<PlusOutlined />}
           >
             Add
           </Button>
-          {/* <button
-            className={`btn-refresh-${false && "dark"} d-flex`}
-            style={{
-              backgroundColor: token.colorBgContainer,
-              color: token.colorText,
-            }}
-            onClick={() => {
-              refetch();
-            }}
-          >
-            <img style={{ marginRight: 8 }} src={refreshicon} alt="" />
-            Refresh
-          </button> */}
           <Button
             className="d-flex"
             style={{
@@ -123,7 +130,7 @@ const Update = () => {
           </Button>
         </div>
       </div>
-      <div className="filter d-flex">
+      <div className="filter d-flex" style={{ gap: 5 }}>
         <Select
           style={{ width: 260, marginLeft: 10 }}
           placeholder="Status"
@@ -137,6 +144,29 @@ const Update = () => {
           <Option value="Paper">Paper</Option>
           <Option value="Setup">Setup</Option>
         </Select>
+
+        <Select
+          style={{ width: 260, marginLeft: 10 }}
+          showSearch
+          placeholder="Search Company"
+          onSearch={(value) =>
+            debouncedSearch(value, setCompany, setCompanyName)
+          }
+          options={companyData?.data?.map((item) => ({
+            label: item?.name,
+            value: item?.name,
+          }))}
+          filterOption={false}
+          allowClear
+          onChange={(v) => setCompany(v)}
+        />
+
+        <Input
+          style={{ width: 260, marginLeft: 10 }}
+          placeholder="Search Driver Name"
+          prefix={<SearchOutlined />}
+          onChange={(e) => handleSearchChange(e.target.value)}
+        />
       </div>
       <UpdateTable data={data?.data} refetch={refetch} isLoading={isLoading} />
       <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">

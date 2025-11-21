@@ -9,6 +9,7 @@ export type TCustomerGetParams = {
   page?: string | number;
   for_driver_request?: boolean;
   is_active?: boolean;
+  telegram_group_id?: string;
 };
 
 export type TCustomerByCompanyGetParams = {
@@ -36,6 +37,8 @@ export const customerController = {
     if (!!filterObject.page_size) params.page_size = filterObject.page_size;
     if (!!filterObject.for_driver_request)
       params.for_driver_request = filterObject.for_driver_request;
+    if (!!filterObject.telegram_group_id)
+      params.telegram_group_id = filterObject.telegram_group_id;
 
     const { data } = await instance.get<TPagination<TCustomer[]>>(
       `customers/`,

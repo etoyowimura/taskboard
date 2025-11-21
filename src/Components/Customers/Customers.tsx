@@ -31,11 +31,13 @@ const Customer = () => {
   const { token } = theme.useToken();
 
   const [search, setSearch] = useState("");
+  const [searchChatId, setSearchChatId] = useState("");
   const { data, isLoading, refetch } = useCustomerData({
     name: search,
     is_active: undefined,
     page_size: pageSize,
     page: page,
+    telegram_group_id: searchChatId,
   });
 
   const pageSizeOptions = [15, 20, 30, 40, 50];
@@ -72,6 +74,16 @@ const Customer = () => {
       setSearch(searchText);
     }, 1000);
   };
+  const handleSearchChatId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    const searchChatId = e.target.value;
+    timerRef.current = setTimeout(() => {
+      setSearchChatId(searchChatId);
+    }, 1000);
+  };
   const themes = localStorage.getItem("theme") === "true" ? true : false;
 
   return (
@@ -79,10 +91,7 @@ const Customer = () => {
       {open && <AddCustomer open={open} setOpen={setOpen} />}
       <div className="header d-flex">
         <Typography className="title">Drivers</Typography>
-        {/* <button className="btn-add d-flex" onClick={showModal}>
-          <img src={addicon} style={{ marginRight: 8 }} alt="" />
-          Add Driver
-        </button> */}
+
         <Button
           className="d-flex"
           onClick={showModal}
@@ -96,22 +105,19 @@ const Customer = () => {
           Add Driver
         </Button>
       </div>
-      <div className="filter d-flex">
-        {/* <div className="search-div">
-          <img src={IconSearch} alt="" />
-          <input
-            className={`search-input-${themes}`}
-            type="text"
-            placeholder="Search"
-            onChange={handleSearchChange}
-          />
-        </div> */}
+      <div className="filter d-flex" style={{ gap: 5 }}>
         <div>
           <Input
-            // className={`search-input-${themes}`}
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={handleSearchChange}
+          />
+        </div>
+        <div>
+          <Input
+            placeholder="Search Chat ID"
+            prefix={<SearchOutlined />}
+            onChange={handleSearchChatId}
           />
         </div>
       </div>

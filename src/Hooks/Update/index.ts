@@ -11,12 +11,15 @@ import { updateController } from "../../API/LayoutApi/update";
 
 export const useUpdateData = (
   status: string,
-  page: number,
-  page_size: number
+  page: number | string,
+  page_size: number | number,
+  company_name: string,
+  driver_name: string
 ) => {
   return useQuery(
-    [`shift-updates`, status, page, page_size],
-    () => updateController.read(status, page, page_size),
+    [`shift-updates`, status, page, page_size, company_name, driver_name],
+    () =>
+      updateController.read(status, page, page_size, company_name, driver_name),
     { refetchOnWindowFocus: false }
   );
 };

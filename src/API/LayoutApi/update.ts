@@ -24,10 +24,27 @@ export type TUpdatePostParams = {
 };
 
 export const updateController = {
-  async read(status: string, page: number, page_size: number) {
-    const { data } = await instance.get(
-      `shift-updates/?status=${status}&page=${page}&page_size=${page_size}`
-    );
+  async read(
+    status: string,
+    page: string | number,
+    page_size: string | number,
+    company_name: string,
+    driver_name: string
+  ) {
+    const params = new URLSearchParams({
+      status,
+      page: String(page),
+      page_size: String(page_size),
+    });
+
+    if (company_name) {
+      params.append("company_name", company_name);
+    }
+    if (driver_name) {
+      params.append("driver_name", driver_name);
+    }
+
+    const { data } = await instance.get(`shift-updates/?${params.toString()}`);
     return data;
   },
 

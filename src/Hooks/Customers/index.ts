@@ -10,9 +10,18 @@ export const useCustomerData = ({
   is_active,
   page_size,
   for_driver_request,
+  telegram_group_id,
 }: TCustomerGetParams) => {
   return useQuery(
-    [`customers/`, name, page, is_active, page_size, for_driver_request],
+    [
+      `customers/`,
+      name,
+      page,
+      is_active,
+      page_size,
+      for_driver_request,
+      telegram_group_id,
+    ],
     () =>
       customerController.read({
         name,
@@ -20,6 +29,7 @@ export const useCustomerData = ({
         is_active,
         page_size,
         for_driver_request,
+        telegram_group_id,
       }),
     { refetchOnWindowFocus: false }
   );
