@@ -218,7 +218,7 @@ const CustomerEdit = () => {
                         </Row>
 
                         <Form.Item>
-                          {role === "Owner" && (
+                          {(role === "Owner" || role === "Tech Support") && (
                             <Button
                               onClick={() => ClickDelete()}
                               type="primary"
