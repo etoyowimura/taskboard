@@ -12,6 +12,7 @@ import {
   Input,
   Button,
   Select,
+  Modal,
 } from "antd";
 import { customerController } from "../../API/LayoutApi/customers";
 import Notfound from "../../Utils/Notfound";
@@ -54,13 +55,20 @@ const CustomerEdit = () => {
   };
 
   const ClickDelete = () => {
-    const shouldDelete = window.confirm(
-      "Are you sure, you want to delete this Driver?"
-    );
-    if (shouldDelete && id !== undefined) {
-      customerController.deleteCustomerController(id);
-      navigate(-1);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this Driver?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+
+      onOk() {
+        if (id !== undefined) {
+          customerController.deleteCustomerController(id);
+          navigate("/customers/");
+          refetch();
+        }
+      },
+    });
   };
   const [activeTab, setActiveTab] = useState("1");
 
