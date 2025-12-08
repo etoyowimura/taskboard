@@ -16,7 +16,8 @@ import { LogoutApi } from "./API/auth/Logout";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 // @ts-ignore
-import TT_ELD from "./assets/tticon.svg";
+import Logo_white from "./assets/logo-white.png";
+import Ontime_Logo from "./assets/ontimeicon.svg";
 import collapsedIcon from "./assets/collapsed.png";
 import themeBtn from "./assets/theme-btn.svg";
 // @ts-ignore
@@ -422,11 +423,15 @@ const App: React.FC = () => {
                     {collapsed ? (
                       <img
                         className="tt-icon-collapsed"
-                        src={TT_ELD}
+                        src={Ontime_Logo}
                         alt="Icon"
                       />
                     ) : (
-                      "TT ELD"
+                      <img
+                        className="tt-icon-white"
+                        src={Logo_white}
+                        alt="Icon"
+                      />
                     )}
                   </p>
                   <button onClick={toggleCollapsed} style={{ all: "unset" }}>

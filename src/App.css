@@ -48,6 +48,10 @@
   height: 32px;
 }
 
+.tt-icon-white {
+  max-width: 100%;
+  height: 32px;
+}
 .isnot {
   display: none;
 }
