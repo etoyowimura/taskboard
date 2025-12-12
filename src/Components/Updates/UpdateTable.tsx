@@ -1,9 +1,6 @@
-import { Button, Space, Table, Tooltip, theme } from "antd";
+import { Button, Space, Table, Tooltip, theme, Tag } from "antd";
 import { PushpinOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { useCompanyData } from "../../Hooks/Companies";
-import { useCustomerData } from "../../Hooks/Customers";
-import { useUserData } from "../../Hooks/Users";
 import { updateController } from "../../API/LayoutApi/update";
 import {
   QueryObserverResult,
@@ -40,9 +37,8 @@ const UpdateTable = ({
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TUpdate[], unknown>>;
 }) => {
-  // const CompanyData = useCompanyData({});
-  // const CustomerData = useCustomerData({});
-  // const AdminData = useUserData({});
+  // Jadvalda kamida bitta is_active === false yozuv borligini aniqlaymiz
+  const hasInactive = data?.some((item) => item.is_active === false);
 
   const [isTextSelected, setIsTextSelected] = useState(false);
 
@@ -67,6 +63,7 @@ const UpdateTable = ({
       document.location.replace(`/#/updates/${record.id}`);
     }
   };
+
   const getImageSource = (source: string) => {
     switch (source) {
       case "Zippy":
@@ -86,263 +83,207 @@ const UpdateTable = ({
 
   const { token } = theme.useToken();
 
+  // Asosiy ustunlar
+  const baseColumns = [
+    {
+      title: <img src={tagIcon} alt="" />,
+      dataIndex: "no",
+      width: "4%",
+      align: "center",
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      ellipsis: { showTitle: false },
+      width: "10%",
+      render: (text: any) => (
+        <Tooltip placement="topLeft" title={text?.name}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {text?.source && (
+              <img
+                src={getImageSource(text?.source)}
+                alt=""
+                style={{ width: 20, height: 20, marginRight: 10 }}
+              />
+            )}
+            {text?.name}
+          </div>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Driver",
+      dataIndex: "customer",
+      ellipsis: { showTitle: false },
+      width: "10%",
+      render: (item: { name: string }) => (
+        <Tooltip placement="topLeft" title={item?.name}>
+          {item?.name}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Created by",
+      dataIndex: "provider",
+      ellipsis: { showTitle: false },
+      responsive: ["xl"],
+      width: "10%",
+      render: (provider: { username: string }) => (
+        <Tooltip placement="topLeft" title={provider?.username}>
+          {provider?.username}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Completed by",
+      dataIndex: "executor",
+      ellipsis: { showTitle: false },
+      responsive: ["lg"],
+      width: "10%",
+      render: (executor: { username: string }) => (
+        <Tooltip placement="topLeft" title={executor?.username}>
+          {executor?.username}
+        </Tooltip>
+      ),
+    },
+  ];
+
+  const archivedColumn = {
+    title: "Status",
+    dataIndex: "is_active",
+    width: "8%",
+    render: (is_active: boolean) =>
+      is_active === false ? <Tag color="gray">Archived</Tag> : null,
+  };
+
+  // Qolgan ustunlar
+  const otherColumns = [
+    {
+      title: hasInactive ? "Status Before Deletion" : "Status",
+      dataIndex: "status",
+      ellipsis: { showTitle: false },
+      width: "10%",
+      render: (status: string) => (
+        <span>
+          {status === "Done" && <p className="status-done">Done</p>}
+          {status === "In Progress" && (
+            <p className="status-in-progress">In Progress</p>
+          )}
+          {status === "New" && <p className="status-new">New</p>}
+          {status === "Setup" && <p className="status-new">Setup</p>}
+          {status === "Paper" && <p className="status-new">Paper</p>}
+        </span>
+      ),
+    },
+    {
+      title: "Note",
+      dataIndex: "note",
+      width: "10%",
+      ellipsis: { showTitle: false },
+      render: (note: string) => (
+        <Tooltip placement="topLeft" title={note}>
+          {note}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Solution",
+      dataIndex: "solution",
+      width: "10%",
+      responsive: ["lg"],
+      ellipsis: { showTitle: false },
+      render: (note: string) => (
+        <Tooltip placement="topLeft" title={note}>
+          {note}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Created at",
+      dataIndex: "created",
+      ellipsis: { showTitle: false },
+      responsive: ["xxl"],
+      width: "10%",
+      render: (note: string) => (
+        <Tooltip placement="topLeft" title={note}>
+          {note}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Actions",
+      dataIndex: "action",
+      width: "6%",
+      align: "center",
+      render: (record: TUpdate) => {
+        return (
+          <div className="notedit">
+            {record.status !== "Done" && (
+              <Space>
+                {record.is_pinned ? (
+                  <Button
+                    style={{ background: "#f99e2c", color: "#fff" }}
+                    onClick={() => {
+                      const updateData = { is_pinned: false };
+                      updateController
+                        .updatePatch(updateData, record.id)
+                        .then(() => {
+                          refetch();
+                        });
+                    }}
+                    icon={<PushpinOutlined />}
+                  />
+                ) : (
+                  <Button
+                    onClick={() => {
+                      const updateData = { is_pinned: true };
+                      updateController
+                        .updatePatch(updateData, record.id)
+                        .then(() => {
+                          refetch();
+                        });
+                    }}
+                    icon={<PushpinOutlined />}
+                  />
+                )}
+              </Space>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
+  // Oxirida ustunlar massivini yaratamiz
+  // Agar is_active false bo‘lgan yozuvlar bor bo‘lsa, archivedColumn qo‘shiladi
+  const columns: any = hasInactive
+    ? [...baseColumns, archivedColumn, ...otherColumns]
+    : [...baseColumns, ...otherColumns];
+
   return (
     <div style={{ paddingBottom: 40 }}>
       <Table
         onRow={(record) => ({
-          onClick: (event) => Row(record, event),
+          onClick:
+            record.is_active === false
+              ? undefined
+              : (event) => Row(record, event),
         })}
         dataSource={data?.map((u, i) => ({
           no: i + 1,
           ...u,
-          // company_name: CompanyData?.data?.find(
-          //   (company: any) => company.id === u.company_id
-          // )?.name,
-          // customer_name: CustomerData?.data?.data?.find(
-          //   (customer: any) => customer.id === u.customer_id
-          // )?.name,
-          // in_charge_name: AdminData?.data?.find(
-          //   (admin: any) => admin.id === u.provider_id
-          // )?.username,
-          // executor_name: AdminData?.data?.find(
-          //   (admin: any) => admin.id === u.executor_id
-          // )?.username,
           created: moment(u?.created_at, "YYYY-MM-DD HH:mm:ss").format(
             "DD.MM.YYYY HH:mm"
           ),
           action: { ...u },
         }))}
-        columns={[
-          {
-            title: <img src={tagIcon} alt="" />,
-            dataIndex: "no",
-            width: "4%",
-            align: "center",
-          },
-          {
-            title: "Company",
-            dataIndex: "company",
-            ellipsis: {
-              showTitle: false,
-            },
-            width: "10%",
-            render: (text: any, record: any) => (
-              <Tooltip placement="topLeft" title={text?.name}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  {text?.source && (
-                    <img
-                      src={getImageSource(text?.source)}
-                      alt=""
-                      style={{ width: 20, height: 20, marginRight: 10 }}
-                    />
-                  )}
-                  {text?.name}
-                </div>
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Driver",
-            dataIndex: "customer",
-            ellipsis: {
-              showTitle: false,
-            },
-            width: "10%",
-            render: (item: { name: string }) => (
-              <Tooltip placement="topLeft" title={item?.name}>
-                {item?.name}
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Created by",
-            dataIndex: "provider",
-            ellipsis: {
-              showTitle: false,
-            },
-            responsive: ["xl"],
-            width: "10%",
-            render: (provider: { username: string }) => (
-              <Tooltip placement="topLeft" title={provider?.username}>
-                {provider?.username}
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Completed by",
-            dataIndex: "executor",
-            ellipsis: {
-              showTitle: false,
-            },
-            responsive: ["lg"],
-            width: "10%",
-            render: (executor: { username: string }) => (
-              <Tooltip placement="topLeft" title={executor?.username}>
-                {executor?.username}
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Status",
-            dataIndex: "status",
-            ellipsis: {
-              showTitle: false,
-            },
-            width: "10%",
-            render: (status: string) => (
-              <span>
-                {status === "Done" && <p className="status-done">Done</p>}
-                {status === "In Progress" && (
-                  <p className="status-in-progress">In Progress</p>
-                )}
-                {status === "New" && <p className="status-new">New</p>}
-                {status === "Setup" && <p className="status-new">Setup</p>}
-                {status === "Paper" && <p className="status-new">Paper</p>}
-              </span>
-            ),
-          },
-          {
-            title: "Note",
-            dataIndex: "note",
-            width: "10%",
-            ellipsis: {
-              showTitle: false,
-            },
-            render: (note: string) => (
-              <Tooltip placement="topLeft" title={note}>
-                {note}
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Solution",
-            dataIndex: "solution",
-            width: "10%",
-            responsive: ["lg"],
-            ellipsis: {
-              showTitle: false,
-            },
-            render: (note: string) => (
-              <Tooltip placement="topLeft" title={note}>
-                {note}
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Created at",
-            dataIndex: "created",
-            ellipsis: {
-              showTitle: false,
-            },
-            responsive: ["xxl"],
-            width: "10%",
-            render: (note: string) => (
-              <Tooltip placement="topLeft" title={note}>
-                {note}
-              </Tooltip>
-            ),
-          },
-          {
-            title: "Actions",
-            dataIndex: "action",
-            width: "6%",
-            align: "center",
-            render: (record: TUpdate) => {
-              return (
-                <div className="notedit">
-                  {record.status !== "Done" && (
-                    <Space>
-                      {record.is_pinned ? (
-                        // <button
-                        //   className="btn-unpin"
-                        //   onClick={(e) => {
-                        //     const updateData = {
-                        //       is_pinned: false,
-                        //     };
-                        //     updateController
-                        //       .updatePatch(updateData, record.id)
-                        //       .then(() => {
-                        //         refetch();
-                        //       });
-                        //   }}
-                        // >
-                        //   <img src={unpin} alt="" />
-                        // </button>
-                        <Button
-                          style={{ background: "#f99e2c", color: "#fff" }}
-                          onClick={(e) => {
-                            const updateData = {
-                              is_pinned: false,
-                            };
-                            updateController
-                              .updatePatch(updateData, record.id)
-                              .then(() => {
-                                refetch();
-                              });
-                          }}
-                          icon={<PushpinOutlined />}
-                        ></Button>
-                      ) : (
-                        // <button
-                        //   className="btn-pin"
-                        //   style={{ paddingTop: 2 }}
-                        //   onClick={(e) => {
-                        //     const updateData = {
-                        //       is_pinned: true,
-                        //     };
-                        //     updateController
-                        //       .updatePatch(updateData, record.id)
-                        //       .then(() => {
-                        //         refetch();
-                        //       });
-                        //   }}
-                        // >
-                        //   <img src={pin} alt="" />
-                        // </button>
-                        <Button
-                          onClick={(e) => {
-                            const updateData = {
-                              is_pinned: true,
-                            };
-                            updateController
-                              .updatePatch(updateData, record.id)
-                              .then(() => {
-                                refetch();
-                              });
-                          }}
-                          icon={<PushpinOutlined />}
-                        ></Button>
-                      )}
-                    </Space>
-                  )}
-                </div>
-              );
-            },
-          },
-        ]}
+        columns={columns}
         rowClassName={(record, index) =>
           index % 2 === 0 ? "odd-row" : "even-row"
         }
         loading={isLoading}
         size="small"
         scroll={{ x: "768px" }}
-        // pagination={{
-        //   pageSize: 10,
-        //   size: "default",
-        //   style: {
-        //     margin: 0,
-        //     justifyContent: "end",
-        //     position: "fixed",
-        //     bottom: 0,
-        //     left: 0,
-        //     width: "100%",
-        //     backgroundColor: token.colorBgContainer,
-        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-        //     padding: "10px 0",
-        //     zIndex: 1000,
-        //   },
-        //   showLessItems: true,
-        // }}
         pagination={false}
         bordered
       />

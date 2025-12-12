@@ -13,6 +13,8 @@ import {
   Button,
   Select,
   Upload,
+  Modal,
+  notification,
 } from "antd";
 import { updateController } from "../../API/LayoutApi/update";
 import {
@@ -55,7 +57,10 @@ const UpdateEdit = () => {
         refetch();
         document.location.replace("/#/updates/");
       } else {
-        alert("solution is empty!!!!!!!!!!!!!!!!!!!!!");
+        notification.error({
+          message: "Error",
+          description: "Solution cannot be empty!",
+        });
       }
     } else {
       await updateController.updatePut(value, id);
@@ -123,15 +128,31 @@ const UpdateEdit = () => {
     }
   }, [data]);
 
+  // const ClickDelete = () => {
+  //   const shouldDelete = window.confirm(
+  //     "Вы уверены, что хотите удалить эту задачу?"
+  //   );
+  //   if (shouldDelete && id !== undefined) {
+  //     updateController.deleteUpdateController(id).then((data: any) => {
+  //       document.location.replace(`/#/updates/`);
+  //     });
+  //   }
+  // };
+
   const ClickDelete = () => {
-    const shouldDelete = window.confirm(
-      "Вы уверены, что хотите удалить эту задачу?"
-    );
-    if (shouldDelete && id !== undefined) {
-      updateController.deleteUpdateController(id).then((data: any) => {
-        document.location.replace(`/#/updates/`);
-      });
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this task?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        if (id) {
+          updateController.deleteUpdateController(id).then(() => {
+            document.location.replace("/#/updates/");
+          });
+        }
+      },
+    });
   };
   const [imgname, setImgname] = useState<any>([]);
   function handlePaste(event: any) {
@@ -301,7 +322,7 @@ const UpdateEdit = () => {
                                 danger
                                 onClick={ClickDelete}
                               >
-                                Delete
+                                Archived
                               </Button>
                             )}
                             <Button

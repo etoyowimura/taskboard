@@ -143,6 +143,7 @@ const Update = () => {
           <Option value="Done">Done</Option>
           <Option value="Paper">Paper</Option>
           <Option value="Setup">Setup</Option>
+          <Option value="Archived">Archived</Option>
         </Select>
 
         <Select
