@@ -3,7 +3,7 @@ import { Button, Space, Card, Form, Input } from "antd";
 import { LockOutlined } from "@ant-design/icons";
 
 import { common } from "../Utils/common";
-import { Navigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { resetPassEmail } from "../API/auth/resetPass";
 
 const ResetByEmail: React.FC = () => {
@@ -12,29 +12,20 @@ const ResetByEmail: React.FC = () => {
   const queryParameters = new URLSearchParams(location.search);
   const confirmation_token = queryParameters.get("confirmation_token");
   const user_id = queryParameters.get("user_id");
+  const navigate = useNavigate();
   const onFinish = (values: any) => {
     values.confirmation_token = confirmation_token;
     values.user_id = user_id;
-    if(values.user_id){
-        resetPassEmail(values).then(() => {
-            <Navigate
-              to={{
-                pathname: "/auth/login",
-              }}
-            />
-        });
+    if (values.user_id) {
+      resetPassEmail(values).then(() => {
+        navigate("/#/auth/login");
+      });
     }
-    
   };
 
   return (
     <div className="">
-      <Form
-        form={form}
-        name="register"
-        onFinish={onFinish}
-        scrollToFirstError
-      >
+      <Form form={form} name="register" onFinish={onFinish} scrollToFirstError>
         <Space
           direction="horizontal"
           style={{
@@ -48,7 +39,7 @@ const ResetByEmail: React.FC = () => {
         >
           <Card
             bodyStyle={{ background: "rgb(250, 250, 250)" }}
-            title="Reset Password"
+            title="Reset `Password`"
             className="login-form-card "
             style={{ width: 400, textAlign: "left" }}
           >

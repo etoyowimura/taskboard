@@ -235,6 +235,18 @@ const UserEdit = () => {
                             <Input prefix={<DollarOutlined />} />
                           </Form.Item>
                         )}
+
+                        {role === "Owner" && (
+                          <Col span={4}>
+                            <Form.Item
+                              wrapperCol={{ span: "100%" }}
+                              label="Salary Rate"
+                              name="salary_rate"
+                            >
+                              <Input prefix={<DollarOutlined />} />
+                            </Form.Item>
+                          </Col>
+                        )}
                       </Row>
                       <Form.Item>
                         {role !== "Checker" && (

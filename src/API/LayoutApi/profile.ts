@@ -77,8 +77,7 @@ export const prof = {
     } catch (error: any) {
       setTimeout(() => {
         message.error({
-          content: error.response.data.username,
-          key: 2,
+          content: "Something went wrong",
           duration: 2,
         });
       }, 1000);
