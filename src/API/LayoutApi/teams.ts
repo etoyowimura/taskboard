@@ -19,6 +19,25 @@ export type TTeamPostParams = {
   is_active?: boolean;
 };
 
+export interface TeamMonitorCreatePayload {
+  name: string;
+  company_ids: number[];
+}
+
+export interface TeamMonitorUpdatePayload {
+  name?: string;
+  is_active?: boolean;
+}
+
+export interface UpdateTeamMonitorVars {
+  id: string;
+  payload: {
+    name?: string;
+    is_active?: boolean;
+    company_ids?: any[];
+  };
+}
+
 export const teamController = {
   async read(obj: TTeamGetParams) {
     const params = { ...obj };
@@ -85,5 +104,48 @@ export const teamController = {
       error = "Oops something went wrong!";
     }
     return { data: res, error };
+  },
+  //  Team Monitoring
+
+  async readTeamsMonitor(obj: TTeamGetParams) {
+    const params: any = {};
+
+    if (obj.page) params.page = obj.page;
+    if (obj.page_size) params.page_size = obj.page_size;
+    if (obj.name) params.name = obj.name;
+
+    const { data } = await instance.get("/teams-monitor/", {
+      params,
+    });
+
+    return data;
+  },
+
+  async createTeamMonitor(payload: TeamMonitorCreatePayload) {
+    const { data } = await instance.post("/team-monitor/", payload);
+    return data;
+  },
+
+  async readTeamsGetOne(id: any) {
+    const { data } = await instance.get(`/team-monitor/${id}/`);
+
+    return data;
+  },
+
+  async deleteTeamMonitor(id: string) {
+    try {
+      const { data } = await instance.delete(`/team-monitor/${id}`);
+      return data;
+    } catch (err) {
+      throw new Error("Oops something went wrong!");
+    }
+  },
+  async updateTeamMonitor(id: string, payload: TeamMonitorUpdatePayload) {
+    try {
+      const { data } = await instance.put(`/team-monitor/${id}/`, payload);
+      return data;
+    } catch (error) {
+      throw new Error("Failed to update team monitor");
+    }
   },
 };

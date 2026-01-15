@@ -1,16 +1,18 @@
 import { Table, Tag } from "antd";
-import { TTeam } from "../../types/Team/TTeam";
+
 import { useNavigate } from "react-router-dom";
 import {
   QueryObserverResult,
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
-import { timeZone } from "../../App";
+
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.svg";
+import tagIcon from "../../../assets/tagIcon.svg";
 
 import { theme } from "antd";
+import { TTeam } from "../../../types/Team/TTeam";
+import { timeZone } from "../../../App";
 
 const TeamTable = ({
   data,
@@ -34,7 +36,7 @@ const TeamTable = ({
       onRow={(record) => {
         return {
           onClick: () => {
-            navigate(`/teams/${record.id}`);
+            navigate(`/teams-services/${record.id}`);
           },
         };
       }}

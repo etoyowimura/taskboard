@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import AddTask from "./AddTask";
 import { Button, Input, Pagination, Select, Space, Typography } from "antd";
 import TaskTable from "./TaskTable";
-import { useTeamData } from "../../Hooks/Teams";
+import { useTeamData, useTeamsMonitorData } from "../../Hooks/Teams";
 import { useTasks } from "../../Hooks/Tasks";
 import { TTask } from "../../types/Tasks/TTasks";
 import { isMobile, role, team_id } from "../../App";
@@ -40,6 +40,7 @@ const Task = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [characters, setCharacters] = useState<TTask[] | undefined>();
   const [team, setTeam] = useState<any>();
+  const [teamMonitoring, setTeamMonitoring] = useState<any>();
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState<any>();
   const [page, setPage] = useState(1);
@@ -144,17 +145,29 @@ const Task = ({
 
   const teamData = useTeamData({});
 
+  const TeamMonitorData = useTeamsMonitorData({});
+
+  console.log(TeamMonitorData);
+
   const teamOptions: { label: string; value: any }[] | undefined =
     teamData?.data?.map((item: any) => ({
       label: item?.name,
       value: item?.id,
     }));
+
+  const teamMonitorOptions: { label: string; value: any }[] | undefined =
+    TeamMonitorData?.data?.map((item: any) => ({
+      label: item?.name,
+      value: item?.name,
+    }));
+
   const { data, isLoading, refetch } = useTasks({
     search,
     status,
     team,
     page,
     page_size: pageSize,
+    team_monitoring: teamMonitoring,
   });
   useEffect(() => {
     if (data) {
@@ -241,14 +254,6 @@ const Task = ({
         </div>
         <div className="d-flex">
           {role !== "Checker" && (
-            // <button className="btn-add d-flex" onClick={showModal}>
-            //   <img
-            //     style={{ marginRight: isMobile ? "0px" : "8px" }}
-            //     src={addicon}
-            //     alt="Add Icon"
-            //   />
-            //   {!isMobile && "Add Task"}
-            // </button>
             <Button
               size="middle"
               className="d-flex"
@@ -305,18 +310,8 @@ const Task = ({
         </div>
       </div>
       <div className={`filter ${isMobile ? "mobile-filter" : "d-flex"}`}>
-        {/* <div className="search-div">
-          <img src={IconSearch} alt="" />
-          <input
-            className={`search-input-${themes}`}
-            type="text"
-            placeholder="Search"
-            onChange={handleSearchChange}
-          />
-        </div> */}
         <div>
           <Input
-            // className={`search-input-${themes}`}
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={handleSearchChange}
@@ -338,13 +333,22 @@ const Task = ({
           <Option value="Done">Done</Option>
         </Select>
         {role !== "Checker" && (
-          <Select
-            mode="multiple"
-            style={{ width: 260, marginLeft: 12 }}
-            placeholder="Team"
-            onChange={(value: any) => setTeam(value)}
-            options={teamOptions}
-          />
+          <>
+            <Select
+              mode="multiple"
+              style={{ width: 260, marginLeft: 12 }}
+              placeholder="Service team"
+              onChange={(value: any) => setTeam(value)}
+              options={teamOptions}
+            />
+            <Select
+              allowClear
+              style={{ width: 260, marginLeft: 12 }}
+              placeholder="Monitoring team"
+              onChange={(value: any) => setTeamMonitoring(value)}
+              options={teamMonitorOptions}
+            />
+          </>
         )}
       </div>
       <TaskTable

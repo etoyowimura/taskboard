@@ -31,7 +31,6 @@ import tt from "../../assets/tticon.svg";
 import addicon from "../../assets/addiconpng.png";
 //ts-ignore
 import fileUpload from "../../assets/upload-file.png";
-import closeIcon from "../../assets/closeIcon.png";
 
 import AddCustomer from "../Customers/AddCustomer";
 import AddDriver from "../Companies/AddDriver";
@@ -210,6 +209,23 @@ const AddTask = ({
         return tt;
     }
   };
+
+  const handleSubmit = async (values: any) => {
+    values.attachment_ids = fileIds;
+    values.note =
+      (text ? text + ", " : "") +
+      (note ? note + ", " : "") +
+      (note2 ? note2 + ", " : "");
+
+    try {
+      await taskController.addTaskController(values);
+      form.resetFields();
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div onPaste={(event) => handlePaste(event)}>
       {openDrive && <AddCustomer open={openDrive} setOpen={setOpenDrive} />}
@@ -235,23 +251,13 @@ const AddTask = ({
         }
         okText="Create"
         cancelText="Cancel"
+        onCancel={() => {
+          form.resetFields();
+          setOpen(false);
+        }}
+        onOk={() => form.submit()}
+        bodyStyle={{ height: 685 }}
         centered={false}
-        bodyStyle={{
-          height: 685,
-        }}
-        onCancel={handleCancel}
-        onOk={() => {
-          form.validateFields().then(async (values) => {
-            values.attachment_ids = fileIds;
-            values.note =
-              (text ? text + ", " : "") +
-              (note ? note + ", " : "") +
-              (note2 ? note2 + ", " : "");
-            form.resetFields();
-            await taskController.addTaskController(values);
-            setOpen(!open);
-          });
-        }}
       >
         <FormAnt
           form={form}
@@ -259,6 +265,13 @@ const AddTask = ({
           layout="vertical"
           name="form_in_modal"
           initialValues={{ modifier: "public" }}
+          onFinish={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              form.submit();
+            }
+          }}
         >
           <Row gutter={[16, 0]}>
             <Col span={24}>
@@ -346,13 +359,16 @@ const AddTask = ({
                 name="service_id"
                 rules={[{ required: true, message: "Please select service!" }]}
               >
-                <Select options={serviceOptions?.sort(sortByLabel)} />
+                <Select
+                  options={serviceOptions?.sort(sortByLabel)}
+                  placeholder="Select service"
+                />
               </FormAnt.Item>
             </Col>
 
             <Col span={24}>
               <FormAnt.Item
-                label="Assigned to"
+                label="Service Team"
                 name="assigned_to_id"
                 rules={[
                   {

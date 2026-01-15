@@ -655,6 +655,14 @@ const AccountingCurrent: React.FC = () => {
             },
           },
           {
+            title: "Salary Rate",
+            dataIndex: "salary_rate",
+            key: "salary_rate",
+            render: (text: string, record: any) => (
+              <p>${record?.salary_rate}</p>
+            ),
+          },
+          {
             title: "Base Salary",
             dataIndex: "salary_base_amount",
             sorter: (a: any, b: any) =>

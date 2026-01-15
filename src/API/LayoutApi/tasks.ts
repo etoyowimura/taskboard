@@ -9,6 +9,7 @@ export type TTasksGetParams = {
   team?: string;
   page?: number;
   page_size: number;
+  team_monitoring?: string;
 };
 
 export type TTasksPutParams = {

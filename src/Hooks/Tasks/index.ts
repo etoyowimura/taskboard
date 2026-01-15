@@ -7,10 +7,19 @@ export const useTasks = ({
   team,
   page,
   page_size,
+  team_monitoring,
 }: TTasksGetParams) => {
   return useQuery(
-    [`tasks/`, search, status, team, page, page_size],
-    () => taskController.read({ search, status, team, page, page_size }),
+    [`tasks/`, search, status, team, page, page_size, team_monitoring],
+    () =>
+      taskController.read({
+        search,
+        status,
+        team,
+        page,
+        page_size,
+        team_monitoring,
+      }),
     { refetchOnWindowFocus: false }
   );
 };

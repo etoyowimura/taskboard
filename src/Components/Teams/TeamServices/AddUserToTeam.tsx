@@ -1,16 +1,17 @@
 import { Input, Modal, Form as FormAnt, Select } from "antd";
-import { userController } from "../../API/LayoutApi/users";
-import { useTeamOne } from "../../Hooks/Teams";
 
 import { message } from "antd";
-import { useRoleData } from "../../Hooks/Role";
-import { common } from "../../Utils/common";
+
 import {
   QueryObserverResult,
   RefetchOptions,
   RefetchQueryFilters,
 } from "react-query";
-import { TUser } from "../../types/User/TUser";
+import { TUser } from "../../../types/User/TUser";
+import { common } from "../../../Utils/common";
+import { useRoleData } from "../../../Hooks/Role";
+import { useTeamOne } from "../../../Hooks/Teams";
+import { userController } from "../../../API/LayoutApi/users";
 
 const AddUserToTeam = ({
   open,

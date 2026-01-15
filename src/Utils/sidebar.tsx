@@ -4,7 +4,8 @@ import Customer from "../Components/Customers/Customers";
 import CustomerEdit from "../Components/Customers/CustomersEdit";
 import Service from "../Components/Services/Services";
 import ServiceEdit from "../Components/Services/ServiceEdit";
-import TeamEdit from "../Components/Teams/TeamEdit";
+import TeamEdit from "../Components/Teams/TeamServices/TeamEdit";
+import TeamMonitoringPreview from "../Components/Teams/TeamMonitoring/TeamMonitoringPreview";
 import Team from "../Components/Teams/Teams";
 import User from "../Components/Users/Users";
 import UserEdit from "../Components/Users/UserEdit";
@@ -71,9 +72,14 @@ export const superItems: TItems[] = [
     key: "/teams/",
   },
   {
-    path: "/teams/:id/",
+    path: "/teams-services/:id/",
     component: <TeamEdit />,
-    key: "/team/:id/",
+    key: "/teams-services/:id/",
+  },
+  {
+    path: "/teams-monitoring/:id/",
+    component: <TeamMonitoringPreview />,
+    key: "/teams-monitoring/:id/",
   },
   {
     path: "/users/",

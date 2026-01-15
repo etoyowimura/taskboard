@@ -399,9 +399,23 @@ const TaskTable = ({
         ),
       },
       {
-        title: "Team",
+        title: "Service Team",
         dataIndex: "assigned_to",
         width: isMobile ? "3%" : "7%",
+        key: "7",
+        ellipsis: {
+          showTitle: false,
+        },
+        render: (item: { name: string }) => (
+          <Tooltip placement="topLeft" title={item?.name}>
+            {item?.name}
+          </Tooltip>
+        ),
+      },
+      {
+        title: "Monitoring Team",
+        dataIndex: "team_monitoring",
+        width: isMobile ? "3%" : "8%",
         key: "7",
         ellipsis: {
           showTitle: false,
@@ -429,7 +443,7 @@ const TaskTable = ({
       {
         title: "PTI",
         dataIndex: "pti",
-        width: "8%",
+        width: "7%",
         key: "8",
         responsive: ["lg"],
         render: (pti: boolean, record: TTask) =>
@@ -606,9 +620,17 @@ const TaskTable = ({
     ];
 
     if (role === "Checker") {
-      const teamColIndex = columns.findIndex((c) => c.title === "Team");
+      const forbiddenTitles = ["Service Team", "Monitoring Team"];
 
-      teamColIndex !== -1 && columns.splice(teamColIndex, 1);
+      forbiddenTitles.forEach((title) => {
+        const index = columns.findIndex(
+          (c) => typeof c.title === "string" && c.title === title
+        );
+
+        if (index !== -1) {
+          columns.splice(index, 1);
+        }
+      });
     }
 
     return columns;

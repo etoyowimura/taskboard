@@ -1,6 +1,6 @@
 import { Input, Modal, Form as FormAnt, Select } from "antd";
-import { teamController } from "../../API/LayoutApi/teams";
-import { useUserData } from "../../Hooks/Users";
+import { useUserData } from "../../../Hooks/Users";
+import { teamController } from "../../../API/LayoutApi/teams";
 
 const AddTeam = ({
   open,

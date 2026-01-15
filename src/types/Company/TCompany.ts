@@ -6,6 +6,7 @@ export type TCompany = {
   is_active: boolean;
   usdot: string;
   team: { name: string; id: number };
+  team_monitoring: { name: string; id: number };
   api_key: string;
   created_at: Date;
 };

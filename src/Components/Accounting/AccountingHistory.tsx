@@ -306,6 +306,14 @@ const AccountingHistory: React.FC = () => {
             },
           },
           {
+            title: "Salary Rate",
+            dataIndex: "salary_rate",
+            key: "salary_rate",
+            render: (text: string, record: any) => (
+              <p>${record?.salary_rate}</p>
+            ),
+          },
+          {
             title: "Base Salary",
             dataIndex: "total_base_salary",
             sorter: (a: any, b: any) =>

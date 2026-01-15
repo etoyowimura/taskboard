@@ -78,7 +78,7 @@ function CompanyTable({
           {
             title: "Company",
             dataIndex: "name",
-            width: "25%",
+            width: "20%",
             ellipsis: {
               showTitle: false,
             },
@@ -98,10 +98,19 @@ function CompanyTable({
             ),
           },
           {
-            title: "Team",
+            title: "Service Team",
             dataIndex: "team",
             render: (status: string, record: TCompany) => (
               <span className={getStatusClassName()}>{record?.team?.name}</span>
+            ),
+          },
+          {
+            title: "Monitoring Team",
+            dataIndex: "team_monitoring",
+            render: (status: string, record: TCompany) => (
+              <span className={getStatusClassName()}>
+                {record?.team_monitoring?.name}
+              </span>
             ),
           },
           {

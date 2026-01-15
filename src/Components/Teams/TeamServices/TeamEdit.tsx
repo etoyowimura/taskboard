@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useTeamOne } from "../../Hooks/Teams";
+import { useTeamOne } from "../../../Hooks/Teams";
 import {
   Form,
   Spin,
@@ -13,18 +13,18 @@ import {
   Button,
   Table,
 } from "antd";
-import { teamController } from "../../API/LayoutApi/teams";
+import { teamController } from "../../../API/LayoutApi/teams";
 import { FormOutlined } from "@ant-design/icons";
-import Notfound from "../../Utils/Notfound";
-import { role } from "../../App";
-import { useUserData } from "../../Hooks/Users";
+import Notfound from "../../../Utils/Notfound";
+import { role } from "../../../App";
+import { useUserData } from "../../../Hooks/Users";
 import AddUserToTeam from "./AddUserToTeam";
 // @ts-ignore
-import tagIcon from "../../assets/tagIcon.svg";
+import tagIcon from "../../../assets/tagIcon.svg";
 // @ts-ignore
-import infoIcon from "../../assets/infoIcon.png";
+import infoIcon from "../../../assets/infoIcon.png";
 // @ts-ignore
-import infoIconActive from "../../assets/infoIconActive.png";
+import infoIconActive from "../../../assets/infoIconActive.png";
 
 const TabPane = Tabs.TabPane;
 
