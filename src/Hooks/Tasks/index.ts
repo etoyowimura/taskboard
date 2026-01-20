@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { TTasksGetParams, taskController } from "../../API/LayoutApi/tasks";
 
 export const useTasks = ({
@@ -20,7 +20,7 @@ export const useTasks = ({
         page_size,
         team_monitoring,
       }),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
 };
 
@@ -28,7 +28,7 @@ export const useTaskOne = (taskId: number | undefined) => {
   return useQuery(
     [`task/${taskId}/`, taskId],
     () => taskController.taskOne(taskId),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
 };
 
@@ -36,6 +36,12 @@ export const useTaskHistory = (Id: number | undefined) => {
   return useQuery(
     [`customer/${Id}/`, Id],
     () => taskController.getHistory(Id),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
+  );
+};
+
+export const useCreateTask = () => {
+  return useMutation((payload: any) =>
+    taskController.addTaskController(payload),
   );
 };

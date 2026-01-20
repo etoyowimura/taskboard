@@ -40,6 +40,7 @@ import { companyController } from "../../API/LayoutApi/companies";
 import { TCompany } from "../../types/Company/TCompany";
 import { customerController } from "../../API/LayoutApi/customers";
 import { TCustomer } from "../../types/Customer/TCustomer";
+import { useCreateTask } from "../../Hooks/Tasks";
 
 const { Option } = Select;
 const AddTask = ({
@@ -120,7 +121,7 @@ const AddTask = ({
             page: 1,
             page_size: 5,
           },
-          companyId
+          companyId,
         )
         .then((data) => {
           setCustomerData(data.data);
@@ -210,20 +211,49 @@ const AddTask = ({
     }
   };
 
+  const createTaskMutation = useCreateTask();
+
+  // const handleSubmit = (values: any) => {
+  //   if (createTaskMutation.isLoading) return; // 🔒 double submit block
+
+  //   const payload = {
+  //     ...values,
+  //     attachment_ids: fileIds,
+  //     note:
+  //       (text ? text + ", " : "") +
+  //       (note ? note + ", " : "") +
+  //       (note2 ? note2 + ", " : ""),
+  //   };
+
+  //   createTaskMutation.mutate(payload, {
+  //     onSuccess: () => {
+  //       form.resetFields();
+  //       setOpen(false);
+  //     },
+  //     onError: (error) => {
+  //       console.error(error);
+  //     },
+  //   });
+  // };
+
   const handleSubmit = async (values: any) => {
+    if (createTaskMutation.isLoading) return;
+
     values.attachment_ids = fileIds;
     values.note =
       (text ? text + ", " : "") +
       (note ? note + ", " : "") +
       (note2 ? note2 + ", " : "");
 
-    try {
-      await taskController.addTaskController(values);
-      form.resetFields();
-      setOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
+    createTaskMutation.mutate(values, {
+      onSuccess: () => {
+        form.resetFields();
+        setOpen(false);
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -252,12 +282,17 @@ const AddTask = ({
         okText="Create"
         cancelText="Cancel"
         onCancel={() => {
+          if (createTaskMutation.isLoading) return;
           form.resetFields();
           setOpen(false);
         }}
         onOk={() => form.submit()}
         bodyStyle={{ height: 685 }}
         centered={false}
+        okButtonProps={{
+          loading: createTaskMutation.isLoading,
+          disabled: createTaskMutation.isLoading,
+        }}
       >
         <FormAnt
           form={form}
