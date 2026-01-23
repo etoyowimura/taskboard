@@ -1,34 +1,43 @@
-import React, { useState } from "react";
-import { Button, Space, Table, Tooltip, message } from "antd";
+import { Button, Space, Table, Tooltip } from "antd";
+import { useState } from "react";
+
 import { Link } from "react-router-dom";
-import { SyncOutlined, EyeOutlined } from "@ant-design/icons";
-import { companyController } from "../../API/LayoutApi/companies";
+import { EyeOutlined } from "@ant-design/icons";
 import { TCompany } from "../../types/Company/TCompany";
-// @ts-ignore
+
+import BulkEditModal from "./BulkEditModal";
+
 import zippy from "../../assets/zippyicon.svg";
-// @ts-ignore
 import evo from "../../assets/evoicon.png";
-// @ts-ignore
 import zeelog from "../../assets/zeelogicon.svg";
-// @ts-ignore
 import ontime from "../../assets/ontimeicon.svg";
-// @ts-ignore
 import tt from "../../assets/tticon.svg";
-// @ts-ignore
 import tagIcon from "../../assets/tagIcon.svg";
 import { role } from "../../App";
-
-import { theme } from "antd";
 
 function CompanyTable({
   data,
   isLoading,
+  refetch,
 }: {
   data?: TCompany[] | undefined;
   isLoading?: boolean;
+  refetch?: any;
 }) {
   const moment = require("moment");
-  const [loadings, setLoadings] = useState<boolean[]>([]);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (keys: React.Key[], rows: TCompany[]) => {
+      setSelectedRowKeys(keys);
+      setSelectedIds(rows.map((row) => row?.id));
+    },
+  };
+
   function getStatusClassName() {
     if (role !== "Owner") {
       return "isnot";
@@ -36,8 +45,6 @@ function CompanyTable({
       return "super";
     }
   }
-
-  const { token } = theme.useToken();
 
   const getImageSource = (source: string) => {
     switch (source) {
@@ -58,12 +65,34 @@ function CompanyTable({
 
   return (
     <div>
+      {selectedIds.length !== 0 && (
+        <div
+          style={{
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "end",
+          }}
+        >
+          <Button
+            type="primary"
+            disabled={selectedIds.length === 0}
+            onClick={() => setIsBulkModalOpen(true)}
+          >
+            Bulk Edit
+          </Button>
+        </div>
+      )}
       <Table
+        rowSelection={{
+          type: "checkbox",
+          ...rowSelection,
+        }}
         dataSource={data?.map((u, i) => ({
           ...u,
           no: i + 1,
           created: moment(u?.created_at, "YYYY-MM-DD HH:mm:ss").format(
-            "DD.MM.YYYY HH:mm"
+            "DD.MM.YYYY HH:mm",
           ),
           key: u?.id,
           action: { ...u },
@@ -152,24 +181,14 @@ function CompanyTable({
         }
         size="small"
         scroll={{ x: "768px" }}
-        // pagination={{
-        //   pageSize: 10,
-        //   size: "default",
-        //   style: {
-        //     margin: 0,
-        //     justifyContent: "end",
-        //     position: "fixed",
-        //     bottom: 0,
-        //     left: 0,
-        //     width: "100%",
-        //     backgroundColor: token.colorBgContainer,
-        //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
-        //     padding: "10px 0",
-        //     zIndex: 1000,
-        //   },
-        // }}
         pagination={false}
         bordered
+      />
+      <BulkEditModal
+        open={isBulkModalOpen}
+        selectedIds={selectedIds}
+        onCancel={() => setIsBulkModalOpen(false)}
+        refetch={refetch}
       />
     </div>
   );

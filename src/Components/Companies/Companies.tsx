@@ -79,14 +79,6 @@ const Company = () => {
       <div className="header d-flex">
         <Typography className="title">Companies</Typography>
         {role !== "Checker" && (
-          // <button
-          //   style={{ marginRight: 0 }}
-          //   className="btn-add d-flex"
-          //   onClick={showModal}
-          // >
-          //   <img src={addicon} style={{ marginRight: 8 }} alt="" />
-          //   Add Company
-          // </button>
           <Button
             style={{
               marginRight: 0,
@@ -103,18 +95,8 @@ const Company = () => {
         )}
       </div>
       <div className="filter d-flex">
-        {/* <div className="search-div">
-          <img src={IconSearch} alt="" />
-          <input
-            className={`search-input-${themes}`}
-            type="text"
-            placeholder="Search"
-            onChange={handleSearchChange}
-          />
-        </div> */}
         <div>
           <Input
-            // className={`search-input-${themes}`}
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={handleSearchChange}
@@ -122,7 +104,7 @@ const Company = () => {
         </div>
       </div>
 
-      <CompanyTable data={data?.data} isLoading={isLoading} />
+      <CompanyTable data={data?.data} isLoading={isLoading} refetch={refetch} />
       <Space style={{ width: "100%", marginTop: 40 }} direction="vertical">
         <Space
           style={{

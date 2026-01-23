@@ -38,6 +38,13 @@ export interface UpdateTeamMonitorVars {
   };
 }
 
+export interface UpdateTeamMonitorCompaniesVars {
+  id: string;
+  payload: {
+    company_ids: number[];
+  };
+}
+
 export const teamController = {
   async read(obj: TTeamGetParams) {
     const params = { ...obj };
@@ -146,6 +153,27 @@ export const teamController = {
       return data;
     } catch (error) {
       throw new Error("Failed to update team monitor");
+    }
+  },
+  async updateTeamMonitorCompanies(
+    id: string,
+    payload: { company_ids: number[] },
+  ) {
+    try {
+      const { data } = await instance.put(
+        `/team-monitor/${id}/companies/`,
+        payload,
+      );
+      return data;
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.detail ||
+        "Something went wrong";
+
+      message.error(errorMessage);
+
+      throw error;
     }
   },
 };

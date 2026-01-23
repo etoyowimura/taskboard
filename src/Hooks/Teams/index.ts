@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
   TTeamGetParams,
+  UpdateTeamMonitorCompaniesVars,
   UpdateTeamMonitorVars,
   teamController,
 } from "../../API/LayoutApi/teams";
@@ -16,7 +17,7 @@ export const useTeamData = ({
     () => teamController.read({ name, company_id, page, page_size }),
     {
       refetchOnWindowFocus: false,
-    }
+    },
   );
 };
 
@@ -24,7 +25,7 @@ export const useTeamOne = (teamId: number | string | undefined): any => {
   return useQuery(
     [`team/${teamId || "all"}`, teamId],
     () => teamController.teamOne(teamId),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
 };
 
@@ -40,7 +41,7 @@ export const useTeamsMonitorData = ({
     () => teamController.readTeamsMonitor({ name, page, page_size }),
     {
       refetchOnWindowFocus: false,
-    }
+    },
   );
 };
 
@@ -90,6 +91,25 @@ export const useUpdateTeamMonitor = () => {
       onError: (error) => {
         console.error("Update team monitor failed:", error);
       },
-    }
+    },
+  );
+};
+
+export const useUpdateTeamMonitorCompanies = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ({ id, payload }: UpdateTeamMonitorCompaniesVars) =>
+      teamController.updateTeamMonitorCompanies(id, payload),
+
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("teams-monitor");
+        queryClient.invalidateQueries("companies");
+      },
+      onError: (error) => {
+        console.error("Update team monitor companies failed:", error);
+      },
+    },
   );
 };
